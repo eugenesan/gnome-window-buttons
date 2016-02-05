@@ -139,6 +139,7 @@ CFLAGS = @CFLAGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CYGPATH_W = @CYGPATH_W@
+DATADIR = @DATADIR@
 DATADIRNAME = @DATADIRNAME@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
@@ -154,8 +155,6 @@ GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOMELOCALEDIR = @GNOMELOCALEDIR@
-GNOME_APPLETS_CFLAGS = @GNOME_APPLETS_CFLAGS@
-GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
 GREP = @GREP@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -249,8 +248,8 @@ top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 SUBDIRS = \
-	buttons \
-	title \
+	gnome-buttons \
+	gnome-title \
 	po
 
 ACLOCAL_AMFLAGS = -I m4
@@ -263,7 +262,8 @@ windowappletsdoc_DATA = \
 	INSTALL\
 	NEWS
 
-INTLTOOL_FILES = intltool-extract.in \
+INTLTOOL_FILES = \
+	intltool-extract.in \
 	intltool-merge.in \
 	intltool-update.in
 
@@ -272,7 +272,8 @@ EXTRA_DIST = \
 	$(windowtitledoc_DATA) \
 	$(INTLTOOL_FILES)
 
-DISTCLEANFILES = intltool-extract \
+DISTCLEANFILES = \
+	intltool-extract \
 	intltool-merge \
 	intltool-update \
 	po/.intltool-merge-cache

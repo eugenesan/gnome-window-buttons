@@ -1,7 +1,3 @@
-## Process this file with automake to produce Makefile.in
-
-## Created by Anjuta
-
 AM_CPPFLAGS = \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
 	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" \
@@ -29,48 +25,60 @@ windowbuttons_LDFLAGS = \
 
 windowbuttons_LDADD = $(WINDOWBUTTONS_LIBS)
 
-serverdir       = $(libdir)/bonobo/servers
-server_in_files = WindowButtons.server.in
-server_DATA     = $(server_in_files:.server.in=.server)
+# The new applet files (D-Bus???)
+appletdir       = $(datadir)/gnome-panel/4.0/applets
+applet_in_files = org.gnome.panel.WindowButtonsApplet.panel-applet.in
+applet_DATA     = $(applet_in_files:.panel-applet.in=.panel-applet)
 
-schemasdir = @GCONF_SCHEMA_FILE_DIR@
-schemas_DATA = windowbuttons.schemas
+$(applet_in_files): $(applet_in_files).in Makefile
+	$(AM_V_GEN)sed \
+	    -e "s|\@LIBEXECDIR\@|$(libexecdir)|" \
+	    -e "s|\@DATADIR\@|$(datadir)|" \
+	    -e "s|\@VERSION\@|$(PACKAGE_VERSION)|" \
+	    $< > $@
 
-CLEANFILES = $(server_in_files) $(server_DATA)
+%.panel-applet: %.panel-applet.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*po) ; $(INTLTOOL_MERGE) $(top_srcdir)/po $< $@ -d -u -c $(top_builddir)/po/.intltool-merge-cache
+
+# The new Service file (D-Bus)
+servicedir       = $(datadir)/dbus-1/services
+service_in_files = org.gnome.panel.applet.WindowButtonsAppletFactory.service.in
+service_DATA     = $(service_in_files:.service.in=.service)
+
+org.gnome.panel.applet.WindowButtonsAppletFactory.service: $(service_in_files)
+	$(AM_V_GEN)sed \
+	    -e "s|\@LIBEXECDIR\@|$(libexecdir)|" \
+	    $< > $@
+
+# Schemas for GConf
+schemasdir       = @GCONF_SCHEMA_FILE_DIR@
+schemas_in_files = windowbuttons.schemas.in
+schemas_DATA     = $(schemas_in_files:.schemas.in=.schemas)
+
+windowbuttons.schemas: $(schemas_in_files)
+	$(AM_V_GEN)sed \
+	    -e "s|\@DATADIR\@|$(datadir)|" \
+	    $< > $@
+
+@INTLTOOL_SCHEMAS_RULE@
+
+if GCONF_SCHEMAS_INSTALL
+install-data-local:
+	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(schemas_DATA) ;
+endif
+
+# UI Builder file (Glade)
+builderdir = $(datadir)/windowbuttons
+builder_DATA = windowbuttons.ui
+
+#CLEANFILES = $(service_in_files) $(server_DATA)
+CLEANFILES = $(applet_DATA) $(applet_DATA).in $(service_DATA) $(schemas_DATA)
 
 EXTRA_DIST = \
-	WindowButtons.server.in.in\
-	$(builder_DATA) \
-	$(schemas_DATA)
-
-builder_DATA = \
-	windowbuttons.ui
-
-builderdir = \
-	$(prefix)/share/windowbuttons
+	org.gnome.panel.WindowButtonsApplet.panel-applet.in.in \
+	$(service_in_files) \
+	$(schemas_in_files) \
+	$(builder_DATA)
 
 SUBDIRS = \
 	pixmaps\
 	themes
-
-%.server: %.server.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po)
-	LC_ALL=C $(INTLTOOL_MERGE) -s -u -c $(top_buildir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@
-
-# Display a message at the end of install
-install-data-hook:
-	@echo "***"
-	@echo "*** If you have installed your applet in a non standard directory. You have to"
-	@echo "*** add it in the bonobo server list, so it can find your applet."
-	@echo "***"
-	@echo "*** Run 'bonobo-activation-sysconf --add-directory=$(serverdir)'"
-	@echo "*** Log out from your current GNOME session"
-	@echo "*** Run 'bonobo-slay'"
-	@echo "*** Check that the bonobo server is not running"
-	@echo "*** Log in again, your applet should be available"
-	@echo "***"
-	
-install-data-local:
-if GCONF_SCHEMAS_INSTALL
-	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(schemas_DATA)
-endif
-

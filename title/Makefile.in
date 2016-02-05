@@ -34,9 +34,8 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 libexec_PROGRAMS = windowtitle$(EXEEXT)
-subdir = title
-DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
-	$(srcdir)/WindowTitle.server.in.in
+subdir = gnome-title
+DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/as-ac-expand.m4 \
 	$(top_srcdir)/m4/intltool.m4 $(top_srcdir)/configure.ac
@@ -44,10 +43,11 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(SHELL) $(top_srcdir)/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
-CONFIG_CLEAN_FILES = WindowTitle.server.in
+CONFIG_CLEAN_FILES =
 CONFIG_CLEAN_VPATH_FILES =
-am__installdirs = "$(DESTDIR)$(libexecdir)" "$(DESTDIR)$(builderdir)" \
-	"$(DESTDIR)$(schemasdir)" "$(DESTDIR)$(serverdir)"
+am__installdirs = "$(DESTDIR)$(libexecdir)" "$(DESTDIR)$(appletdir)" \
+	"$(DESTDIR)$(builderdir)" "$(DESTDIR)$(schemasdir)" \
+	"$(DESTDIR)$(servicedir)"
 PROGRAMS = $(libexec_PROGRAMS)
 am_windowtitle_OBJECTS = windowtitle.$(OBJEXT) preferences.$(OBJEXT)
 windowtitle_OBJECTS = $(am_windowtitle_OBJECTS)
@@ -93,7 +93,7 @@ am__nobase_list = $(am__nobase_strip_setup); \
 am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
-DATA = $(builder_DATA) $(schemas_DATA) $(server_DATA)
+DATA = $(applet_DATA) $(builder_DATA) $(schemas_DATA) $(service_DATA)
 RECURSIVE_CLEAN_TARGETS = mostlyclean-recursive clean-recursive	\
   distclean-recursive maintainer-clean-recursive
 AM_RECURSIVE_TARGETS = $(RECURSIVE_TARGETS:-recursive=) \
@@ -143,6 +143,7 @@ CFLAGS = @CFLAGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CYGPATH_W = @CYGPATH_W@
+DATADIR = @DATADIR@
 DATADIRNAME = @DATADIRNAME@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
@@ -158,8 +159,6 @@ GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOMELOCALEDIR = @GNOMELOCALEDIR@
-GNOME_APPLETS_CFLAGS = @GNOME_APPLETS_CFLAGS@
-GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
 GREP = @GREP@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -263,31 +262,40 @@ AM_CFLAGS = \
 	 -g
 
 windowtitle_SOURCES = \
-	windowtitle.c\
+	windowtitle.c \
 	windowtitle.h \
 	preferences.c \
-	preferences.h 
+	preferences.h
 
 windowtitle_LDFLAGS = \
 	-Wl,--export-dynamic
 
 windowtitle_LDADD = $(WINDOWTITLE_LIBS)
-serverdir = $(libdir)/bonobo/servers
-server_in_files = WindowTitle.server.in
-server_DATA = $(server_in_files:.server.in=.server)
+
+# The new applet files (D-Bus???)
+appletdir = $(datadir)/gnome-panel/4.0/applets
+applet_in_files = org.gnome.panel.WindowTitleApplet.panel-applet.in
+applet_DATA = $(applet_in_files:.panel-applet.in=.panel-applet)
+
+# The new Service file (D-Bus)
+servicedir = $(datadir)/dbus-1/services
+service_in_files = org.gnome.panel.applet.WindowTitleAppletFactory.service.in
+service_DATA = $(service_in_files:.service.in=.service)
+
+# Schemas for GConf
 schemasdir = @GCONF_SCHEMA_FILE_DIR@
-schemas_DATA = windowtitle.schemas
-CLEANFILES = $(server_in_files) $(server_DATA)
+schemas_in_files = windowtitle.schemas.in
+schemas_DATA = $(schemas_in_files:.schemas.in=.schemas)
+
+# UI Builder file (Glade)
+builderdir = $(datadir)/windowtitle
+builder_DATA = windowtitle.ui
+CLEANFILES = $(applet_DATA) $(applet_DATA).in $(service_DATA) $(schemas_DATA)
 EXTRA_DIST = \
-	WindowTitle.server.in.in \
-	$(builder_DATA) \
-	$(schemas_DATA)
-
-builder_DATA = \
-	windowtitle.ui
-
-builderdir = \
-	$(prefix)/share/windowtitle
+	org.gnome.panel.WindowTitleApplet.panel-applet.in.in \
+	$(service_in_files) \
+	$(schemas_in_files) \
+	$(builder_DATA)
 
 SUBDIRS = \
 	pixmaps
@@ -305,9 +313,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu title/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu gnome-title/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu title/Makefile
+	  $(AUTOMAKE) --gnu gnome-title/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \
@@ -326,8 +334,6 @@ $(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
-WindowTitle.server.in: $(top_builddir)/config.status $(srcdir)/WindowTitle.server.in.in
-	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 install-libexecPROGRAMS: $(libexec_PROGRAMS)
 	@$(NORMAL_INSTALL)
 	test -z "$(libexecdir)" || $(MKDIR_P) "$(DESTDIR)$(libexecdir)"
@@ -391,6 +397,26 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='$<' object='$@' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(COMPILE) -c `$(CYGPATH_W) '$<'`
+install-appletDATA: $(applet_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(appletdir)" || $(MKDIR_P) "$(DESTDIR)$(appletdir)"
+	@list='$(applet_DATA)'; test -n "$(appletdir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(appletdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(appletdir)" || exit $$?; \
+	done
+
+uninstall-appletDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(applet_DATA)'; test -n "$(appletdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(appletdir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(appletdir)" && rm -f $$files
 install-builderDATA: $(builder_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(builderdir)" || $(MKDIR_P) "$(DESTDIR)$(builderdir)"
@@ -431,26 +457,26 @@ uninstall-schemasDATA:
 	test -n "$$files" || exit 0; \
 	echo " ( cd '$(DESTDIR)$(schemasdir)' && rm -f" $$files ")"; \
 	cd "$(DESTDIR)$(schemasdir)" && rm -f $$files
-install-serverDATA: $(server_DATA)
+install-serviceDATA: $(service_DATA)
 	@$(NORMAL_INSTALL)
-	test -z "$(serverdir)" || $(MKDIR_P) "$(DESTDIR)$(serverdir)"
-	@list='$(server_DATA)'; test -n "$(serverdir)" || list=; \
+	test -z "$(servicedir)" || $(MKDIR_P) "$(DESTDIR)$(servicedir)"
+	@list='$(service_DATA)'; test -n "$(servicedir)" || list=; \
 	for p in $$list; do \
 	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
 	  echo "$$d$$p"; \
 	done | $(am__base_list) | \
 	while read files; do \
-	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(serverdir)'"; \
-	  $(INSTALL_DATA) $$files "$(DESTDIR)$(serverdir)" || exit $$?; \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(servicedir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(servicedir)" || exit $$?; \
 	done
 
-uninstall-serverDATA:
+uninstall-serviceDATA:
 	@$(NORMAL_UNINSTALL)
-	@list='$(server_DATA)'; test -n "$(serverdir)" || list=; \
+	@list='$(service_DATA)'; test -n "$(servicedir)" || list=; \
 	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
 	test -n "$$files" || exit 0; \
-	echo " ( cd '$(DESTDIR)$(serverdir)' && rm -f" $$files ")"; \
-	cd "$(DESTDIR)$(serverdir)" && rm -f $$files
+	echo " ( cd '$(DESTDIR)$(servicedir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(servicedir)" && rm -f $$files
 
 # This directory's subdirectories are mostly independent; you can cd
 # into them and run `make' without going through this Makefile.
@@ -650,7 +676,7 @@ check: check-recursive
 all-am: Makefile $(PROGRAMS) $(DATA)
 installdirs: installdirs-recursive
 installdirs-am:
-	for dir in "$(DESTDIR)$(libexecdir)" "$(DESTDIR)$(builderdir)" "$(DESTDIR)$(schemasdir)" "$(DESTDIR)$(serverdir)"; do \
+	for dir in "$(DESTDIR)$(libexecdir)" "$(DESTDIR)$(appletdir)" "$(DESTDIR)$(builderdir)" "$(DESTDIR)$(schemasdir)" "$(DESTDIR)$(servicedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-recursive
@@ -679,6 +705,7 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
+@GCONF_SCHEMAS_INSTALL_FALSE@install-data-local:
 clean: clean-recursive
 
 clean-am: clean-generic clean-libexecPROGRAMS mostlyclean-am
@@ -701,10 +728,9 @@ info: info-recursive
 
 info-am:
 
-install-data-am: install-builderDATA install-data-local \
-	install-schemasDATA install-serverDATA
-	@$(NORMAL_INSTALL)
-	$(MAKE) $(AM_MAKEFLAGS) install-data-hook
+install-data-am: install-appletDATA install-builderDATA \
+	install-data-local install-schemasDATA install-serviceDATA
+
 install-dvi: install-dvi-recursive
 
 install-dvi-am:
@@ -748,50 +774,51 @@ ps: ps-recursive
 
 ps-am:
 
-uninstall-am: uninstall-builderDATA uninstall-libexecPROGRAMS \
-	uninstall-schemasDATA uninstall-serverDATA
+uninstall-am: uninstall-appletDATA uninstall-builderDATA \
+	uninstall-libexecPROGRAMS uninstall-schemasDATA \
+	uninstall-serviceDATA
 
 .MAKE: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) ctags-recursive \
-	install-am install-data-am install-strip tags-recursive
+	install-am install-strip tags-recursive
 
 .PHONY: $(RECURSIVE_CLEAN_TARGETS) $(RECURSIVE_TARGETS) CTAGS GTAGS \
 	all all-am check check-am clean clean-generic \
 	clean-libexecPROGRAMS ctags ctags-recursive distclean \
 	distclean-compile distclean-generic distclean-tags distdir dvi \
 	dvi-am html html-am info info-am install install-am \
-	install-builderDATA install-data install-data-am \
-	install-data-hook install-data-local install-dvi \
-	install-dvi-am install-exec install-exec-am install-html \
-	install-html-am install-info install-info-am \
-	install-libexecPROGRAMS install-man install-pdf install-pdf-am \
-	install-ps install-ps-am install-schemasDATA \
-	install-serverDATA install-strip installcheck installcheck-am \
-	installdirs installdirs-am maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic pdf pdf-am ps ps-am tags tags-recursive \
-	uninstall uninstall-am uninstall-builderDATA \
+	install-appletDATA install-builderDATA install-data \
+	install-data-am install-data-local install-dvi install-dvi-am \
+	install-exec install-exec-am install-html install-html-am \
+	install-info install-info-am install-libexecPROGRAMS \
+	install-man install-pdf install-pdf-am install-ps \
+	install-ps-am install-schemasDATA install-serviceDATA \
+	install-strip installcheck installcheck-am installdirs \
+	installdirs-am maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-compile mostlyclean-generic pdf pdf-am \
+	ps ps-am tags tags-recursive uninstall uninstall-am \
+	uninstall-appletDATA uninstall-builderDATA \
 	uninstall-libexecPROGRAMS uninstall-schemasDATA \
-	uninstall-serverDATA
+	uninstall-serviceDATA
 
 
-%.server: %.server.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po)
-	LC_ALL=C $(INTLTOOL_MERGE) -s -u -c $(top_buildir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@
+$(applet_in_files): $(applet_in_files).in Makefile
+	$(AM_V_GEN)sed \
+	    -e "s|\@LIBEXECDIR\@|$(libexecdir)|" \
+		-e "s|\@DATADIR\@|$(datadir)|" \
+	    -e "s|\@VERSION\@|$(PACKAGE_VERSION)|" \
+	    $< > $@
 
-# Display a message at the end of install
-install-data-hook:
-	@echo "***"
-	@echo "*** If you have installed your applet in a non standard directory. You have to"
-	@echo "*** add it in the bonobo server list, so it can find your applet."
-	@echo "***"
-	@echo "*** Run 'bonobo-activation-sysconf --add-directory=$(serverdir)'"
-	@echo "*** Log out from your current GNOME session"
-	@echo "*** Run 'bonobo-slay'"
-	@echo "*** Check that the bonobo server is not running"
-	@echo "*** Log in again, your applet should be available"
-	@echo "***"
+%.panel-applet: %.panel-applet.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*po) ; $(INTLTOOL_MERGE) $(top_srcdir)/po $< $@ -d -u -c $(top_builddir)/po/.intltool-merge-cache
 
-install-data-local:
-@GCONF_SCHEMAS_INSTALL_TRUE@	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(schemas_DATA)
+org.gnome.panel.applet.WindowTitleAppletFactory.service: $(service_in_files)
+	$(AM_V_GEN)sed \
+	    -e "s|\@LIBEXECDIR\@|$(libexecdir)|" \
+	    $< > $@
+
+@INTLTOOL_SCHEMAS_RULE@
+
+@GCONF_SCHEMAS_INSTALL_TRUE@install-data-local:
+@GCONF_SCHEMAS_INSTALL_TRUE@	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(schemas_DATA) ;
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

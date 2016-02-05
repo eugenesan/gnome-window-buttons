@@ -25,22 +25,24 @@
 #include "windowbuttons.h"
 
 /* Prototypes */
-static void applet_change_background (PanelApplet *, PanelAppletBackgroundType, GdkColor *, GdkPixmap *);
-static void active_workspace_changed (WnckScreen *, WnckWorkspace *, gpointer);
-static void active_window_changed (WnckScreen *, WnckWindow *, gpointer);
-static void active_window_state_changed (WnckWindow *, WnckWindowState, WnckWindowState, gpointer);
-static void umaxed_window_state_changed (WnckWindow *, WnckWindowState, WnckWindowState, gpointer);
-static void viewports_changed (WnckScreen *, gpointer);
-static void window_closed (WnckScreen *, WnckWindow *, gpointer);
-static void window_opened (WnckScreen *, WnckWindow *, gpointer);
-static void about_cb (BonoboUIComponent *, WBApplet *);
-static gboolean hover_enter (GtkWidget *widget, GdkEventCrossing *event, gpointer user_data);
-static gboolean hover_leave (GtkWidget *widget, GdkEventCrossing *event, gpointer user_data);
-static gboolean button_press (GtkWidget *, GdkEventButton *, gpointer);
-static gboolean button_release (GtkWidget *, GdkEventButton *, gpointer);
+//static void applet_change_background (PanelApplet *, PanelAppletBackgroundType, GdkColor *, GdkPixmap *);
+static void active_workspace_changed (WnckScreen *, WnckWorkspace *, WBApplet *);
+static void active_window_changed (WnckScreen *, WnckWindow *, WBApplet *);
+static void active_window_state_changed (WnckWindow *, WnckWindowState, WnckWindowState, WBApplet *);
+static void umaxed_window_state_changed (WnckWindow *, WnckWindowState, WnckWindowState, WBApplet *);
+static void viewports_changed (WnckScreen *, WBApplet *);
+static void window_closed (WnckScreen *, WnckWindow *, WBApplet *);
+static void window_opened (WnckScreen *, WnckWindow *, WBApplet *);
+//static void about_cb (BonoboUIComponent *, WBApplet *);
+static void about_cb (GtkAction *, WBApplet *);
+//void properties_cb (BonoboUIComponent *, WBApplet *, const char *);
+void properties_cb (GtkAction *, WBApplet *);
+static gboolean hover_enter (GtkWidget *, GdkEventCrossing *, WBApplet *);
+static gboolean hover_leave (GtkWidget *, GdkEventCrossing *, WBApplet *);
+static gboolean button_press (GtkWidget *, GdkEventButton *, WBApplet *);
+static gboolean button_release (GtkWidget *, GdkEventButton *, WBApplet *);
 static WnckWindow *getRootWindow (WnckScreen *screen);
 static WnckWindow *getUpperMaximized (WBApplet *);
-void properties_cb (BonoboUIComponent *, WBApplet *, const char *);
 void setCustomLayout (WBPreferences *, gchar *);
 void rotatePixbufs(WBApplet *);
 void placeButtons(WBApplet *);
@@ -58,25 +60,13 @@ GdkPixbuf ***getPixbufs(gchar ***);
 //This line is very important! It defines how the requested functions will be called
 G_DEFINE_TYPE (WBApplet, wb_applet, PANEL_TYPE_APPLET);
 
-// --- Context Menu ---
-static const char context_menu_xml [] =
-   "<popup name=\"button3\">\n"
-   "   <menuitem name=\"Properties Item\" "
-   "             verb=\"WBPreferences\" "
-   "           _label=\"_Preferences...\"\n"
-   "          pixtype=\"stock\" "
-   "          pixname=\"gtk-properties\"/>\n"
-   "   <menuitem name=\"About Item\" "
-   "             verb=\"WBAbout\" "
-   "           _label=\"_About...\"\n"
-   "          pixtype=\"stock\" "
-   "          pixname=\"gtk-about\"/>\n"
-   "</popup>\n";
+static const gchar windowbuttons_menu_items [] =
+	"<menuitem name=\"Preferences\"	action=\"WBPreferences\" />"
+	"<menuitem name=\"About\"		action=\"WBAbout\" />";
 
-static const BonoboUIVerb windowbuttons_menu_verbs [] = {
-        BONOBO_UI_UNSAFE_VERB ("WBPreferences", properties_cb),
-        BONOBO_UI_UNSAFE_VERB ("WBAbout", about_cb),
-        BONOBO_UI_VERB_END
+static const GtkActionEntry windowbuttons_menu_actions [] = {
+        { "WBPreferences", GTK_STOCK_PROPERTIES, N_("_Preferences"), NULL, NULL, G_CALLBACK (properties_cb) },
+        { "WBAbout", GTK_STOCK_ABOUT, N_("_About"), NULL, NULL, G_CALLBACK (about_cb) }
 };
 
 WBApplet* wb_applet_new (void) {
@@ -92,7 +82,8 @@ static void wb_applet_init(WBApplet *wbapplet) {
 }
 
 /* The About dialog */
-static void about_cb (BonoboUIComponent *uic, WBApplet *applet) {
+//static void about_cb (BonoboUIComponent *uic, WBApplet *applet) {
+static void about_cb (GtkAction *action, WBApplet *applet) {
     static const gchar *authors [] = {
 		"Andrej Belcijan <{andrejx}at{gmail.com}>",
 		" ",
@@ -124,15 +115,15 @@ static void about_cb (BonoboUIComponent *uic, WBApplet *applet) {
 
 	gtk_show_about_dialog (NULL,
 		"version",	VERSION,
-		"comments",	_("Window buttons for your GNOME Panel."),
-		"copyright",	"\xC2\xA9 2010 Andrej Belcijan",
+		"comments",	N_("Window buttons for your GNOME Panel."),
+		"copyright",	"\xC2\xA9 2011 Andrej Belcijan",
 		"authors",	authors,
 	    "artists",	artists,
 		"documenters",	documenters,
-		"translator-credits",	_("translator-credits"),
+		"translator-credits", ("translator-credits"),
 		"logo",		logo,
 	    "website",	"http://www.gnome-look.org/content/show.php?content=103732",
-   		"website-label", _("Window Applets on Gnome-Look"),
+   		"website-label", N_("Window Applets on Gnome-Look"),
 		NULL);
 }
 
@@ -204,7 +195,7 @@ gushort getImageState (WBButtonState button_state) {
 void updateImages (WBApplet *wbapplet) {
 	WnckWindow *controlledwindow;
 	gint i;
-	
+
 	if (wbapplet->prefs->only_maximized) {
 		controlledwindow = wbapplet->umaxedwindow;
 	} else {
@@ -213,7 +204,8 @@ void updateImages (WBApplet *wbapplet) {
 
 	if (controlledwindow == wbapplet->rootwindow) {
 		// There are no maximized windows (or any windows at all) left
-		for (i=0; i<WB_BUTTONS; i++) wbapplet->button[i]->state &= ~WB_BUTTON_STATE_FOCUSED;
+		for (i=0; i<WB_BUTTONS; i++)
+			wbapplet->button[i]->state &= ~WB_BUTTON_STATE_FOCUSED;
 
 		// Hide/unhide all buttons according to hide_on_unmaximized and button_hidden
 		for (i=0; i<WB_BUTTONS; i++) {
@@ -240,47 +232,24 @@ void updateImages (WBApplet *wbapplet) {
 	toggleHidden(wbapplet);
 	
 	//update minimize button:
-	gtk_image_set_from_pixbuf (wbapplet->button[WB_BUTTON_MINIMIZE]->image, wbapplet->pixbufs[getImageState(wbapplet->button[WB_BUTTON_MINIMIZE]->state)][WB_IMAGE_MINIMIZE]);	
+	gtk_image_set_from_pixbuf (wbapplet->button[WB_BUTTON_MINIMIZE]->image, wbapplet->pixbufs[getImageState(wbapplet->button[WB_BUTTON_MINIMIZE]->state)][WB_IMAGE_MINIMIZE]);
 	// update maximize/unmaximize button:
 	if (controlledwindow && wnck_window_is_maximized(controlledwindow)) {
 		gtk_image_set_from_pixbuf (wbapplet->button[WB_BUTTON_UMAXIMIZE]->image, wbapplet->pixbufs[getImageState(wbapplet->button[WB_BUTTON_UMAXIMIZE]->state)][WB_IMAGE_UNMAXIMIZE]);
+		if (wbapplet->prefs->show_tooltips)
+			gtk_widget_set_tooltip_text (GTK_WIDGET(wbapplet->button[WB_BUTTON_UMAXIMIZE]->image), N_("Unmaximize")); // Set correct tooltip
 	} else {
 		gtk_image_set_from_pixbuf (wbapplet->button[WB_BUTTON_UMAXIMIZE]->image, wbapplet->pixbufs[getImageState(wbapplet->button[WB_BUTTON_UMAXIMIZE]->state)][WB_IMAGE_MAXIMIZE]);
+		if (wbapplet->prefs->show_tooltips)
+			gtk_widget_set_tooltip_text (GTK_WIDGET(wbapplet->button[WB_BUTTON_UMAXIMIZE]->image), N_("Maximize")); // Set correct tooltip
 	}
 	//update close button
 	gtk_image_set_from_pixbuf (wbapplet->button[WB_BUTTON_CLOSE]->image, wbapplet->pixbufs[getImageState(wbapplet->button[WB_BUTTON_CLOSE]->state)][WB_IMAGE_CLOSE]);
-}
 
-/* Called when panel background is changed */
-static void applet_change_background (PanelApplet *applet,
-                                   PanelAppletBackgroundType type,
-                                   GdkColor  *colour,
-                                   GdkPixmap *pixmap) {
-	GtkRcStyle *rc_style;
-	GtkStyle *style;
-
-	/* reset style */
-	gtk_widget_set_style (GTK_WIDGET (applet), NULL);
-	rc_style = gtk_rc_style_new ();
-	gtk_widget_modify_style (GTK_WIDGET (applet), rc_style);
-	gtk_rc_style_unref (rc_style);
-
-	switch (type) {
-		case PANEL_NO_BACKGROUND:
-			break;
-		case PANEL_COLOR_BACKGROUND:
-			gtk_widget_modify_bg (GTK_WIDGET (applet), GTK_STATE_NORMAL, colour);
-			break;
-		case PANEL_PIXMAP_BACKGROUND:
-			style = gtk_style_copy (GTK_WIDGET (applet)->style);
-
-			if (style->bg_pixmap[GTK_STATE_NORMAL])
-			g_object_unref (style->bg_pixmap[GTK_STATE_NORMAL]);
-
-			style->bg_pixmap[GTK_STATE_NORMAL] = g_object_ref (pixmap);
-			gtk_widget_set_style (GTK_WIDGET (applet), style);
-			g_object_unref (style);
-			break;
+	//set remaining tooltips
+	if (wbapplet->prefs->show_tooltips) {
+		gtk_widget_set_tooltip_text (GTK_WIDGET(wbapplet->button[WB_BUTTON_MINIMIZE]->image), N_("Minimize"));
+		gtk_widget_set_tooltip_text (GTK_WIDGET(wbapplet->button[WB_BUTTON_CLOSE]->image), N_("Close"));
 	}
 }
 
@@ -288,10 +257,8 @@ static void applet_change_background (PanelApplet *applet,
 // in case a new maximized non-active window appears
 static void window_opened (WnckScreen *screen,
                            WnckWindow *window,
-                           gpointer user_data) {
-	WBApplet *wbapplet;
+                           WBApplet *wbapplet) {
 
-	wbapplet = WB_APPLET(user_data);
 	wbapplet->umaxedwindow = getUpperMaximized(wbapplet);
 
 	//updateImages(wbapplet); // not required(?)
@@ -301,10 +268,8 @@ static void window_opened (WnckScreen *screen,
 // in case the last maximized window was closed
 static void window_closed (WnckScreen *screen,
                            WnckWindow *window,
-                           gpointer user_data) {
-	WBApplet *wbapplet;
+                           WBApplet *wbapplet) {
 
-	wbapplet = WB_APPLET(user_data);
 	wbapplet->umaxedwindow = getUpperMaximized(wbapplet);
 
 	updateImages(wbapplet); //required to hide buttons when last window is closed
@@ -313,12 +278,9 @@ static void window_closed (WnckScreen *screen,
 /* Triggers when a new active window is selected */
 static void active_window_changed (WnckScreen *screen,
                                    WnckWindow *previous,
-                                   gpointer user_data) {
-	WBApplet *wbapplet;
+                                   WBApplet *wbapplet) {
 	gint i;
 	
-	wbapplet = WB_APPLET(user_data);
-
 	// Start tracking the new active window:
 	if (wbapplet->activewindow)
 		if (g_signal_handler_is_connected(G_OBJECT(wbapplet->activewindow), wbapplet->active_handler))
@@ -352,11 +314,9 @@ static void active_window_changed (WnckScreen *screen,
 static void active_window_state_changed (WnckWindow *window,
                                          WnckWindowState changed_mask,
                                          WnckWindowState new_state,
-                                         gpointer user_data) {
-	WBApplet *wbapplet;
+                                         WBApplet *wbapplet) {
 	gint i;
 	
-	wbapplet = WB_APPLET(user_data);
 	wbapplet->umaxedwindow = getUpperMaximized(wbapplet);
 	wbapplet->rootwindow = getRootWindow(wbapplet->activescreen);
 
@@ -379,10 +339,8 @@ static void active_window_state_changed (WnckWindow *window,
 static void umaxed_window_state_changed (WnckWindow *window,
                                           WnckWindowState changed_mask,
                                           WnckWindowState new_state,
-                                          gpointer user_data) {
-	WBApplet *wbapplet;
-	
-	wbapplet = WB_APPLET(user_data);
+                                          WBApplet *wbapplet) {
+
 	wbapplet->umaxedwindow = getUpperMaximized(wbapplet);
 	wbapplet->rootwindow = getRootWindow(wbapplet->activescreen);
 	
@@ -392,12 +350,8 @@ static void umaxed_window_state_changed (WnckWindow *window,
 /* Triggers when user changes viewports on Compiz */
 // We ONLY need this for Compiz (Metacity doesn't use viewports)
 static void viewports_changed (WnckScreen *screen,
-                               gpointer user_data)
+                               WBApplet *wbapplet)
 {
-	WBApplet *wbapplet;
-
-	wbapplet = WB_APPLET(user_data);
-
 	wbapplet->activeworkspace = wnck_screen_get_active_workspace(screen);
 	wbapplet->activewindow = wnck_screen_get_active_window(screen);
 	wbapplet->rootwindow = getRootWindow(wbapplet->activescreen);
@@ -410,10 +364,7 @@ static void viewports_changed (WnckScreen *screen,
 /* Triggers when user changes workspace on Metacity (?) */
 static void active_workspace_changed (WnckScreen *screen,
                                       WnckWorkspace *previous,
-                                      gpointer user_data) {
-	WBApplet *wbapplet;
-
-	wbapplet = WB_APPLET(user_data);
+                                      WBApplet *wbapplet) {
 
 	wbapplet->activeworkspace = wnck_screen_get_active_workspace(screen);
 	/* // apparently active_window_changed handles this (?)
@@ -426,17 +377,13 @@ static void active_workspace_changed (WnckScreen *screen,
 }
 
 /* Called when we release the click on a button */
-static gboolean button_release (GtkWidget *event_box,
-                               GdkEventButton *event,
-                               gpointer data) {
-	WBApplet *wbapplet;
-	WnckWindow *controlledwindow;
-	GtkAllocation imga;
-	gint i;
+static gboolean button_release (GtkWidget *event_box, GdkEventButton *event, WBApplet *wbapplet) {
 	
+	WnckWindow *controlledwindow;
+	const GdkPixbuf *imgpb;
+	gint i, imgw, imgh;
+								   
 	if (event->button != 1) return FALSE;
-
-	wbapplet = WB_APPLET(data);
 
 	// Find our button:
 	for (i=0; i<WB_BUTTONS; i++) {
@@ -448,9 +395,12 @@ static gboolean button_release (GtkWidget *event_box,
 	if (wbapplet->prefs->click_effect) {
 		wbapplet->button[i]->state &= ~WB_BUTTON_STATE_CLICKED;
 	}
-	imga = (GTK_WIDGET(wbapplet->button[i]->image))->allocation; //allocated image size //WARNING! GSEAL! This will be deprecated soon!
 
-	if (!(event->x<0 || event->y<0 || event->x>imga.width || event->y>imga.height)) {
+	imgpb = gtk_image_get_pixbuf(wbapplet->button[i]->image);
+	imgw = gdk_pixbuf_get_width(imgpb);
+	imgh = gdk_pixbuf_get_height(imgpb);
+
+	if (!(event->x<0 || event->y<0 || event->x>imgw || event->y>imgh)) {
 		if (wbapplet->prefs->only_maximized) {
 			controlledwindow = wbapplet->umaxedwindow;
 		} else {
@@ -483,13 +433,10 @@ static gboolean button_release (GtkWidget *event_box,
 /* Called when we click on a button */
 static gboolean button_press (GtkWidget *event_box,
                              GdkEventButton *event,
-                             gpointer data) {
-	WBApplet *wbapplet;
+                             WBApplet *wbapplet) {
 	gint i;
 								 
 	if (event->button != 1) return FALSE;
-
-	wbapplet = WB_APPLET(data);
 
 	// Find our button:
 	if (wbapplet->prefs->click_effect) {
@@ -509,8 +456,7 @@ static gboolean button_press (GtkWidget *event_box,
 /* Makes the button 'glow' when the mouse enters it */
 static gboolean hover_enter (GtkWidget *widget,
                          GdkEventCrossing *event,
-                         gpointer user_data) {
-	WBApplet *wbapplet = WB_APPLET(user_data);
+                         WBApplet *wbapplet) {
 	gint i;
 
 	// Find our button:
@@ -524,15 +470,14 @@ static gboolean hover_enter (GtkWidget *widget,
 		 
 		updateImages(wbapplet);
 	}
-
+							 
 	return TRUE;
 }
 
 /* Makes the button stop 'glowing' when the mouse leaves it */
 static gboolean hover_leave (GtkWidget *widget,
                          GdkEventCrossing *event,
-                         gpointer user_data) {
-	WBApplet *wbapplet = WB_APPLET(user_data);
+                         WBApplet *wbapplet) {
 	gint i;
 
 	// Find our button:
@@ -562,6 +507,9 @@ WindowButton **createButtons (WBApplet *wbapplet) {
 		// Woohooo! This line eliminates PanelApplet borders - no more workarounds!
 		gtk_widget_set_can_focus(GTK_WIDGET(button[i]->eventbox), TRUE);
 
+		// Toggle tooltips (this is pointless because it is overridden by gtk_widget_set_tooltip_text())
+		//gtk_widget_set_has_tooltip (GTK_WIDGET(button[i]->image), wbapplet->prefs->show_tooltips);
+		
 		button[i]->state = 0;
 		button[i]->state |= WB_BUTTON_STATE_FOCUSED;
 		if (wbapplet->prefs->button_hidden[i]) {
@@ -668,9 +616,7 @@ void reloadButtons(WBApplet *wbapplet) {
 }
 
 /* Triggered when a different panel orientation is detected */
-void applet_change_orient (PanelApplet *panelapplet, PanelAppletOrient orient, gpointer user_data) {
-	WBApplet *wbapplet = WB_APPLET(user_data);
-
+void applet_change_orient (PanelApplet *panelapplet, PanelAppletOrient orient, WBApplet *wbapplet) {
 	if (orient != wbapplet->orient) {
 		wbapplet->orient = orient;
 		wbapplet->pixbufs = getPixbufs(wbapplet->prefs->images);	
@@ -680,7 +626,10 @@ void applet_change_orient (PanelApplet *panelapplet, PanelAppletOrient orient, g
 }
 
 /* Do the actual applet initialization */
-static void init_wbapplet(WBApplet *wbapplet) {
+static void init_wbapplet(PanelApplet *applet) {
+	WBApplet *wbapplet = g_new0 (WBApplet, 1);
+
+	wbapplet->applet = applet;
 	wbapplet->prefs = loadPreferences(wbapplet);
 	wbapplet->activescreen = wnck_screen_get_default();
 	wnck_screen_force_update(wbapplet->activescreen);
@@ -691,14 +640,14 @@ static void init_wbapplet(WBApplet *wbapplet) {
 	wbapplet->prefbuilder = gtk_builder_new();
 	wbapplet->box = GTK_BOX(gtk_hbox_new(FALSE, 0));
 	wbapplet->button = createButtons(wbapplet);
-	wbapplet->orient = panel_applet_get_orient(PANEL_APPLET(wbapplet));
+	wbapplet->orient = panel_applet_get_orient(wbapplet->applet);
 	wbapplet->pixbufs = getPixbufs(wbapplet->prefs->images);
-
+	
 	// Rotate & place buttons
 	placeButtons(wbapplet);	
 	
 	// Add box to applet
-	gtk_container_add (GTK_CONTAINER(wbapplet), GTK_WIDGET(wbapplet->box));
+	gtk_container_add (GTK_CONTAINER(wbapplet->applet), GTK_WIDGET(wbapplet->box));
 
 	// Global window tracking
 	g_signal_connect(wbapplet->activescreen, "active-window-changed", G_CALLBACK (active_window_changed), wbapplet);
@@ -707,13 +656,22 @@ static void init_wbapplet(WBApplet *wbapplet) {
 	g_signal_connect(wbapplet->activescreen, "window-closed", G_CALLBACK (window_closed), wbapplet);
 	g_signal_connect(wbapplet->activescreen, "window-opened", G_CALLBACK (window_opened), wbapplet);
 
-	g_signal_connect(G_OBJECT (wbapplet), "change-background", G_CALLBACK (applet_change_background), NULL);
-	g_signal_connect(G_OBJECT (wbapplet), "change-orient", G_CALLBACK (applet_change_orient), wbapplet);
+//	g_signal_connect(G_OBJECT (wbapplet->applet), "change-background", G_CALLBACK (applet_change_background), wbapplet);
+	g_signal_connect(G_OBJECT (wbapplet->applet), "change-orient", G_CALLBACK (applet_change_orient), wbapplet);
 
 	// ???: Is this still necessary?
 	wbapplet->active_handler = 
 		g_signal_connect(G_OBJECT (wbapplet->activewindow), "state-changed", G_CALLBACK (active_window_state_changed), wbapplet);
 
+	// Setup applet right-click menu
+	GtkActionGroup *action_group = gtk_action_group_new ("WindowButtons Applet Actions");
+	gtk_action_group_set_translation_domain (action_group, GETTEXT_PACKAGE);
+	gtk_action_group_add_actions (action_group, windowbuttons_menu_actions, G_N_ELEMENTS (windowbuttons_menu_actions), wbapplet);
+	panel_applet_setup_menu (applet, windowbuttons_menu_items, action_group);
+	panel_applet_set_background_widget (wbapplet->applet, GTK_WIDGET (wbapplet->applet)); // Automatic background update
+	
+	toggleHidden (wbapplet);	// Properly hide or show stuff
+	updateImages (wbapplet);
 }
 
 /* We need this because things have to be hidden after we 'show' the applet */
@@ -721,41 +679,32 @@ void toggleHidden (WBApplet *wbapplet) {
 	gint j;
 	for (j=0; j<WB_BUTTONS; j++) {
 		if (wbapplet->button[j]->state & WB_BUTTON_STATE_HIDDEN) {
-			gtk_widget_hide_all(GTK_WIDGET(wbapplet->button[j]->eventbox));
+			gtk_widget_hide(GTK_WIDGET(wbapplet->button[j]->eventbox));
 		} else {
-			gtk_widget_show_all(GTK_WIDGET(wbapplet->button[j]->eventbox));
+			gtk_widget_show(GTK_WIDGET(wbapplet->button[j]->eventbox));
 		}
 	}
 
 	if (!gtk_widget_get_visible(GTK_WIDGET(wbapplet->box)))
-		gtk_widget_show(GTK_WIDGET(wbapplet->box));
-	if (!gtk_widget_get_visible(GTK_WIDGET(wbapplet)))
-		gtk_widget_show(GTK_WIDGET(wbapplet));
+		gtk_widget_show_all(GTK_WIDGET(wbapplet->box));
+	if (!gtk_widget_get_visible(GTK_WIDGET(wbapplet->applet)))
+		gtk_widget_show_all(GTK_WIDGET(wbapplet->applet));
 }
 
-/* Initial function that draws the applet */
-static gboolean windowbuttons_applet_fill (PanelApplet *applet, const gchar *iid, gpointer data) {
+// Initial function that creates the applet
+static gboolean windowbuttons_applet_factory (PanelApplet *applet, const gchar *iid, gpointer data) {
 	if (g_strcmp0(iid, APPLET_OAFIID) != 0) return FALSE;
 
-	WBApplet *wbapplet = WB_APPLET (applet);
-	
-	g_set_application_name (_(APPLET_NAME));
+	g_set_application_name (APPLET_NAME);
 	panel_applet_set_flags (applet, PANEL_APPLET_EXPAND_MINOR);
 	panel_applet_add_preferences (applet, GCONF_PREFS, NULL);
-
-	//last parameter here will be the second parameter (WBApplet) in all menu callback functions (properties, about...) !!!
-	panel_applet_setup_menu (applet, context_menu_xml, windowbuttons_menu_verbs, applet);
-
-	init_wbapplet(wbapplet);
-	toggleHidden (wbapplet);	// Properly hide or show stuff
-	updateImages (wbapplet);
+	
+	init_wbapplet(applet);
 
 	return TRUE;
 }
 
-PANEL_APPLET_BONOBO_FACTORY (APPLET_OAFIID_FACTORY,
-							 WB_TYPE_APPLET,
-							 "WindowButtons",//APPLET_NAME,
-							 "0",//VERSION,
-							 windowbuttons_applet_fill,
-							 NULL);
+PANEL_APPLET_OUT_PROCESS_FACTORY (APPLET_OAFIID_FACTORY,
+                                  PANEL_TYPE_APPLET,
+                                  (PanelAppletFactoryCallback) windowbuttons_applet_factory,
+                                  NULL)

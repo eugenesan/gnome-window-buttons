@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl Created by Anjuta application wizard.
 
-AC_INIT(gnome-window-applets, 0.2.10)
+AC_INIT(gnome-window-applets, 0.3)
 
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -14,13 +14,10 @@ AC_PROG_CC
 AM_PROG_CC_STDC
 AC_HEADER_STDC
 
-
-
-
 dnl ***************************************************************************
 dnl Internatinalization
 dnl ***************************************************************************
-GETTEXT_PACKAGE=windowutils
+GETTEXT_PACKAGE=gnome-window-applets
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [GETTEXT package name])
 AC_DEFINE_DIR(GNOMELOCALEDIR, "${datadir}/locale", [locale directory])
@@ -33,24 +30,25 @@ dnl *************
 AM_GCONF_SOURCE_2
 AC_PATH_PROG(GCONFTOOL, gconftool-2)
 
-PKG_CHECK_MODULES(GNOME_APPLETS, libpanelapplet-2.0) 
+PKG_CHECK_MODULES(WINDOWBUTTONS, libpanelapplet-4.0
+[libwnck-3.0 gtk+-3.0 gconf-2.0])
 
-PKG_CHECK_MODULES(WINDOWBUTTONS, [libgnome-2.0 >= 2.14 libpanelapplet-2.0 >= 2.14 libwnck-1.0 gtk+-2.0 gconf-2.0])
-
-PKG_CHECK_MODULES(WINDOWTITLE, [libgnome-2.0 >= 2.14 libpanelapplet-2.0 >= 2.14 libwnck-1.0 gtk+-2.0 gconf-2.0])
+PKG_CHECK_MODULES(WINDOWTITLE, libpanelapplet-4.0
+[libwnck-3.0 gtk+-3.0 gconf-2.0])
 
 
 AS_AC_EXPAND(LIBEXECDIR, $libexecdir)
 AC_SUBST(LIBEXECDIR)
 
+AS_AC_EXPAND(DATADIR, ${datadir})
+AC_SUBST(DATADIR)
+
 AC_OUTPUT([
 Makefile
-buttons/Makefile
-buttons/WindowButtons.server.in
-buttons/pixmaps/Makefile
-buttons/themes/Makefile
-title/Makefile
-title/WindowTitle.server.in
-title/pixmaps/Makefile
+gnome-buttons/Makefile
+gnome-buttons/pixmaps/Makefile
+gnome-buttons/themes/Makefile
+gnome-title/Makefile
+gnome-title/pixmaps/Makefile
 po/Makefile.in
 ])

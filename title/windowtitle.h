@@ -33,12 +33,12 @@
 
 #include <glib.h>
 #include <glib-object.h>
+#include <glib/gi18n.h>
 #include <gconf/gconf-client.h>
 #include <panel-applet.h>
 #include <panel-applet-gconf.h>
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
-#include <gtk/gtklabel.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
 #if PLAINTEXT_CONFIG == 1
@@ -52,12 +52,12 @@
 
 /* static paths and stuff */
 #define APPLET_NAME						"Window Title"
-#define APPLET_OAFIID					"OAFIID:WindowTitleApplet"
-#define APPLET_OAFIID_FACTORY			"OAFIID:WindowTitleApplet_Factory"
-#define PATH_MAIN						"/usr/share/windowtitle"
+#define APPLET_OAFIID					"WindowTitleApplet"
+#define APPLET_OAFIID_FACTORY			"WindowTitleAppletFactory"
+#define PATH_MAIN						"/usr/share"
 #define PATH_BUILDER 					"/usr/share/gnome-applets/builder"
-#define PATH_UI_PREFS					PATH_MAIN"/windowtitle.ui"
-#define PATH_LOGO						PATH_MAIN"/windowtitle.png"
+#define PATH_UI_PREFS					PATH_MAIN"/windowtitle/windowtitle.ui"
+#define PATH_LOGO						PATH_MAIN"/pixmaps/windowtitle-applet.png"
 #define FILE_CONFIGFILE					".windowtitle"
 #define GCONF_PREFS 					"/schemas/apps/windowtitle-applet/prefs"
 #define ICON_WIDTH						16
@@ -74,6 +74,7 @@
 #define CFG_ONLY_MAXIMIZED				"only_maximized"
 #define CFG_HIDE_ON_UNMAXIMIZED 		"hide_on_unmaximized"
 #define CFG_SHOW_WINDOW_MENU			"show_window_menu"
+#define CFG_SHOW_TOOLTIPS				"show_tooltips"
 #define CFG_TITLE_ACTIVE_FONT			"title_active_font"
 #define CFG_TITLE_ACTIVE_COLOR_FG		"title_active_color_fg"
 #define CFG_TITLE_INACTIVE_FONT			"title_inactive_font"
@@ -97,7 +98,8 @@ typedef struct {
 					swap_order,				// [T/F] Swap title/icon
 					expand_applet,			// [T/F] Expand the applet TODO: rename to expand_title ?
 					custom_style,			// [T/F] Use custom style
-					show_window_menu;		// [T/F] Show window action menu on right click
+					show_window_menu,		// [T/F] Show window action menu on right click
+					show_tooltips;			// [T/F] Show tooltips
 	gint			title_size;				// Title size (minimal w/ expand and absolute w/o expand)
 	gchar			*title_active_font;		// Custom active title font
 	gchar			*title_active_color;	// Custom active title color
@@ -108,7 +110,7 @@ typedef struct {
 
 /* WBApplet definition (inherits from PanelApplet) */
 typedef struct {
-    PanelApplet		parent;					// Applet parent
+    PanelApplet		*applet;				// The actual PanelApplet
 
 	/* Widgets */
 	GtkBox      	*box;					// Main container widget

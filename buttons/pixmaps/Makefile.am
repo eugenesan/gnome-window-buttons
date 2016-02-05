@@ -5,10 +5,10 @@ EXTRA_DIST = \
 	$(pixmaps_DATA)
 
 pixmaps_DATA = \
-	windowbuttons_logo.png 
+	windowbuttons-applet.png 
 
 pixmapsdir = \
-	${prefix}/share/windowbuttons
+	$(datadir)/pixmaps
 
 ## File created by the gnome-build tools
 

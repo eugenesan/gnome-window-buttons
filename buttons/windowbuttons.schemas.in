@@ -4,7 +4,7 @@
             <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_normal_close</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/close-focused-normal.png</default>
+            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/close-focused-normal.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
@@ -14,7 +14,7 @@
             <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_normal_minimize</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/minimize-focused-normal.png</default>
+            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/minimize-focused-normal.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
@@ -24,7 +24,7 @@
             <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_normal_maximize</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/maximize-focused-normal.png</default>
+            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/maximize-focused-normal.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
@@ -34,7 +34,7 @@
             <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_normal_unmaximize</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/unmaximize-focused-normal.png</default>
+            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/unmaximize-focused-normal.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
@@ -45,7 +45,7 @@
             <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_clicked_close</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/close-focused-clicked.png</default>
+            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/close-focused-clicked.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
@@ -55,7 +55,7 @@
             <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_clicked_minimize</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/minimize-focused-clicked.png</default>
+            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/minimize-focused-clicked.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
@@ -65,7 +65,7 @@
             <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_clicked_maximize</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/maximize-focused-clicked.png</default>
+            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/maximize-focused-clicked.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
@@ -75,7 +75,7 @@
             <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_clicked_unmaximize</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/unmaximize-focused-clicked.png</default>
+            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/unmaximize-focused-clicked.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
@@ -86,7 +86,7 @@
             <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_hover_close</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/close-focused-hover.png</default>
+            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/close-focused-hover.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
@@ -96,7 +96,7 @@
             <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_hover_minimize</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/minimize-focused-hover.png</default>
+            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/minimize-focused-hover.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
@@ -106,7 +106,7 @@
             <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_hover_maximize</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/maximize-focused-hover.png</default>
+            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/maximize-focused-hover.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
@@ -116,7 +116,7 @@
             <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_hover_unmaximize</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/unmaximize-focused-hover.png</default>
+            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/unmaximize-focused-hover.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
@@ -127,7 +127,7 @@
             <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_normal_close</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/close-unfocused-normal.png</default>
+            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/close-unfocused-normal.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
@@ -137,7 +137,7 @@
             <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_normal_minimize</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/minimize-unfocused-normal.png</default>
+            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/minimize-unfocused-normal.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
@@ -147,7 +147,7 @@
             <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_normal_maximize</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/maximize-unfocused-normal.png</default>
+            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/maximize-unfocused-normal.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
@@ -157,7 +157,7 @@
             <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_normal_unmaximize</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/unmaximize-unfocused-normal.png</default>
+            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/unmaximize-unfocused-normal.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
@@ -168,7 +168,7 @@
             <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_clicked_close</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/close-unfocused-clicked.png</default>
+            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/close-unfocused-clicked.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
@@ -178,7 +178,7 @@
             <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_clicked_minimize</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/minimize-unfocused-clicked.png</default>
+            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/minimize-unfocused-clicked.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
@@ -188,7 +188,7 @@
             <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_clicked_maximize</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/maximize-unfocused-clicked.png</default>
+            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/maximize-unfocused-clicked.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
@@ -198,7 +198,7 @@
             <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_clicked_unmaximize</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/unmaximize-unfocused-clicked.png</default>
+            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/unmaximize-unfocused-clicked.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
@@ -209,7 +209,7 @@
             <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_hover_close</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/close-unfocused-hover.png</default>
+            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/close-unfocused-hover.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
@@ -219,7 +219,7 @@
             <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_hover_minimize</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/minimize-unfocused-hover.png</default>
+            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/minimize-unfocused-hover.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
@@ -229,7 +229,7 @@
             <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_hover_maximize</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/maximize-unfocused-normal.png</default>
+            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/maximize-unfocused-normal.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
@@ -239,7 +239,7 @@
             <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_hover_unmaximize</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/unmaximize-unfocused-hover.png</default>
+            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/unmaximize-unfocused-hover.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
@@ -369,6 +369,16 @@
             <locale name="C">
                 <short>Enable hover effect.</short>
                 <long>When enabled, the button will change image to 'hovered' whenever the mouse passes it.</long>
+            </locale>
+        </schema>
+        <schema>
+            <key>/schemas/apps/windowbuttons-applet/prefs/show_tooltips</key>
+            <owner>windowbuttons</owner>
+            <type>bool</type>
+            <default>false</default>
+            <locale name="C">
+                <short>Show tooltips on buttons.</short>
+                <long>When enabled, each button will display its own tooltip, describing the function that it represents.</long>
             </locale>
         </schema>
     </schemalist>

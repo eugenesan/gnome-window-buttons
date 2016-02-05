@@ -25,6 +25,7 @@
 #include <gconf/gconf-client.h>
 
 #define GCONF_METACITY_THEME			"/apps/metacity/general/theme"
-#define GCONF_METACITY_BUTTON_LAYOUT 	"/apps/metacity/general/button_layout"
-#define GCONF_COMPIZ_DECORATION_MATCH	"/apps/compiz/plugins/decoration/allscreens/options/decoration_match"
+#define GCONF_METACITY_BUTTON_LAYOUT		"/apps/metacity/general/button_layout"
+#define GCONF_COMPIZ_DECORATION_MATCH		"/apps/compiz-1/plugins/decor/screen0/options/decoration_match"
+#define GCONF_COMPIZ_DECORATION_MATCH_OLD	"/apps/compiz/plugins/decoration/allscreens/options/decoration_match"
 #define COMPIZ_DECORATION_MATCH			"!state=maxvert"

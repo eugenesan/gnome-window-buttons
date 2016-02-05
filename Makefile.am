@@ -1,9 +1,6 @@
-## Process this file with automake to produce Makefile.in
-## Created by Anjuta
-
 SUBDIRS = \
-	buttons \
-	title \
+	gnome-buttons \
+	gnome-title \
 	po
 
 ACLOCAL_AMFLAGS = -I m4
@@ -17,7 +14,8 @@ windowappletsdoc_DATA = \
 	INSTALL\
 	NEWS
 
-INTLTOOL_FILES = intltool-extract.in \
+INTLTOOL_FILES = \
+	intltool-extract.in \
 	intltool-merge.in \
 	intltool-update.in
 
@@ -26,7 +24,8 @@ EXTRA_DIST = \
 	$(windowtitledoc_DATA) \
 	$(INTLTOOL_FILES)
 
-DISTCLEANFILES = intltool-extract \
+DISTCLEANFILES = \
+	intltool-extract \
 	intltool-merge \
 	intltool-update \
 	po/.intltool-merge-cache
