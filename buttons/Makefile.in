@@ -34,7 +34,7 @@ NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
 libexec_PROGRAMS = windowbuttons$(EXEEXT)
-subdir = gnome-buttons
+subdir = buttons
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/as-ac-expand.m4 \
@@ -278,7 +278,7 @@ windowbuttons_LDFLAGS = \
 windowbuttons_LDADD = $(WINDOWBUTTONS_LIBS)
 
 # The new applet files (D-Bus???)
-appletdir = $(datadir)/gnome-panel/4.0/applets
+appletdir = $(datadir)/panel/4.0/applets
 applet_in_files = org.gnome.panel.WindowButtonsApplet.panel-applet.in
 applet_DATA = $(applet_in_files:.panel-applet.in=.panel-applet)
 
@@ -321,9 +321,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu gnome-buttons/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu buttons/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu gnome-buttons/Makefile
+	  $(AUTOMAKE) --gnu buttons/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \

@@ -45,10 +45,10 @@ AC_SUBST(DATADIR)
 
 AC_OUTPUT([
 Makefile
-gnome-buttons/Makefile
-gnome-buttons/pixmaps/Makefile
-gnome-buttons/themes/Makefile
-gnome-title/Makefile
-gnome-title/pixmaps/Makefile
+buttons/Makefile
+buttons/pixmaps/Makefile
+buttons/themes/Makefile
+title/Makefile
+title/pixmaps/Makefile
 po/Makefile.in
 ])

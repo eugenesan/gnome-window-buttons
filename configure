@@ -7271,7 +7271,7 @@ fi
 
 
 
-ac_config_files="$ac_config_files Makefile gnome-buttons/Makefile gnome-buttons/pixmaps/Makefile gnome-buttons/themes/Makefile gnome-title/Makefile gnome-title/pixmaps/Makefile po/Makefile.in"
+ac_config_files="$ac_config_files Makefile buttons/Makefile buttons/pixmaps/Makefile buttons/themes/Makefile title/Makefile title/pixmaps/Makefile po/Makefile.in"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -8027,11 +8027,11 @@ do
     "depfiles") CONFIG_COMMANDS="$CONFIG_COMMANDS depfiles" ;;
     "default-1") CONFIG_COMMANDS="$CONFIG_COMMANDS default-1" ;;
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
-    "gnome-buttons/Makefile") CONFIG_FILES="$CONFIG_FILES gnome-buttons/Makefile" ;;
-    "gnome-buttons/pixmaps/Makefile") CONFIG_FILES="$CONFIG_FILES gnome-buttons/pixmaps/Makefile" ;;
-    "gnome-buttons/themes/Makefile") CONFIG_FILES="$CONFIG_FILES gnome-buttons/themes/Makefile" ;;
-    "gnome-title/Makefile") CONFIG_FILES="$CONFIG_FILES gnome-title/Makefile" ;;
-    "gnome-title/pixmaps/Makefile") CONFIG_FILES="$CONFIG_FILES gnome-title/pixmaps/Makefile" ;;
+    "buttons/Makefile") CONFIG_FILES="$CONFIG_FILES buttons/Makefile" ;;
+    "buttons/pixmaps/Makefile") CONFIG_FILES="$CONFIG_FILES buttons/pixmaps/Makefile" ;;
+    "buttons/themes/Makefile") CONFIG_FILES="$CONFIG_FILES buttons/themes/Makefile" ;;
+    "title/Makefile") CONFIG_FILES="$CONFIG_FILES title/Makefile" ;;
+    "title/pixmaps/Makefile") CONFIG_FILES="$CONFIG_FILES title/pixmaps/Makefile" ;;
     "po/Makefile.in") CONFIG_FILES="$CONFIG_FILES po/Makefile.in" ;;
     "po/stamp-it") CONFIG_COMMANDS="$CONFIG_COMMANDS po/stamp-it" ;;
 
