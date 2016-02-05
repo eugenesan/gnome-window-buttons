@@ -1,0 +1,30 @@
+Source: gnome-window-applets
+Section: gnome
+Priority: extra
+Maintainer: T. Scott Barnes <tsbarnes@tsbarnes.com>
+Build-Depends: cdbs, debhelper (>= 7), autotools-dev, libwnck-dev, libpanel-applet2-dev
+Standards-Version: 3.8.0
+Homepage: http://www.gnome-look.org/content/show.php?content=103732
+
+Package: windowbuttons
+Architecture: any
+Depends: gnome-window-applets
+Description: Transitional package
+ Metapackage to smooth upgrading to Window Applets.
+
+Package: windowapplets
+Architecture: any
+Depends: gnome-window-applets
+Description: Transitional package
+ Metapackage to smooth upgrading to Window Applets.
+
+Package: gnome-window-applets
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Replaces: windowbuttons, windowapplets
+Conflicts: windowsbuttons (>> 0.2), windowapplets (>> 0.2.6)
+Description: GNOME Window Applets
+ GNOME Panel applets that substitute maximized window title and buttons.
+ GNOME violates Fitts's Law by putting a panel between the maxed window
+ buttons and the corner of the screen.
+ These applets were designed to solve the problem.

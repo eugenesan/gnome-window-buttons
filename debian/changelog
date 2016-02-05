@@ -1,0 +1,53 @@
+gnome-window-applets (0.2.7-0~ppa0) lucid; urgency=low
+
+  * New release.
+
+ -- T. Scott Barnes <tsbarnes@tsbarnes.com>  Fri, 25 Jun 2010 16:16:58 -0400
+
+gnome-window-applets (0.2.6-0~ppa0) lucid; urgency=low
+
+  * New release, renamed to match new upstream name.
+
+ -- T. Scott Barnes <tsbarnes@tsbarnes.com>  Thu, 13 May 2010 09:29:41 -0400
+
+windowapplets (0.2.4-0~ppa2) lucid; urgency=low
+
+  * Update for Lucid.
+
+ -- T. Scott Barnes <tsbarnes@tsbarnes.com>  Mon, 03 May 2010 23:00:07 -0400
+
+windowapplets (0.2.4-0~ppa1) karmic; urgency=low
+
+  * New release.
+
+ -- Scott Barnes <nekoreeve@gmail.com>  Thu, 07 Jan 2010 09:20:54 -0500
+
+windowapplets (0.2.2-0~ppa1) karmic; urgency=low
+
+  * New release, packaged for Karmic.
+
+ -- Scott Barnes <nekoreeve@gmail.com>  Wed, 04 Nov 2009 14:57:40 -0500
+
+windowapplets (0.2.1-0~ppa3) jaunty; urgency=low
+
+  * Fixed gconf schema install.
+
+ -- Scott Barnes <nekoreeve@gmail.com>  Tue, 14 Jul 2009 10:58:49 -0400
+
+windowapplets (0.2.1-0~ppa2) jaunty; urgency=low
+
+  * Fixed problem with packages not actually containing the files
+
+ -- Scott Barnes <nekoreeve@gmail.com>  Fri, 10 Jul 2009 10:20:27 -0400
+
+windowapplets (0.2.1-0~ppa1) jaunty; urgency=low
+
+  * New upstream version
+
+ -- Scott Barnes <nekoreeve@gmail.com>  Thu, 09 Jul 2009 11:12:26 -0400
+
+windowapplets (0.2-0~ppa1) jaunty; urgency=low
+
+  * Initial packaging of Window Applets, replaces Window Buttons
+
+ -- Scott Barnes <nekoreeve@gmail.com>  Wed, 08 Jul 2009 10:30:22 -0400
