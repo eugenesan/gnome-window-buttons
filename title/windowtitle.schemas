@@ -44,6 +44,17 @@
         </schema>
 
 	<schema>
+            <key>/schemas/apps/windowtitle-applet/prefs/expand_applet</key>
+            <owner>windowtitle</owner>
+            <type>bool</type>
+            <default>true</default>
+            <locale name="C">
+                <short>Expand the applet</short>
+                <long>When enabled, the applet will use up all available space in the panel.</long>
+            </locale>
+        </schema>
+
+	<schema>
             <key>/schemas/apps/windowtitle-applet/prefs/hide_icon</key>
             <owner>windowtitle</owner>
             <type>bool</type>
@@ -62,6 +73,17 @@
             <locale name="C">
                 <short>Hide the title</short>
                 <long>When enabled, the window title will not be displayed.</long>
+            </locale>
+        </schema>
+
+	<schema>
+            <key>/schemas/apps/windowtitle-applet/prefs/title_size</key>
+            <owner>windowtitle</owner>
+            <type>int</type>
+            <default>16</default>
+            <locale name="C">
+                <short>Minimal title size</short>
+                <long>This size is used when the applet is not expanded or otherwise to determine the minimal size the title label can be shrunk to. The value represents the amount of pixels either in width or height, depending on the panel orientation.</long>
             </locale>
         </schema>
 

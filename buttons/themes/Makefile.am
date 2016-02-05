@@ -11,27 +11,44 @@ EXTRA_DIST = \
 	$(blaze_color_DATA) \
 	$(antique_DATA) \
 	$(ambiance_DATA) \
-	$(dust-invert_DATA) \
 	$(dust_invert_DATA) \
-	$(elementary_DATA)
+	$(elementary_DATA) \
+	$(radiance_DATA) \
+	$(WoW_DATA) \
+	$(ambiance_x_studio_DATA) \
+	$(sorbet_DATA) \
+	$(ambiance_maverick_DATA) \
+	$(radiance_maverick_DATA) \
+	$(equinox_glass_DATA) \
+	$(plano_DATA) \
+	$(new_hope_DATA) \
+	$(blubuntu_DATA)
 
 default_DATA = \
-	default/close-clicked.png\
-	default/close-focused.png \
-	default/close-hover.png \
-	default/close-unfocused.png \
-	default/maximize-clicked.png \
-	default/maximize-focused.png \
-	default/maximize-hover.png \
-	default/maximize-unfocused.png \
-	default/minimize-clicked.png \
-	default/minimize-hover.png \
-	default/minimize-focused.png \
-	default/minimize-unfocused.png \
-	default/unmaximize-clicked.png \
-	default/unmaximize-focused.png \
-	default/unmaximize-hover.png \
-	default/unmaximize-unfocused.png
+	default/close-focused-normal.png \
+	default/close-focused-clicked.png\
+	default/close-focused-hover.png \
+	default/close-unfocused-normal.png \
+	default/close-unfocused-clicked.png \
+	default/close-unfocused-hover.png \
+	default/maximize-focused-normal.png \
+	default/maximize-focused-clicked.png \
+	default/maximize-focused-hover.png \
+	default/maximize-unfocused-normal.png \
+	default/maximize-unfocused-clicked.png \
+	default/maximize-unfocused-hover.png \
+	default/minimize-focused-normal.png \
+	default/minimize-focused-clicked.png \
+	default/minimize-focused-hover.png \
+	default/minimize-unfocused-normal.png \
+	default/minimize-unfocused-clicked.png \
+	default/minimize-unfocused-hover.png \
+	default/unmaximize-focused-normal.png \
+	default/unmaximize-focused-clicked.png \
+	default/unmaximize-focused-hover.png \
+	default/unmaximize-unfocused-normal.png \
+	default/unmaximize-unfocused-clicked.png \
+	default/unmaximize-unfocused-hover.png
 
 defaultdir = \
 	${prefix}/share/windowbuttons/themes/default
@@ -246,6 +263,217 @@ elementary_DATA = \
 
 elementarydir = \
 	${prefix}/share/windowbuttons/themes/elementary
+
+radiance_DATA = \
+	radiance/unmaximize-hover.png\
+	radiance/unmaximize-clicked.png \
+	radiance/minimize-hover.png \
+	radiance/minimize-clicked.png \
+	radiance/maximize-hover.png \
+	radiance/maximize-clicked.png \
+	radiance/close-hover.png \
+	radiance/close-clicked.png \
+	radiance/unmaximize-unfocused.png \
+	radiance/unmaximize-focused.png \
+	radiance/minimize-unfocused.png \
+	radiance/minimize-focused.png \
+	radiance/maximize-unfocused.png \
+	radiance/maximize-focused.png \
+	radiance/close-unfocused.png \
+	radiance/close-focused.png
+
+radiancedir = \
+	${prefix}/share/windowbuttons/themes/radiance
+
+WoW_DATA = \
+	WoW/minimize-hover.png\
+	WoW/minimize-unfocused.png \
+	WoW/maximize-unfocused.png \
+	WoW/unmaximize-unfocused.png \
+	WoW/close-unfocused.png \
+	WoW/minimize-clicked.png \
+	WoW/unmaximize-clicked.png \
+	WoW/maximize-clicked.png \
+	WoW/close-clicked.png \
+	WoW/maximize-hover.png \
+	WoW/unmaximize-hover.png \
+	WoW/minimize-focused.png \
+	WoW/unmaximize-focused.png \
+	WoW/maximize-focused.png \
+	WoW/close-focused.png \
+	WoW/close-hover.png
+
+WoWdir = \
+	${prefix}/share/windowbuttons/themes/WoW
+
+ambiance_x_studio_DATA = \
+	ambiance-x-studio/close-clicked.png\
+	ambiance-x-studio/close-focused.png\
+	ambiance-x-studio/close-hover.png \
+	ambiance-x-studio/close-unfocused.png \
+	ambiance-x-studio/maximize-clicked.png \
+	ambiance-x-studio/maximize-focused.png \
+	ambiance-x-studio/maximize-hover.png \
+	ambiance-x-studio/maximize-unfocused.png \
+	ambiance-x-studio/minimize-clicked.png \
+	ambiance-x-studio/minimize-focused.png \
+	ambiance-x-studio/minimize-hover.png \
+	ambiance-x-studio/minimize-unfocused.png \
+	ambiance-x-studio/unmaximize-clicked.png \
+	ambiance-x-studio/unmaximize-focused.png \
+	ambiance-x-studio/unmaximize-hover.png \
+	ambiance-x-studio/unmaximize-unfocused.png
+
+ambiance_x_studiodir = \
+	${prefix}/share/windowbuttons/themes/ambiance-x-studio
+
+sorbet_DATA = \
+	sorbet/close-clicked.png\
+	sorbet/close-focused.png \
+	sorbet/close-hover.png \
+	sorbet/close-unfocused.png \
+	sorbet/maximize-clicked.png \
+	sorbet/maximize-focused.png \
+	sorbet/maximize-hover.png \
+	sorbet/maximize-unfocused.png \
+	sorbet/minimize-clicked.png \
+	sorbet/minimize-focused.png \
+	sorbet/minimize-hover.png \
+	sorbet/minimize-unfocused.png \
+	sorbet/unmaximize-clicked.png \
+	sorbet/unmaximize-focused.png \
+	sorbet/unmaximize-hover.png \
+	sorbet/unmaximize-unfocused.png
+
+sorbetdir = \
+	${prefix}/share/windowbuttons/themes/sorbet
+
+ambiance_maverick_DATA = \
+	ambiance-maverick/close-clicked.png\
+	ambiance-maverick/close-focused.png\
+	ambiance-maverick/close-hover.png \
+	ambiance-maverick/close-unfocused.png \
+	ambiance-maverick/maximize-clicked.png \
+	ambiance-maverick/maximize-focused.png \
+	ambiance-maverick/maximize-hover.png \
+	ambiance-maverick/maximize-unfocused.png \
+	ambiance-maverick/minimize-clicked.png \
+	ambiance-maverick/minimize-focused.png \
+	ambiance-maverick/minimize-hover.png \
+	ambiance-maverick/minimize-unfocused.png \
+	ambiance-maverick/unmaximize-clicked.png \
+	ambiance-maverick/unmaximize-focused.png \
+	ambiance-maverick/unmaximize-hover.png \
+	ambiance-maverick/unmaximize-unfocused.png
+
+ambiance_maverickdir = \
+	${prefix}/share/windowbuttons/themes/ambiance-maverick
+
+radiance_maverick_DATA = \
+	radiance-maverick/close-clicked.png\
+	radiance-maverick/close-focused.png\
+	radiance-maverick/close-hover.png \
+	radiance-maverick/close-unfocused.png \
+	radiance-maverick/maximize-clicked.png \
+	radiance-maverick/maximize-focused.png \
+	radiance-maverick/maximize-hover.png \
+	radiance-maverick/maximize-unfocused.png \
+	radiance-maverick/minimize-clicked.png \
+	radiance-maverick/minimize-focused.png \
+	radiance-maverick/minimize-hover.png \
+	radiance-maverick/minimize-unfocused.png \
+	radiance-maverick/unmaximize-clicked.png \
+	radiance-maverick/unmaximize-focused.png \
+	radiance-maverick/unmaximize-hover.png \
+	radiance-maverick/unmaximize-unfocused.png
+
+radiance_maverickdir = \
+	${prefix}/share/windowbuttons/themes/radiance-maverick
+
+equinox_glass_DATA = \
+	equinox-glass/README      \
+	equinox-glass/unmaximize-unfocused.png      \
+	equinox-glass/unmaximize-hover.png      \
+	equinox-glass/unmaximize-focused.png      \
+	equinox-glass/unmaximize-clicked.png      \
+	equinox-glass/minimize-unfocused.png      \
+	equinox-glass/minimize-hover.png      \
+	equinox-glass/minimize-focused.png      \
+	equinox-glass/minimize-clicked.png      \
+	equinox-glass/maximize-unfocused.png      \
+	equinox-glass/maximize-hover.png      \
+	equinox-glass/maximize-focused.png      \
+	equinox-glass/maximize-clicked.png      \
+	equinox-glass/close-unfocused.png      \
+	equinox-glass/close-hover.png      \
+	equinox-glass/close-focused.png      \
+	equinox-glass/close-clicked.png
+
+equinox_glassdir = \
+	${prefix}/share/windowbuttons/themes/equinox-glass
+
+plano_DATA = \
+	plano/minimize-unfocused.png\
+	plano/close-unfocused.png \
+	plano/maximize-unfocused.png \
+	plano/unmaximize-unfocused.png \
+	plano/close-clicked.png \
+	plano/minimize-clicked.png \
+	plano/minimize-hover.png \
+	plano/unmaximize-clicked.png \
+	plano/maximize-clicked.png \
+	plano/maximize-hover.png \
+	plano/unmaximize-hover.png \
+	plano/close-hover.png \
+	plano/minimize-focused.png \
+	plano/unmaximize-focused.png \
+	plano/maximize-focused.png \
+	plano/close-focused.png
+
+planodir = \
+	${prefix}/share/windowbuttons/themes/plano
+
+new_hope_DATA = \
+	new-hope/minimize-focused.png\
+	new-hope/minimize-unfocused.png \
+	new-hope/minimize-clicked.png \
+	new-hope/minimize-hover.png \
+	new-hope/unmaximize-focused.png \
+	new-hope/maximize-focused.png \
+	new-hope/maximize-clicked.png \
+	new-hope/unmaximize-clicked.png \
+	new-hope/maximize-unfocused.png \
+	new-hope/unmaximize-unfocused.png \
+	new-hope/unmaximize-hover.png \
+	new-hope/maximize-hover.png \
+	new-hope/close-clicked.png \
+	new-hope/close-unfocused.png \
+	new-hope/close-focused.png \
+	new-hope/close-hover.png
+
+new_hopedir = \
+	${prefix}/share/windowbuttons/themes/new-hope
+
+blubuntu_DATA = \
+	blubuntu/minimize-hover.png\
+	blubuntu/close-hover.png \
+	blubuntu/close-unfocused.png \
+	blubuntu/maximize-clicked.png \
+	blubuntu/maximize-focused.png \
+	blubuntu/maximize-unfocused.png \
+	blubuntu/maximize-hover.png \
+	blubuntu/minimize-clicked.png \
+	blubuntu/minimize-unfocused.png \
+	blubuntu/unmaximize-clicked.png \
+	blubuntu/unmaximize-focused.png \
+	blubuntu/unmaximize-hover.png \
+	blubuntu/unmaximize-unfocused.png \
+	blubuntu/close-clicked.png \
+	blubuntu/minimize-focused.png \
+	blubuntu/close-focused.png
+
+blubuntudir = \
+	${prefix}/share/windowbuttons/themes/blubuntu
 
 ## File created by the gnome-build tools
 

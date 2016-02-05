@@ -37,75 +37,194 @@ void properties_close (GtkObject *, gpointer);
 void updateImages(WBApplet *);
 void savePreferences(WBPreferences *, WBApplet *);
 void savePreferencesGConf(WBPreferences *, WBApplet *);
-//void savePreferencesCfg(WBPreferences *, WBApplet *); //TODO
+void savePreferencesCfg(WBPreferences *, WBApplet *);
+void loadPreferencesGConf(WBPreferences *, WBApplet *);
+void loadPreferencesCfg(WBPreferences *, WBApplet *);
+gboolean issetCompizDecoration(void);
+void toggleCompizDecoration(gboolean);
 void reloadButtons(WBApplet *);
-const gchar *getImageGConfKey (gushort, gushort);
-const gchar *getCheckBoxGConfKey (gushort);
-GdkPixbuf ***getPixbufs(WBApplet *);
+const gchar *getImageCfgKey (gushort, gushort);
+const gchar *getCheckBoxCfgKey (gushort);
+GtkWidget ***getImageButtons(GtkBuilder *);
+GdkPixbuf ***getPixbufs(gchar ***);
+gchar ***getImages(gchar *);
 gshort *getEBPos(gchar *);
 gchar *getMetacityLayout (void);
+gchar *fixThemeName(gchar *);
+void loadThemeComboBox(GtkComboBox *, gchar *);
+void loadThemeButtons(GtkWidget ***, GdkPixbuf ***, gchar ***);
+const gchar *getImageCfgKey(gushort, gushort);
+const gchar *getImageCfgKey4(gushort, gushort);
+const gchar* getButtonImageState(int, const gchar*);
+const gchar* getButtonImageState4(int);
+const gchar* getButtonImageName(int);
+gchar* getCfgValue(FILE *, gchar *);
 
 void savePreferences(WBPreferences *wbp, WBApplet *wbapplet) {
-//	if(save_to_gconf) {
-		savePreferencesGConf(wbp, wbapplet);
-//	} else {
-//		savePreferencesCfg(wbp, wbapplet);
-//	}
+#if PLAINTEXT_CONFIG == 0
+	savePreferencesGConf(wbp, wbapplet);
+#else
+	savePreferencesCfg(wbp, wbapplet);
+#endif
 }
 
+#if PLAINTEXT_CONFIG == 0
 void savePreferencesGConf(WBPreferences *wbp, WBApplet *wbapplet) {
-	int i, j;
+	gint i, j;
 
 	for (i=0; i<WB_BUTTONS; i++) {
-		//panel_applet_gconf_set_bool (PANEL_APPLET(wbapplet), getCheckBoxGConfKey(i), (wbapplet->button[i]->state & WB_BUTTON_STATE_HIDDEN), NULL);
-		panel_applet_gconf_set_bool (PANEL_APPLET(wbapplet), getCheckBoxGConfKey(i), (wbapplet->prefs->button_hidden[i]), NULL);
+		//panel_applet_gconf_set_bool (PANEL_APPLET(wbapplet), getCheckBoxCfgKey(i), (wbapplet->button[i]->state & WB_BUTTON_STATE_HIDDEN), NULL);
+		panel_applet_gconf_set_bool (PANEL_APPLET(wbapplet), getCheckBoxCfgKey(i), wbp->button_hidden[i], NULL);
 	}
-
 	for (i=0; i<WB_IMAGE_STATES; i++) {
 		for (j=0; j<WB_IMAGES; j++) {
-			panel_applet_gconf_set_string (PANEL_APPLET(wbapplet), getImageGConfKey(i,j), wbp->images[i][j], NULL);
+			panel_applet_gconf_set_string (PANEL_APPLET(wbapplet), getImageCfgKey(i,j), wbp->images[i][j], NULL);
+		}
+	}
+	panel_applet_gconf_set_bool (PANEL_APPLET(wbapplet), CFG_ONLY_MAXIMIZED, wbp->only_maximized, NULL);
+	panel_applet_gconf_set_bool (PANEL_APPLET(wbapplet), CFG_CLICK_EFFECT, wbp->click_effect, NULL);
+	panel_applet_gconf_set_bool (PANEL_APPLET(wbapplet), CFG_HOVER_EFFECT, wbp->hover_effect, NULL);
+	panel_applet_gconf_set_bool (PANEL_APPLET(wbapplet), CFG_HIDE_ON_UNMAXIMIZED, wbp->hide_on_unmaximized, NULL);
+	panel_applet_gconf_set_bool (PANEL_APPLET(wbapplet), CFG_USE_METACITY_LAYOUT, wbp->use_metacity_layout, NULL);
+	panel_applet_gconf_set_string (PANEL_APPLET(wbapplet), CFG_THEME, wbp->theme, NULL);
+	if (!wbp->use_metacity_layout) {
+		// save only when we're using a custom layout
+		panel_applet_gconf_set_string (PANEL_APPLET(wbapplet), CFG_BUTTON_LAYOUT, wbp->button_layout, NULL);
+	}
+}
+
+/* In case we're reading the properties from GConf */
+void loadPreferencesGConf(WBPreferences *wbp, WBApplet *wbapplet) {
+	gint i, j;
+
+	for (i=0; i<WB_BUTTONS; i++) {
+		wbp->button_hidden[i] = panel_applet_gconf_get_bool(PANEL_APPLET(wbapplet), getCheckBoxCfgKey(i), NULL);
+	}
+	
+	for (i=0; i<WB_IMAGE_STATES; i++) {
+		for (j=0; j<WB_IMAGES; j++) {
+			wbp->images[i][j] = panel_applet_gconf_get_string(PANEL_APPLET(wbapplet), getImageCfgKey(i,j), NULL);
+			if (!g_file_test(wbp->images[i][j], G_FILE_TEST_EXISTS | ~G_FILE_TEST_IS_DIR)) {
+				wbp->images[i][j] = panel_applet_gconf_get_string(PANEL_APPLET(wbapplet), getImageCfgKey4(i,j), NULL);
+			}
 		}
 	}
 
-	panel_applet_gconf_set_bool (PANEL_APPLET(wbapplet), GCK_CHECKBOX_ONLY_MAXIMIZED, wbp->only_maximized, NULL);
-	panel_applet_gconf_set_bool (PANEL_APPLET(wbapplet), GCK_CHECKBOX_CLICK_EFFECT, wbp->click_effect, NULL);
-	panel_applet_gconf_set_bool (PANEL_APPLET(wbapplet), GCK_CHECKBOX_HOVER_EFFECT, wbp->hover_effect, NULL);
-	panel_applet_gconf_set_bool (PANEL_APPLET(wbapplet), GCK_CHECKBOX_HIDE_ON_UNMAXIMIZED, wbp->hide_on_unmaximized, NULL);
-	panel_applet_gconf_set_bool (PANEL_APPLET(wbapplet), GCK_CHECKBOX_USE_METACITY_LAYOUT, wbp->use_metacity_layout, NULL);
-	panel_applet_gconf_set_string (PANEL_APPLET(wbapplet), GCK_THEME, wbp->theme, NULL);
+	wbp->only_maximized = panel_applet_gconf_get_bool(PANEL_APPLET(wbapplet), CFG_ONLY_MAXIMIZED, NULL);
+	wbp->hide_on_unmaximized = panel_applet_gconf_get_bool(PANEL_APPLET(wbapplet), CFG_HIDE_ON_UNMAXIMIZED, NULL);
+	wbp->click_effect = panel_applet_gconf_get_bool(PANEL_APPLET(wbapplet), CFG_CLICK_EFFECT, NULL);
+	wbp->hover_effect = panel_applet_gconf_get_bool(PANEL_APPLET(wbapplet), CFG_HOVER_EFFECT, NULL);
+	wbp->use_metacity_layout = panel_applet_gconf_get_bool(PANEL_APPLET(wbapplet), CFG_USE_METACITY_LAYOUT, NULL);
+	wbp->theme = panel_applet_gconf_get_string(PANEL_APPLET(wbapplet), CFG_THEME, NULL);
 	
+	// read positions from GConf
 	if (wbp->use_metacity_layout) {
-		// we aren't saving anything back to metacity's settings
+		wbp->button_layout = getMetacityLayout();
 	} else {
-		panel_applet_gconf_set_string (PANEL_APPLET(wbapplet), GCK_BUTTON_LAYOUT, wbp->button_layout, NULL);
+		wbp->button_layout = panel_applet_gconf_get_string(PANEL_APPLET(wbapplet), CFG_BUTTON_LAYOUT, NULL);
 	}
 }
 
-gboolean issetCompizDecorationMatch() {
-	GConfClient *gcc = gconf_client_get_default();
-	gboolean retval = FALSE;
-	if(!strcmp(gconf_client_get_string(gcc, GCONF_COMPIZ_DECORATION_MATCH, NULL),
-	           COMPIZ_DECORATION_MATCH))
-		retval = TRUE;
-	return retval;
+#else
+
+void loadPreferencesCfg(WBPreferences *wbp, WBApplet *wbapplet) {
+	FILE *cfg = g_fopen (g_strconcat(g_get_home_dir(),"/",FILE_CONFIGFILE, NULL), "r");
+	gint i,j;
+
+	if (cfg) {
+		for (i=0; i<WB_BUTTONS; i++) {
+			wbp->button_hidden[i] = g_ascii_strtod(getCfgValue(cfg,(gchar*)getCheckBoxCfgKey(i)),NULL);
+		}
+		for (i=0; i<WB_IMAGE_STATES; i++) {
+			for (j=0; j<WB_IMAGES; j++) {
+				wbp->images[i][j] = getCfgValue(cfg,(gchar*)getImageCfgKey(i,j));
+				if (!g_file_test(wbp->images[i][j], G_FILE_TEST_EXISTS | ~G_FILE_TEST_IS_DIR)) {
+					wbp->images[i][j] = getCfgValue(cfg,(gchar*)getImageCfgKey4(i,j));
+				}
+			}
+		}
+		wbp->only_maximized = g_ascii_strtod(getCfgValue(cfg,CFG_ONLY_MAXIMIZED),NULL);
+		wbp->hide_on_unmaximized = g_ascii_strtod(getCfgValue(cfg,CFG_HIDE_ON_UNMAXIMIZED),NULL);
+		wbp->click_effect = g_ascii_strtod(getCfgValue(cfg,CFG_CLICK_EFFECT),NULL);
+		wbp->hover_effect = g_ascii_strtod(getCfgValue(cfg,CFG_HOVER_EFFECT),NULL);
+		wbp->use_metacity_layout = g_ascii_strtod(getCfgValue(cfg,CFG_USE_METACITY_LAYOUT),NULL);
+		if (wbp->use_metacity_layout) {
+			// wbp->button_layout = getMetacityLayout(); // We're avoiding GConf, so let's not use that
+			wbp->button_layout = "menu:minimize,maximize,close";
+		} else {
+			wbp->button_layout = getCfgValue(cfg,CFG_BUTTON_LAYOUT);
+		}
+		wbp->theme = getCfgValue(cfg,CFG_THEME);
+
+		fclose (cfg);		
+	} else {
+		// Defaults if the file doesn't exist
+
+		wbp->only_maximized = TRUE;
+		wbp->hide_on_unmaximized = TRUE;
+		wbp->click_effect = TRUE;
+		wbp->hover_effect = TRUE;
+		wbp->use_metacity_layout = TRUE;	
+		wbp->button_layout = "menu:minimize,maximize,close";
+		wbp->theme = "default";
+		for (i=0; i<WB_BUTTONS; i++) {
+			wbp->button_hidden[i] = 0;
+		}
+		for (i=0; i<WB_IMAGE_STATES; i++) {
+			for (j=0; j<WB_IMAGES; j++) {
+				wbp->images[i][j] = g_strconcat(PATH_THEMES,"/",wbp->theme,"/",getButtonImageName(j),"-",getButtonImageState(i,"-"),".",THEME_EXTENSION,NULL);
+				if (!g_file_test(wbp->images[i][j], G_FILE_TEST_EXISTS | ~G_FILE_TEST_IS_DIR)) {
+					wbp->images[i][j] = g_strconcat(PATH_THEMES,"/",wbp->theme,"/",getButtonImageName(j),"-",getButtonImageState4(i),".",THEME_EXTENSION,NULL);
+				}
+			}
+		}
+
+		savePreferencesCfg(wbp,wbapplet);
+	}
 }
 
-void toggleCompizDecorationMatch(WBApplet *wbapplet, gboolean new_value) {
-	GError *err = NULL;
-	GConfClient *gconfclient = gconf_client_get_default();
+void savePreferencesCfg(WBPreferences *wbp, WBApplet *wbapplet) {
+	FILE *cfg = g_fopen (g_strconcat(g_get_home_dir(),"/",FILE_CONFIGFILE,NULL),"w");
+	gint i, j;
 	
-	if (new_value) {
-		gconf_client_unset(gconfclient, GCONF_COMPIZ_DECORATION_MATCH, &err);
-	} else {
-		gconf_client_set_string(gconfclient,
-		                        GCONF_COMPIZ_DECORATION_MATCH,
-		                        COMPIZ_DECORATION_MATCH,
-		                        NULL);
+	for (i=0; i<WB_BUTTONS; i++) {
+		fprintf(cfg, "%s %d\n", getCheckBoxCfgKey(i), wbp->button_hidden[i]);
 	}
-
-	g_free(err);
-	g_object_unref(gconfclient);
+	for (i=0; i<WB_IMAGE_STATES; i++) {
+		for (j=0; j<WB_IMAGES; j++) {
+			fprintf(cfg, "%s %s\n", getImageCfgKey(i,j), wbp->images[i][j]);
+		}
+	}
+	fprintf(cfg, "%s %d\n", CFG_ONLY_MAXIMIZED, wbp->only_maximized);
+	fprintf(cfg, "%s %d\n", CFG_CLICK_EFFECT, wbp->click_effect);
+	fprintf(cfg, "%s %d\n", CFG_HOVER_EFFECT, wbp->hover_effect);
+	fprintf(cfg, "%s %d\n", CFG_HIDE_ON_UNMAXIMIZED, wbp->hide_on_unmaximized);
+	fprintf(cfg, "%s %d\n", CFG_USE_METACITY_LAYOUT, wbp->use_metacity_layout);
+	fprintf(cfg, "%s %s\n", CFG_THEME, wbp->theme);
+	if (!wbp->use_metacity_layout) {
+		fprintf(cfg, "%s %s\n", CFG_BUTTON_LAYOUT, wbp->button_layout);
+	}
+	
+	fclose (cfg);
 }
+
+/* Returns a string value of the specified configuration parameter (key) */
+gchar* getCfgValue(FILE *f, gchar *key) {
+    gchar tmp[256] = {0x0};
+	long int pos = ftell(f);
+	
+    while (f!=NULL && fgets(tmp,sizeof(tmp),f)!=NULL) {
+		if (g_strrstr(tmp, key))
+		    break;
+    }
+
+	gchar *r = g_strndup(tmp+strlen(key)+1,strlen(tmp)-strlen(key)+1);
+	g_strstrip(r);
+
+	fseek(f,pos,SEEK_SET);
+    return r;
+}
+#endif
 
 void select_new_image (GtkObject *object, gpointer user_data) {
 	GtkWidget *fileopendialog;
@@ -121,7 +240,7 @@ void select_new_image (GtkObject *object, gpointer user_data) {
 						NULL
 	    			);
 	if (gtk_dialog_run (GTK_DIALOG (fileopendialog)) == GTK_RESPONSE_ACCEPT) {
-		char *filename;
+		gchar *filename;
 		filename = gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (fileopendialog));
 
 		// save new value to memory
@@ -141,18 +260,11 @@ void select_new_image (GtkObject *object, gpointer user_data) {
 		}
 		 */
 		
-		// save new value to gconf
+		wbapplet->pixbufs = getPixbufs(wbapplet->prefs->images); // reload pixbufs from files
+		loadThemeButtons(getImageButtons(wbapplet->prefbuilder), wbapplet->pixbufs, wbapplet->prefs->images); // set pref button images from pixbufs
+		updateImages(wbapplet);	// reload images
+
 		savePreferences(wbapplet->prefs, wbapplet);
-		// set new image in preferences
-		gtk_button_set_image (GTK_BUTTON(object),
-		                      gtk_image_new_from_file(wbapplet->prefs->images[iod->image_state][iod->image_index]));
-
-
-		// load new images from files
-		wbapplet->pixbufs = getPixbufs(wbapplet); 
-		
-		// reload image(s)
-		updateImages(wbapplet);
 	}
 	gtk_widget_destroy (fileopendialog);
 }
@@ -178,35 +290,33 @@ void cb_hover_effect(GtkButton *button, gpointer user_data) {
 void cb_hide_on_unmaximized(GtkButton *button, gpointer user_data) {
 	WBApplet *wbapplet = WB_APPLET (user_data);
 	wbapplet->prefs->hide_on_unmaximized = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(button));
+	updateImages(wbapplet);
 	savePreferences(wbapplet->prefs, wbapplet);
 }
 
 void cb_hide_decoration(GtkButton *button, gpointer user_data) {
-	WBApplet *wbapplet = WB_APPLET(user_data);
-	toggleCompizDecorationMatch(wbapplet, !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button)));
+	// WBApplet *wbapplet = WB_APPLET(user_data);
+	toggleCompizDecoration(!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(button)));
 }
 
 void cb_btn_hidden(GtkButton *button, gpointer user_data) {
 	CheckBoxData *cbd = (CheckBoxData*)user_data;
 	WBApplet *wbapplet = cbd->wbapplet;
 	
-	if (wbapplet->button[cbd->button_id]->state & WB_BUTTON_STATE_HIDDEN) {
-		gtk_widget_show_all(GTK_WIDGET(wbapplet->button[cbd->button_id]->eventbox));
-		wbapplet->button[cbd->button_id]->state &= ~WB_BUTTON_STATE_HIDDEN;
+	if (wbapplet->prefs->button_hidden[cbd->button_id]) {
 		wbapplet->prefs->button_hidden[cbd->button_id] = 0;
 	} else {
-		gtk_widget_hide_all(GTK_WIDGET(wbapplet->button[cbd->button_id]->eventbox));
-		wbapplet->button[cbd->button_id]->state |= WB_BUTTON_STATE_HIDDEN;
 		wbapplet->prefs->button_hidden[cbd->button_id] = 1;
 	}
 
+	updateImages(wbapplet);
 	savePreferences(wbapplet->prefs, wbapplet);
 }
 
 // "Use Metacity's button order" checkbox
 void cb_metacity_layout(GtkButton *button, gpointer user_data) {
 	WBApplet *wbapplet = WB_APPLET(user_data);
-	GtkEntry *entry_custom_layout = GTK_ENTRY (gtk_builder_get_object(wbapplet->prefbuilder, "text_custom_order"));
+	GtkEntry *entry_custom_layout = GTK_ENTRY (gtk_builder_get_object(wbapplet->prefbuilder, CFG_BUTTON_LAYOUT));
 	
 	if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(button))) {
 		wbapplet->prefs->use_metacity_layout = TRUE;
@@ -228,7 +338,7 @@ void cb_metacity_layout(GtkButton *button, gpointer user_data) {
 // "Reload" button clicked
 void cb_reload_buttons(GtkButton *button, gpointer user_data) { 
 	WBApplet *wbapplet = WB_APPLET(user_data);
-	GtkEntry *entry_custom_layout = GTK_ENTRY (gtk_builder_get_object(wbapplet->prefbuilder, "text_custom_order"));
+	GtkEntry *entry_custom_layout = GTK_ENTRY (gtk_builder_get_object(wbapplet->prefbuilder, CFG_BUTTON_LAYOUT));
 	gchar *new_layout = g_strdup(gtk_entry_get_text(entry_custom_layout));
 	wbapplet->prefs->button_layout = new_layout;
 	savePreferences(wbapplet->prefs, wbapplet);
@@ -236,38 +346,13 @@ void cb_reload_buttons(GtkButton *button, gpointer user_data) {
 	reloadButtons(wbapplet);
 }
 
-const gchar* getCheckBoxGConfKey(gushort checkbox_id) {
-	switch(checkbox_id) {
-		case 0: return "button_minimize_hidden";
-		case 1: return "button_maximize_hidden";
-		case 2: return "button_close_hidden";
+const gchar* getCheckBoxCfgKey(gushort checkbox_id) {
+	switch (checkbox_id) {
+		case 0: return CFG_MINIMIZE_HIDDEN;
+		case 1: return CFG_UNMAXIMIZE_HIDDEN;
+		case 2: return CFG_CLOSE_HIDDEN;
 		default: return NULL;
 	}
-}
-
-const gchar* getButtonImageName(int button_id) {
-	switch(button_id) {
-		case WB_IMAGE_MINIMIZE: return BTN_NAME_MINIMIZE;
-		case WB_IMAGE_UNMAXIMIZE: return BTN_NAME_UNMAXIMIZE;
-		case WB_IMAGE_MAXIMIZE: return BTN_NAME_MAXIMIZE;
-		case WB_IMAGE_CLOSE: return BTN_NAME_CLOSE;
-		default: return NULL;
-	}
-}
-
-const gchar* getButtonImageState(int state_id) {
-	switch(state_id) {
-		case WB_IMAGE_FOCUSED: return BTN_STATE_FOCUSED;
-		case WB_IMAGE_CLICKED: return BTN_STATE_CLICKED;
-		case WB_IMAGE_HOVERED: return BTN_STATE_HOVER;
-		case WB_IMAGE_UNFOCUSED: return BTN_STATE_UNFOCUSED;
-		default: return NULL;
-	}
-}
-
-/* returns the GConf schema key for our button */
-const gchar *getImageGConfKey(gushort image_state, gushort image_index) {
-	return g_strconcat("btn_", getButtonImageState(image_state), "_", getButtonImageName(image_index), NULL);
 }
 
 static void cb_theme_changed( GtkComboBox *combo, gpointer data ) {
@@ -283,71 +368,25 @@ static void cb_theme_changed( GtkComboBox *combo, gpointer data ) {
     }
 	
 	wbp->theme = theme;
-
-	int i,j;
-	gchar *theme_location = g_strconcat(LOCATION_THEMES, "/", wbapplet->prefs->theme, "/", NULL);
-	for (i=0; i<WB_IMAGE_STATES; i++) {
-		for (j=0; j<WB_IMAGES; j++) {
-			wbp->images[i][j] = g_strconcat(theme_location, getButtonImageName(j), "-", getButtonImageState(i), ".png", NULL);
-			gtk_button_set_image(
-			    GTK_BUTTON(gtk_builder_get_object (wbapplet->prefbuilder, getImageGConfKey(i,j))),
-			    gtk_image_new_from_file(wbapplet->prefs->images[i][j])
-			);
-		}
-	}
-	g_free(theme_location);
-
-	wbapplet->pixbufs = getPixbufs(wbapplet); // load new images from files
+	wbp->images = getImages(g_strconcat(PATH_THEMES,"/",wbp->theme,"/",NULL)); // rebuild image paths
+	wbapplet->pixbufs = getPixbufs(wbp->images); // reload pixbufs from files
+	loadThemeButtons(getImageButtons(wbapplet->prefbuilder), wbapplet->pixbufs, wbp->images); // set pref button images from pixbufs
 	updateImages(wbapplet);
 	
-	savePreferences(wbapplet->prefs, wbapplet);
+	savePreferences(wbp, wbapplet);
 }
 
-/* All the crap required to fill a stupid little combo box (Gtk people think this is useful) */ 
-void loadThemes(GtkComboBox *combo, WBApplet *wbapplet) {    
-	GtkTreeIter		iter;
-	GtkListStore	*store = gtk_list_store_new( 2, G_TYPE_STRING, G_TYPE_INT );
-
-	GError	*error = NULL;
-	gchar	*dir_themes_path = LOCATION_THEMES;
-	GDir	*dir_themes = g_dir_open(dir_themes_path, 0, &error);
-	if (error) {
-		g_printerr ("g_dir_open(%s) failed - %s\n", dir_themes_path, error->message);
-		g_error_free(error);
-		return;
-	}
-
-	int active = -1;
-	int N_THEMES = 0;
-	const gchar *curtheme;
-	while((curtheme = g_dir_read_name(dir_themes))) { 
-		if( g_strcmp0(
-		    	g_ascii_strdown(curtheme,-1),
-		    	g_ascii_strdown(wbapplet->prefs->theme,-1)
-		    ) == 0 )
-		{
-			active = N_THEMES;
+/* Returns a 2D array of GtkWidget image buttons */
+GtkWidget ***getImageButtons(GtkBuilder *prefbuilder) {
+	gint i,j;
+	GtkWidget ***btn = g_new(GtkWidget**, WB_IMAGE_STATES);
+	for (i=0; i<WB_IMAGE_STATES; i++) {
+		btn[i] = g_new(GtkWidget*, WB_IMAGES);
+		for (j=0; j<WB_IMAGES; j++) {
+			btn[i][j] = GTK_WIDGET (gtk_builder_get_object(prefbuilder, getImageCfgKey(i,j)));
 		}
-		
-		gtk_list_store_append( store, &iter );
-		gtk_list_store_set( store, &iter, 
-		    	0, curtheme,
-		    	1, 1+N_THEMES++,
-				-1 );
 	}
-	if(active<0) active = N_THEMES;
-	
-    gtk_list_store_append( store, &iter );
-    gtk_list_store_set( store, &iter, 0,"Custom", 1,0, -1 );
-	
-	gtk_combo_box_set_model( combo, GTK_TREE_MODEL(store) );
-    g_object_unref( G_OBJECT( store ) );
-
-	GtkCellRenderer	*cell = gtk_cell_renderer_text_new();
-    gtk_cell_layout_pack_start( GTK_CELL_LAYOUT( combo ), cell, TRUE );
-    gtk_cell_layout_set_attributes( GTK_CELL_LAYOUT( combo ), cell, "text",0, NULL );
-
-	gtk_combo_box_set_active(combo, active);
+	return btn;
 }
 
 /* The Preferences Dialog */
@@ -360,32 +399,23 @@ void properties_cb (BonoboUIComponent *uic,
 	gint i,j;
 
 	// Create the Properties dialog from the GtkBuilder file
-	gtk_builder_add_from_file (wbapplet->prefbuilder, LOCATION_MAIN"/windowbuttons.ui", NULL);
+	gtk_builder_add_from_file (wbapplet->prefbuilder, PATH_UI_PREFS, NULL);
 	if (!wbapplet->window_prefs) {
 		wbapplet->window_prefs = GTK_WIDGET (gtk_builder_get_object (wbapplet->prefbuilder, "properties"));
 	} else {
 		gtk_window_present(GTK_WINDOW(wbapplet->window_prefs));
 	}
-	//gtk_builder_connect_signals (wbapplet->prefbuilder, NULL); // no need for now
 
 	/* Get the widgets from GtkBuilder & Init data structures we'll pass to our buttons */
-	btn = g_new(GtkWidget**, WB_IMAGE_STATES);
+	btn = getImageButtons(wbapplet->prefbuilder);
 	iod =  g_new(ImageOpenData**, WB_IMAGE_STATES);
 	for (i=0; i<WB_IMAGE_STATES; i++) {
-		btn[i] = g_new(GtkWidget*, WB_IMAGES);
 		iod[i] = g_new(ImageOpenData*, WB_IMAGES);
 		for (j=0; j<WB_IMAGES; j++) {
 			iod[i][j] = g_new0(ImageOpenData, 1);
 			iod[i][j]->wbapplet = wbapplet;
-			iod[i][j]->gconf_key = getImageGConfKey(i,j);
 			iod[i][j]->image_state = i;
 			iod[i][j]->image_index = j;
-
-			btn[i][j] = GTK_WIDGET (gtk_builder_get_object (wbapplet->prefbuilder, iod[i][j]->gconf_key));
-
-			// set widgets according to our memorized properties
-			gtk_button_set_image(GTK_BUTTON (btn[i][j]), gtk_image_new_from_file(wbapplet->prefs->images[i][j]));
-			gtk_widget_set_tooltip_text(btn[i][j], wbapplet->prefs->images[i][j]);
 
 			// Connect buttons to select_new_image callback
 			g_signal_connect(G_OBJECT (btn[i][j]), "clicked", G_CALLBACK (select_new_image), iod[i][j]);
@@ -403,12 +433,13 @@ void properties_cb (BonoboUIComponent *uic,
 	chkb_btn_hidden[0] = GTK_TOGGLE_BUTTON (gtk_builder_get_object(wbapplet->prefbuilder, "cb_btn0_visible")),
 	chkb_btn_hidden[1] = GTK_TOGGLE_BUTTON (gtk_builder_get_object(wbapplet->prefbuilder, "cb_btn1_visible")),
 	chkb_btn_hidden[2] = GTK_TOGGLE_BUTTON (gtk_builder_get_object(wbapplet->prefbuilder, "cb_btn2_visible"));		
-	GtkEntry *entry_custom_order = GTK_ENTRY (gtk_builder_get_object(wbapplet->prefbuilder, "text_custom_order"));
+	GtkEntry *entry_custom_order = GTK_ENTRY (gtk_builder_get_object(wbapplet->prefbuilder, "button_layout"));
 	GtkButton *btn_reload_order = GTK_BUTTON (gtk_builder_get_object(wbapplet->prefbuilder, "btn_reload_order"));
 	GtkComboBox *combo_theme = GTK_COMBO_BOX (gtk_builder_get_object(wbapplet->prefbuilder, "combo_theme"));
 	GtkButton *btn_close = GTK_BUTTON (gtk_builder_get_object(wbapplet->prefbuilder, "btn_close"));
-
-	loadThemes(combo_theme, wbapplet);
+	
+	loadThemeComboBox(combo_theme, wbapplet->prefs->theme);
+	loadThemeButtons(btn, wbapplet->pixbufs, wbapplet->prefs->images);
 
 	// set the checkboxes according to preferences
 	gtk_widget_set_sensitive(GTK_WIDGET(entry_custom_order), !wbapplet->prefs->use_metacity_layout);
@@ -416,7 +447,7 @@ void properties_cb (BonoboUIComponent *uic,
 	gtk_toggle_button_set_active (chkb_click_effect, wbapplet->prefs->click_effect);
 	gtk_toggle_button_set_active (chkb_hover_effect, wbapplet->prefs->hover_effect);
 	gtk_toggle_button_set_active (chkb_hide_on_unmaximized, wbapplet->prefs->hide_on_unmaximized);
-	gtk_toggle_button_set_active (chkb_hide_decoration, issetCompizDecorationMatch());
+	gtk_toggle_button_set_active (chkb_hide_decoration, issetCompizDecoration());
 	gtk_toggle_button_set_active (chkb_metacity_order, wbapplet->prefs->use_metacity_layout);
 	gtk_entry_set_text (entry_custom_order, (const gchar*)wbapplet->prefs->button_layout);
 						
@@ -426,7 +457,7 @@ void properties_cb (BonoboUIComponent *uic,
 		cbd[i]->button_id = i;
 		cbd[i]->wbapplet = wbapplet;
 
-		gtk_toggle_button_set_active (chkb_btn_hidden[i], (wbapplet->button[i]->state & WB_BUTTON_STATE_HIDDEN));
+		gtk_toggle_button_set_active (chkb_btn_hidden[i], wbapplet->prefs->button_hidden[i]);
 		g_signal_connect(G_OBJECT(chkb_btn_hidden[i]), "clicked", G_CALLBACK (cb_btn_hidden), cbd[i]);
 	}
 

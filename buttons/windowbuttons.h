@@ -21,11 +21,15 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
- 
+
+#define PLAINTEXT_CONFIG				0
+
 #ifndef __WB_APPLET_H__
 #define __WB_APPLET_H__
 
+#ifdef HAVE_CONFIG_H
 #include <config.h>
+#endif
 
 #include <glib.h>
 #include <glib-object.h>
@@ -34,6 +38,10 @@
 #include <panel-applet-gconf.h>
 #include <gtk/gtk.h>
 #include <gtk/gtklabel.h>
+
+#if PLAINTEXT_CONFIG == 1
+#include <glib/gstdio.h>
+#endif
 
 #ifndef WNCK_I_KNOW_THIS_IS_UNSTABLE
 #define WNCK_I_KNOW_THIS_IS_UNSTABLE
@@ -44,34 +52,39 @@
 #define APPLET_NAME						"Window Buttons"
 #define APPLET_OAFIID					"OAFIID:WindowButtonsApplet"
 #define APPLET_OAFIID_FACTORY			"OAFIID:WindowButtonsApplet_Factory"
-#define LOCATION_MAIN 					"/usr/share/windowbuttons"
-#define LOCATION_THEMES 				LOCATION_MAIN"/themes"
-#define LOCATION_BUILDER 				"/usr/share/gnome-applets/builder"
-#define GCONF_PREFS 					"/schemas/apps/windowbuttons-applet/prefs"
-#define GCONF_METACITY_BUTTON_LAYOUT 	"/apps/metacity/general/button_layout"
-#define GCONF_COMPIZ_DECORATION_MATCH	"/apps/compiz/plugins/decoration/allscreens/options/decoration_match"
+#define PATH_BUILDER 					"/usr/share/gnome-applets/builder"
+#define PATH_MAIN 						"/usr/share/windowbuttons"
+#define PATH_THEMES 					PATH_MAIN"/themes"
+#define PATH_UI_PREFS					PATH_MAIN"/windowbuttons.ui"
+#define PATH_LOGO						PATH_MAIN"/windowbuttons_logo.png"
 #define METACITY_XML 					"metacity-theme-1.xml"
-#define COMPIZ_DECORATION_MATCH			"!(state=maxvert | maxhorz)"
+#define THEME_EXTENSION					"png"
+#define GCONF_PREFS 					"/schemas/apps/windowbuttons-applet/prefs"
+#define FILE_CONFIGFILE					".windowbuttons"
 
 /* strings that identify button states and names */
 #define BTN_STATE_FOCUSED				"focused"
-#define BTN_STATE_CLICKED				"clicked"
 #define BTN_STATE_UNFOCUSED				"unfocused"
-#define BTN_STATE_HOVER					"hover"
+#define BTN_STATE_NORMAL				"normal"
+#define BTN_STATE_CLICKED				"clicked"
+#define BTN_STATE_HOVERED				"hover"	//TODO: change to hovered
 
 #define BTN_NAME_CLOSE					"close"
 #define BTN_NAME_MINIMIZE				"minimize"
 #define BTN_NAME_MAXIMIZE				"maximize"
 #define BTN_NAME_UNMAXIMIZE				"unmaximize"
 
-/* GConf key strings (also used in GtkBuilder .ui file) */
-#define GCK_CHECKBOX_ONLY_MAXIMIZED			"only_maximized"
-#define GCK_CHECKBOX_HIDE_ON_UNMAXIMIZED 	"hide_on_unmaximized"
-#define GCK_CHECKBOX_CLICK_EFFECT			"click_effect"
-#define GCK_CHECKBOX_HOVER_EFFECT			"hover_effect"
-#define GCK_CHECKBOX_USE_METACITY_LAYOUT	"use_metacity_layout"
-#define GCK_BUTTON_LAYOUT					"button_layout"
-#define GCK_THEME							"theme"
+/* Key strings (used by GConf, Plaintext and GtkBuilder .ui file) */
+#define CFG_ONLY_MAXIMIZED			"only_maximized"
+#define CFG_HIDE_ON_UNMAXIMIZED 	"hide_on_unmaximized"
+#define CFG_CLICK_EFFECT			"click_effect"
+#define CFG_HOVER_EFFECT			"hover_effect"
+#define CFG_USE_METACITY_LAYOUT		"use_metacity_layout"
+#define CFG_MINIMIZE_HIDDEN			"button_minimize_hidden"
+#define CFG_UNMAXIMIZE_HIDDEN		"button_maximize_hidden"
+#define CFG_CLOSE_HIDDEN			"button_close_hidden"
+#define CFG_BUTTON_LAYOUT			"button_layout"
+#define CFG_THEME					"theme"
 
 G_BEGIN_DECLS
 
@@ -94,10 +107,12 @@ typedef enum {
 
 /* we will also index image states for convenience */
 typedef enum {
-	WB_IMAGE_FOCUSED = 0,
-	WB_IMAGE_CLICKED,
-	WB_IMAGE_HOVERED,
-	WB_IMAGE_UNFOCUSED,
+	WB_IMAGE_FOCUSED_NORMAL = 0,
+	WB_IMAGE_FOCUSED_CLICKED,
+	WB_IMAGE_FOCUSED_HOVERED,
+	WB_IMAGE_UNFOCUSED_NORMAL,
+	WB_IMAGE_UNFOCUSED_CLICKED,
+	WB_IMAGE_UNFOCUSED_HOVERED,
 
 	WB_IMAGE_STATES
 } WBImageStates;
@@ -155,11 +170,11 @@ typedef struct {
 	WindowButton	**button;			// Array of buttons
 	WnckScreen 		*activescreen;		// Active screen
 	WnckWorkspace	*activeworkspace;	// Active workspace
-	WnckWindow		*currentwindow,		// Upper most maximized window
+	WnckWindow		*umaxedwindow,		// Upper-most maximized window
 					*activewindow,		// Active window
 					*rootwindow;		// Root window (desktop)
 	gulong			active_handler,		// activewindow's event handler ID
-					current_handler;	// currentwindow's event handler ID
+					umaxed_handler;		// umaxedwindow's event handler ID
 	
 	PanelAppletOrient orient;			// Panel orientation
 	GdkPixbufRotation angle;			// Applet angle

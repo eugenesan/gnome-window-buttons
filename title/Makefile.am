@@ -18,7 +18,7 @@ windowtitle_SOURCES = \
 	windowtitle.c\
 	windowtitle.h \
 	preferences.c \
-	preferences.h
+	preferences.h 
 
 windowtitle_LDFLAGS = \
 	-Wl,--export-dynamic

@@ -18,7 +18,11 @@ windowbuttons_SOURCES = \
 	windowbuttons.c\
 	windowbuttons.h \
 	preferences.c \
-	preferences.h 
+	preferences.h \
+	external.c \
+	external.h \
+	theme.c \
+	theme.h
 
 windowbuttons_LDFLAGS = \
 	-Wl,--export-dynamic

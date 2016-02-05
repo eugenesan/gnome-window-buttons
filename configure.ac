@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl Created by Anjuta application wizard.
 
-AC_INIT(gnome-window-applets, 0.2.7)
+AC_INIT(gnome-window-applets, 0.2.9)
 
 AC_CONFIG_MACRO_DIR([m4])
 
