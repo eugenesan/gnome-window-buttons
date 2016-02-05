@@ -1,5 +1,5 @@
---- a/gnome-buttons/windowbuttons.schemas.in
-+++ b/gnome-buttons/windowbuttons.schemas.in
+--- a/buttons/windowbuttons.schemas.in
++++ b/buttons/windowbuttons.schemas.in
 @@ -4,7 +4,7 @@
              <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_normal_close</key>
              <owner>windowbuttons</owner>
@@ -252,8 +252,8 @@
              <locale name="C">
                  <short>Hides buttons when there are no windows present.</short>
                  <long>When enabled, the buttons will disappear when there are no maximized (or active) windows on the screen.</long>
---- a/gnome-buttons/preferences.c
-+++ b/gnome-buttons/preferences.c
+--- a/buttons/preferences.c
++++ b/buttons/preferences.c
 @@ -198,11 +198,11 @@
  		wbp->hide_on_unmaximized = FALSE;
  		wbp->click_effect = TRUE;
