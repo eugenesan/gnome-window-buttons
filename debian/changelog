@@ -1,3 +1,11 @@
+gnome-window-applets (0.3-2~eugenesan~trusty2) trusty; urgency=medium
+
+  * Use metacity themes (Ambiance from ubuntu-themes as custom theme) and Ubuntu layout:
+    0001-default-to-ambiance-theme-and-layout.patch
+  * Require light-themes since we install links to it resources
+
+ -- Eugene San (eugenesan) <eugenesan@gmail.com>  Tue, 06 May 2014 00:37:39 +0300
+
 gnome-window-applets (0.3-1~webupd8~trusty) trusty; urgency=medium
 
   * upload for Trusty

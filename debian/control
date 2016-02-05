@@ -1,7 +1,7 @@
 Source: gnome-window-applets
 Section: gnome
 Priority: extra
-Maintainer: Alin Andrei <webupd8@gmail.com>
+Maintainer: Alin Andrei <webupd8@gmail.com>, Eugene San (eugenesan) <eugenesan@gmail.com>
 Build-Depends: debhelper (>= 7.0.50~),
                autotools-dev,
                intltool,
@@ -14,8 +14,8 @@ Homepage: http://www.gnome-look.org/content/show.php?content=103732
 
 Package: gnome-window-applets
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
-Description: Panel applets that substitute maximized window title and buttons
+Depends: ${shlibs:Depends}, ${misc:Depends}, light-themes
+Description: Gnome panel applets that substitute maximized window title and buttons
  .
  GNOME violates Fitts's Law by putting a panel between the maxed window buttons
  and the corner of the screen. These applets were designed to solve the problem.

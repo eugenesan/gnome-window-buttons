@@ -1,0 +1,270 @@
+--- a/gnome-buttons/windowbuttons.schemas.in
++++ b/gnome-buttons/windowbuttons.schemas.in
+@@ -4,7 +4,7 @@
+             <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_normal_close</key>
+             <owner>windowbuttons</owner>
+             <type>string</type>
+-            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/close-focused-normal.png</default>
++            <default>@DATADIR@/themes/Ambiance/metacity-1/close_focused_normal.png</default>
+             <locale name="C">
+                 <short></short>
+                 <long></long>
+@@ -14,7 +14,7 @@
+             <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_normal_minimize</key>
+             <owner>windowbuttons</owner>
+             <type>string</type>
+-            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/minimize-focused-normal.png</default>
++            <default>@DATADIR@/themes/Ambiance/metacity-1/minimize_focused_normal.png</default>
+             <locale name="C">
+                 <short></short>
+                 <long></long>
+@@ -24,7 +24,7 @@
+             <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_normal_maximize</key>
+             <owner>windowbuttons</owner>
+             <type>string</type>
+-            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/maximize-focused-normal.png</default>
++            <default>@DATADIR@/themes/Ambiance/metacity-1/maximize_focused_normal.png</default>
+             <locale name="C">
+                 <short></short>
+                 <long></long>
+@@ -34,7 +34,7 @@
+             <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_normal_unmaximize</key>
+             <owner>windowbuttons</owner>
+             <type>string</type>
+-            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/unmaximize-focused-normal.png</default>
++            <default>@DATADIR@/themes/Ambiance/metacity-1/unmaximize_focused_normal.png</default>
+             <locale name="C">
+                 <short></short>
+                 <long></long>
+@@ -45,7 +45,7 @@
+             <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_clicked_close</key>
+             <owner>windowbuttons</owner>
+             <type>string</type>
+-            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/close-focused-clicked.png</default>
++            <default>@DATADIR@/themes/Ambiance/metacity-1/close_focused_pressed.png</default>
+             <locale name="C">
+                 <short></short>
+                 <long></long>
+@@ -55,7 +55,7 @@
+             <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_clicked_minimize</key>
+             <owner>windowbuttons</owner>
+             <type>string</type>
+-            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/minimize-focused-clicked.png</default>
++            <default>@DATADIR@/themes/Ambiance/metacity-1/minimize_focused_pressed.png</default>
+             <locale name="C">
+                 <short></short>
+                 <long></long>
+@@ -65,7 +65,7 @@
+             <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_clicked_maximize</key>
+             <owner>windowbuttons</owner>
+             <type>string</type>
+-            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/maximize-focused-clicked.png</default>
++            <default>@DATADIR@/themes/Ambiance/metacity-1/maximize_focused_pressed.png</default>
+             <locale name="C">
+                 <short></short>
+                 <long></long>
+@@ -75,7 +75,7 @@
+             <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_clicked_unmaximize</key>
+             <owner>windowbuttons</owner>
+             <type>string</type>
+-            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/unmaximize-focused-clicked.png</default>
++            <default>@DATADIR@/themes/Ambiance/metacity-1/unmaximize_focused_pressed.png</default>
+             <locale name="C">
+                 <short></short>
+                 <long></long>
+@@ -86,7 +86,7 @@
+             <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_hover_close</key>
+             <owner>windowbuttons</owner>
+             <type>string</type>
+-            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/close-focused-hover.png</default>
++            <default>@DATADIR@/themes/Ambiance/metacity-1/close_focused_prelight.png</default>
+             <locale name="C">
+                 <short></short>
+                 <long></long>
+@@ -96,7 +96,7 @@
+             <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_hover_minimize</key>
+             <owner>windowbuttons</owner>
+             <type>string</type>
+-            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/minimize-focused-hover.png</default>
++            <default>@DATADIR@/themes/Ambiance/metacity-1/minimize_focused_prelight.png</default>
+             <locale name="C">
+                 <short></short>
+                 <long></long>
+@@ -106,7 +106,7 @@
+             <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_hover_maximize</key>
+             <owner>windowbuttons</owner>
+             <type>string</type>
+-            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/maximize-focused-hover.png</default>
++            <default>@DATADIR@/themes/Ambiance/metacity-1/maximize_focused_prelight.png</default>
+             <locale name="C">
+                 <short></short>
+                 <long></long>
+@@ -116,7 +116,7 @@
+             <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_hover_unmaximize</key>
+             <owner>windowbuttons</owner>
+             <type>string</type>
+-            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/unmaximize-focused-hover.png</default>
++            <default>@DATADIR@/themes/Ambiance/metacity-1/unmaximize_focused_prelight.png</default>
+             <locale name="C">
+                 <short></short>
+                 <long></long>
+@@ -127,7 +127,7 @@
+             <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_normal_close</key>
+             <owner>windowbuttons</owner>
+             <type>string</type>
+-            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/close-unfocused-normal.png</default>
++            <default>@DATADIR@/themes/Ambiance/metacity-1/close_unfocused.png</default>
+             <locale name="C">
+                 <short></short>
+                 <long></long>
+@@ -137,7 +137,7 @@
+             <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_normal_minimize</key>
+             <owner>windowbuttons</owner>
+             <type>string</type>
+-            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/minimize-unfocused-normal.png</default>
++            <default>@DATADIR@/themes/Ambiance/metacity-1/minimize_unfocused.png</default>
+             <locale name="C">
+                 <short></short>
+                 <long></long>
+@@ -147,7 +147,7 @@
+             <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_normal_maximize</key>
+             <owner>windowbuttons</owner>
+             <type>string</type>
+-            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/maximize-unfocused-normal.png</default>
++            <default>@DATADIR@/themes/Ambiance/metacity-1/maximize_unfocused.png</default>
+             <locale name="C">
+                 <short></short>
+                 <long></long>
+@@ -157,7 +157,7 @@
+             <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_normal_unmaximize</key>
+             <owner>windowbuttons</owner>
+             <type>string</type>
+-            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/unmaximize-unfocused-normal.png</default>
++            <default>@DATADIR@/themes/Ambiance/metacity-1/unmaximize_unfocused.png</default>
+             <locale name="C">
+                 <short></short>
+                 <long></long>
+@@ -168,7 +168,7 @@
+             <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_clicked_close</key>
+             <owner>windowbuttons</owner>
+             <type>string</type>
+-            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/close-unfocused-clicked.png</default>
++            <default>@DATADIR@/themes/Ambiance/metacity-1/close_unfocused_pressed.png</default>
+             <locale name="C">
+                 <short></short>
+                 <long></long>
+@@ -178,7 +178,7 @@
+             <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_clicked_minimize</key>
+             <owner>windowbuttons</owner>
+             <type>string</type>
+-            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/minimize-unfocused-clicked.png</default>
++            <default>@DATADIR@/themes/Ambiance/metacity-1/minimize_unfocused_pressed.png</default>
+             <locale name="C">
+                 <short></short>
+                 <long></long>
+@@ -188,7 +188,7 @@
+             <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_clicked_maximize</key>
+             <owner>windowbuttons</owner>
+             <type>string</type>
+-            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/maximize-unfocused-clicked.png</default>
++            <default>@DATADIR@/themes/Ambiance/metacity-1/maximize_unfocused_pressed.png</default>
+             <locale name="C">
+                 <short></short>
+                 <long></long>
+@@ -198,7 +198,7 @@
+             <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_clicked_unmaximize</key>
+             <owner>windowbuttons</owner>
+             <type>string</type>
+-            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/unmaximize-unfocused-clicked.png</default>
++            <default>@DATADIR@/themes/Ambiance/metacity-1/unmaximize_unfocused_pressed.png</default>
+             <locale name="C">
+                 <short></short>
+                 <long></long>
+@@ -209,7 +209,7 @@
+             <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_hover_close</key>
+             <owner>windowbuttons</owner>
+             <type>string</type>
+-            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/close-unfocused-hover.png</default>
++            <default>@DATADIR@/themes/Ambiance/metacity-1/close_unfocused_prelight.png</default>
+             <locale name="C">
+                 <short></short>
+                 <long></long>
+@@ -219,7 +219,7 @@
+             <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_hover_minimize</key>
+             <owner>windowbuttons</owner>
+             <type>string</type>
+-            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/minimize-unfocused-hover.png</default>
++            <default>@DATADIR@/themes/Ambiance/metacity-1/minimize_unfocused_prelight.png</default>
+             <locale name="C">
+                 <short></short>
+                 <long></long>
+@@ -229,7 +229,7 @@
+             <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_hover_maximize</key>
+             <owner>windowbuttons</owner>
+             <type>string</type>
+-            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/maximize-unfocused-normal.png</default>
++            <default>@DATADIR@/themes/Ambiance/metacity-1/maximize_unfocused_prelight.png</default>
+             <locale name="C">
+                 <short></short>
+                 <long></long>
+@@ -239,7 +239,7 @@
+             <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_hover_unmaximize</key>
+             <owner>windowbuttons</owner>
+             <type>string</type>
+-            <default>@DATADIR@/pixmaps/windowbuttons/themes/default/unmaximize-unfocused-hover.png</default>
++            <default>@DATADIR@/themes/Ambiance/metacity-1/unmaximize_unfocused_prelight.png</default>
+             <locale name="C">
+                 <short></short>
+                 <long></long>
+@@ -251,7 +251,7 @@
+             <key>/schemas/apps/windowbuttons-applet/prefs/use_metacity_layout</key>
+             <owner>windowbuttons</owner>
+             <type>bool</type>
+-            <default>true</default>
++            <default>false</default>
+             <locale name="C">
+                 <short>Determines whether we use custom or Metacity's button layout</short>
+                 <long>When disabled, this applet's button_layout string will be used to order the buttons.</long>
+@@ -261,7 +261,7 @@
+             <key>/schemas/apps/windowbuttons-applet/prefs/button_layout</key>
+             <owner>windowbuttons</owner>
+             <type>string</type>
+-            <default>minimize,maximize,close</default>
++            <default>close,minimize,maximize</default>
+             <locale name="C">
+                 <short>Layout of buttons.</short>
+                 <long>Essentially a copy from Metacity's button_layout, but we can modify it for custom settings.</long>
+@@ -272,7 +272,7 @@
+             <key>/schemas/apps/windowbuttons-applet/prefs/theme</key>
+             <owner>windowbuttons</owner>
+             <type>string</type>
+-            <default>default</default>
++            <default>custom</default>
+             <locale name="C">
+                 <short>Button theme</short>
+                 <long>Name of a folder located in windowapplets/themes/ or "custom".</long>
+@@ -325,7 +325,7 @@
+             <key>/schemas/apps/windowbuttons-applet/prefs/hide_on_unmaximized</key>
+             <owner>windowbuttons</owner>
+             <type>bool</type>
+-            <default>false</default>
++            <default>true</default>
+             <locale name="C">
+                 <short>Hides buttons when there are no windows present.</short>
+                 <long>When enabled, the buttons will disappear when there are no maximized (or active) windows on the screen.</long>
+--- a/gnome-buttons/preferences.c
++++ b/gnome-buttons/preferences.c
+@@ -198,11 +198,11 @@
+ 		wbp->hide_on_unmaximized = FALSE;
+ 		wbp->click_effect = TRUE;
+ 		wbp->hover_effect = TRUE;
+-		wbp->use_metacity_layout = TRUE;	
++		wbp->use_metacity_layout = FALSE;
+ 		wbp->reverse_order = FALSE;
+ 		wbp->show_tooltips = FALSE;
+ 		wbp->orientation = 0;
+-		wbp->button_layout = "menu:minimize,maximize,close";
++		wbp->button_layout = "close,minimize,maximize";
+ 		wbp->theme = "default";
+ 		for (i=0; i<WB_BUTTONS; i++) {
+ 			wbp->button_hidden[i] = 0;

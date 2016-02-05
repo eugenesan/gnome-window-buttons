@@ -1,0 +1,66 @@
+#
+# Ambiance
+/usr/share/themes/Ambiance/metacity-1/close_focused_pressed.png /usr/share/pixmaps/windowbuttons/themes/ambiance-current/close-focused-clicked.png
+/usr/share/themes/Ambiance/metacity-1/close_focused_prelight.png /usr/share/pixmaps/windowbuttons/themes/ambiance-current/close-focused-hover.png
+/usr/share/themes/Ambiance/metacity-1/close_focused_normal.png /usr/share/pixmaps/windowbuttons/themes/ambiance-current/close-focused-normal.png
+#
+/usr/share/themes/Ambiance/metacity-1/close_unfocused_pressed.png /usr/share/pixmaps/windowbuttons/themes/ambiance-current/close-unfocused-clicked.png
+/usr/share/themes/Ambiance/metacity-1/close_unfocused_prelight.png /usr/share/pixmaps/windowbuttons/themes/ambiance-current/close-unfocused-hover.png
+/usr/share/themes/Ambiance/metacity-1/close_unfocused.png /usr/share/pixmaps/windowbuttons/themes/ambiance-current/close-unfocused-normal.png
+#
+/usr/share/themes/Ambiance/metacity-1/maximize_focused_pressed.png /usr/share/pixmaps/windowbuttons/themes/ambiance-current/maximize-focused-clicked.png
+/usr/share/themes/Ambiance/metacity-1/maximize_focused_prelight.png /usr/share/pixmaps/windowbuttons/themes/ambiance-current/maximize-focused-hover.png
+/usr/share/themes/Ambiance/metacity-1/maximize_focused_normal.png /usr/share/pixmaps/windowbuttons/themes/ambiance-current/maximize-focused-normal.png
+#
+/usr/share/themes/Ambiance/metacity-1/maximize_unfocused_pressed.png /usr/share/pixmaps/windowbuttons/themes/ambiance-current/maximize-unfocused-clicked.png
+/usr/share/themes/Ambiance/metacity-1/maximize_unfocused_prelight.png /usr/share/pixmaps/windowbuttons/themes/ambiance-current/maximize-unfocused-hover.png
+/usr/share/themes/Ambiance/metacity-1/maximize_unfocused.png /usr/share/pixmaps/windowbuttons/themes/ambiance-current/maximize-unfocused-normal.png
+#
+/usr/share/themes/Ambiance/metacity-1/minimize_focused_pressed.png /usr/share/pixmaps/windowbuttons/themes/ambiance-current/minimize-focused-clicked.png
+/usr/share/themes/Ambiance/metacity-1/minimize_focused_prelight.png /usr/share/pixmaps/windowbuttons/themes/ambiance-current/minimize-focused-hover.png
+/usr/share/themes/Ambiance/metacity-1/minimize_focused_normal.png /usr/share/pixmaps/windowbuttons/themes/ambiance-current/minimize-focused-normal.png
+#
+/usr/share/themes/Ambiance/metacity-1/minimize_unfocused_pressed.png /usr/share/pixmaps/windowbuttons/themes/ambiance-current/minimize-unfocused-clicked.png
+/usr/share/themes/Ambiance/metacity-1/minimize_unfocused_prelight.png /usr/share/pixmaps/windowbuttons/themes/ambiance-current/minimize-unfocused-hover.png
+/usr/share/themes/Ambiance/metacity-1/minimize_unfocused.png /usr/share/pixmaps/windowbuttons/themes/ambiance-current/minimize-unfocused-normal.png
+#
+/usr/share/themes/Ambiance/metacity-1/unmaximize_focused_pressed.png /usr/share/pixmaps/windowbuttons/themes/ambiance-current/unmaximize-focused-clicked.png
+/usr/share/themes/Ambiance/metacity-1/unmaximize_focused_prelight.png /usr/share/pixmaps/windowbuttons/themes/ambiance-current/unmaximize-focused-hover.png
+/usr/share/themes/Ambiance/metacity-1/unmaximize_focused_normal.png /usr/share/pixmaps/windowbuttons/themes/ambiance-current/unmaximize-focused-normal.png
+#
+/usr/share/themes/Ambiance/metacity-1/unmaximize_unfocused_pressed.png /usr/share/pixmaps/windowbuttons/themes/ambiance-current/unmaximize-unfocused-clicked.png
+/usr/share/themes/Ambiance/metacity-1/unmaximize_unfocused_prelight.png /usr/share/pixmaps/windowbuttons/themes/ambiance-current/unmaximize-unfocused-hover.png
+/usr/share/themes/Ambiance/metacity-1/unmaximize_unfocused.png /usr/share/pixmaps/windowbuttons/themes/ambiance-current/unmaximize-unfocused-normal.png
+#
+# Radiance
+/usr/share/themes/Radiance/metacity-1/close_focused_pressed.png /usr/share/pixmaps/windowbuttons/themes/radiance-current/close-focused-clicked.png
+/usr/share/themes/Radiance/metacity-1/close_focused_prelight.png /usr/share/pixmaps/windowbuttons/themes/radiance-current/close-focused-hover.png
+/usr/share/themes/Radiance/metacity-1/close_focused_normal.png /usr/share/pixmaps/windowbuttons/themes/radiance-current/close-focused-normal.png
+#
+/usr/share/themes/Radiance/metacity-1/close_unfocused_pressed.png /usr/share/pixmaps/windowbuttons/themes/radiance-current/close-unfocused-clicked.png
+/usr/share/themes/Radiance/metacity-1/close_unfocused_prelight.png /usr/share/pixmaps/windowbuttons/themes/radiance-current/close-unfocused-hover.png
+/usr/share/themes/Radiance/metacity-1/close_unfocused.png /usr/share/pixmaps/windowbuttons/themes/radiance-current/close-unfocused-normal.png
+#
+/usr/share/themes/Radiance/metacity-1/maximize_focused_pressed.png /usr/share/pixmaps/windowbuttons/themes/radiance-current/maximize-focused-clicked.png
+/usr/share/themes/Radiance/metacity-1/maximize_focused_prelight.png /usr/share/pixmaps/windowbuttons/themes/radiance-current/maximize-focused-hover.png
+/usr/share/themes/Radiance/metacity-1/maximize_focused_normal.png /usr/share/pixmaps/windowbuttons/themes/radiance-current/maximize-focused-normal.png
+#
+/usr/share/themes/Radiance/metacity-1/maximize_unfocused_pressed.png /usr/share/pixmaps/windowbuttons/themes/radiance-current/maximize-unfocused-clicked.png
+/usr/share/themes/Radiance/metacity-1/maximize_unfocused_prelight.png /usr/share/pixmaps/windowbuttons/themes/radiance-current/maximize-unfocused-hover.png
+/usr/share/themes/Radiance/metacity-1/maximize_unfocused.png /usr/share/pixmaps/windowbuttons/themes/radiance-current/maximize-unfocused-normal.png
+#
+/usr/share/themes/Radiance/metacity-1/minimize_focused_pressed.png /usr/share/pixmaps/windowbuttons/themes/radiance-current/minimize-focused-clicked.png
+/usr/share/themes/Radiance/metacity-1/minimize_focused_prelight.png /usr/share/pixmaps/windowbuttons/themes/radiance-current/minimize-focused-hover.png
+/usr/share/themes/Radiance/metacity-1/minimize_focused_normal.png /usr/share/pixmaps/windowbuttons/themes/radiance-current/minimize-focused-normal.png
+#
+/usr/share/themes/Radiance/metacity-1/minimize_unfocused_pressed.png /usr/share/pixmaps/windowbuttons/themes/radiance-current/minimize-unfocused-clicked.png
+/usr/share/themes/Radiance/metacity-1/minimize_unfocused_prelight.png /usr/share/pixmaps/windowbuttons/themes/radiance-current/minimize-unfocused-hover.png
+/usr/share/themes/Radiance/metacity-1/minimize_unfocused.png /usr/share/pixmaps/windowbuttons/themes/radiance-current/minimize-unfocused-normal.png
+#
+/usr/share/themes/Radiance/metacity-1/unmaximize_focused_pressed.png /usr/share/pixmaps/windowbuttons/themes/radiance-current/unmaximize-focused-clicked.png
+/usr/share/themes/Radiance/metacity-1/unmaximize_focused_prelight.png /usr/share/pixmaps/windowbuttons/themes/radiance-current/unmaximize-focused-hover.png
+/usr/share/themes/Radiance/metacity-1/unmaximize_focused_normal.png /usr/share/pixmaps/windowbuttons/themes/radiance-current/unmaximize-focused-normal.png
+#
+/usr/share/themes/Radiance/metacity-1/unmaximize_unfocused_pressed.png /usr/share/pixmaps/windowbuttons/themes/radiance-current/unmaximize-unfocused-clicked.png
+/usr/share/themes/Radiance/metacity-1/unmaximize_unfocused_prelight.png /usr/share/pixmaps/windowbuttons/themes/radiance-current/unmaximize-unfocused-hover.png
+/usr/share/themes/Radiance/metacity-1/unmaximize_unfocused.png /usr/share/pixmaps/windowbuttons/themes/radiance-current/unmaximize-unfocused-normal.png
