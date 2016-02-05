@@ -1,9 +1,9 @@
 
 pixmaps_DATA = \
-	windowtitle.png
+	windowtitle-applet.png
 
 pixmapsdir = \
-	${prefix}/share/windowtitle
+	$(datadir)/pixmaps
 
 EXTRA_DIST = \
 	$(pixmaps_DATA)

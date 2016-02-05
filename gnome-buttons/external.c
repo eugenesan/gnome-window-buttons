@@ -68,20 +68,24 @@ gboolean issetCompizDecoration() {
 void toggleCompizDecoration(gboolean new_value) {
 	GError *err = NULL;
 	GConfClient *gconfclient = gconf_client_get_default();
-	
+
 	if (new_value) {
-		gconf_client_unset(gconfclient, GCONF_COMPIZ_DECORATION_MATCH, &err);
+		if (gconf_client_unset(gconfclient, GCONF_COMPIZ_DECORATION_MATCH, &err))
+			gconf_client_unset(gconfclient, GCONF_COMPIZ_DECORATION_MATCH_OLD, &err);
+	} else if (gconf_client_get_string(gconfclient, GCONF_COMPIZ_DECORATION_MATCH, &err)) {
+					 gconf_client_set_string(gconfclient,
+					 GCONF_COMPIZ_DECORATION_MATCH,
+					 COMPIZ_DECORATION_MATCH,
+					 NULL);
+	} else if (gconf_client_get_string(gconfclient, GCONF_COMPIZ_DECORATION_MATCH_OLD, &err)) {
+					 gconf_client_set_string(gconfclient,
+					 GCONF_COMPIZ_DECORATION_MATCH_OLD,
+					 COMPIZ_DECORATION_MATCH,
+					 NULL);
 	} else {
-		if (gconf_client_get_string(gconfclient, GCONF_COMPIZ_DECORATION_MATCH, &err)) {
-			gconf_client_set_string(gconfclient,
-				                    GCONF_COMPIZ_DECORATION_MATCH,
-				                    COMPIZ_DECORATION_MATCH,
-				                    NULL);
-		} else {
-			// Compiz probably not installed. Unset newly created value.
-			gconf_client_unset(gconfclient, GCONF_COMPIZ_DECORATION_MATCH, &err);
-			// TODO: This doesn't really remove it. I hate GConf.
-		}
+		// Compiz probably not installed. Unset newly created value.
+		// TODO: This doesn't really remove it. I hate GConf.
+		toggleCompizDecoration(0);
 	}
 
 	g_free(err);

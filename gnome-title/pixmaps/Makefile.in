@@ -32,7 +32,7 @@ POST_INSTALL = :
 NORMAL_UNINSTALL = :
 PRE_UNINSTALL = :
 POST_UNINSTALL = :
-subdir = buttons/pixmaps
+subdir = gnome-title/pixmaps
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/as-ac-expand.m4 \
@@ -84,6 +84,7 @@ CFLAGS = @CFLAGS@
 CPP = @CPP@
 CPPFLAGS = @CPPFLAGS@
 CYGPATH_W = @CYGPATH_W@
+DATADIR = @DATADIR@
 DATADIRNAME = @DATADIRNAME@
 DEFS = @DEFS@
 DEPDIR = @DEPDIR@
@@ -99,8 +100,6 @@ GETTEXT_PACKAGE = @GETTEXT_PACKAGE@
 GMOFILES = @GMOFILES@
 GMSGFMT = @GMSGFMT@
 GNOMELOCALEDIR = @GNOMELOCALEDIR@
-GNOME_APPLETS_CFLAGS = @GNOME_APPLETS_CFLAGS@
-GNOME_APPLETS_LIBS = @GNOME_APPLETS_LIBS@
 GREP = @GREP@
 INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
@@ -193,16 +192,14 @@ target_alias = @target_alias@
 top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
-EXTRA_DIST = \
-	$(pixmaps_DATA)\
-	$(other_files_DATA) \
-	$(pixmaps_DATA)
-
 pixmaps_DATA = \
-	windowbuttons_logo.png 
+	windowtitle-applet.png
 
 pixmapsdir = \
-	${prefix}/share/windowbuttons
+	$(datadir)/pixmaps
+
+EXTRA_DIST = \
+	$(pixmaps_DATA)
 
 all: all-am
 
@@ -216,9 +213,9 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.am  $(am__confi
 	      exit 1;; \
 	  esac; \
 	done; \
-	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu buttons/pixmaps/Makefile'; \
+	echo ' cd $(top_srcdir) && $(AUTOMAKE) --gnu gnome-title/pixmaps/Makefile'; \
 	$(am__cd) $(top_srcdir) && \
-	  $(AUTOMAKE) --gnu buttons/pixmaps/Makefile
+	  $(AUTOMAKE) --gnu gnome-title/pixmaps/Makefile
 .PRECIOUS: Makefile
 Makefile: $(srcdir)/Makefile.in $(top_builddir)/config.status
 	@case '$?' in \

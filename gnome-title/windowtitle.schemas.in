@@ -77,6 +77,17 @@
         </schema>
 
 	<schema>
+            <key>/schemas/apps/windowtitle-applet/prefs/show_tooltips</key>
+            <owner>windowtitle</owner>
+            <type>bool</type>
+            <default>false</default>
+            <locale name="C">
+                <short>Show tooltips over title and icon</short>
+                <long>When enabled, a tooltip carrying the name of the currently active window will be shown.</long>
+            </locale>
+        </schema>
+
+	<schema>
             <key>/schemas/apps/windowtitle-applet/prefs/title_size</key>
             <owner>windowtitle</owner>
             <type>int</type>

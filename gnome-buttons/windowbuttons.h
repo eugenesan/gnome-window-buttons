@@ -33,11 +33,11 @@
 
 #include <glib.h>
 #include <glib-object.h>
+#include <glib/gi18n.h>
 #include <gconf/gconf-client.h>
 #include <panel-applet.h>
 #include <panel-applet-gconf.h>
 #include <gtk/gtk.h>
-#include <gtk/gtklabel.h>
 
 #if PLAINTEXT_CONFIG == 1
 #include <glib/gstdio.h>
@@ -50,13 +50,13 @@
 
 /* static paths and stuff */
 #define APPLET_NAME						"Window Buttons"
-#define APPLET_OAFIID					"OAFIID:WindowButtonsApplet"
-#define APPLET_OAFIID_FACTORY			"OAFIID:WindowButtonsApplet_Factory"
+#define APPLET_OAFIID					"WindowButtonsApplet"
+#define APPLET_OAFIID_FACTORY			"WindowButtonsAppletFactory"
 #define PATH_BUILDER 					"/usr/share/gnome-applets/builder"
-#define PATH_MAIN 						"/usr/share/windowbuttons"
-#define PATH_THEMES 					PATH_MAIN"/themes"
-#define PATH_UI_PREFS					PATH_MAIN"/windowbuttons.ui"
-#define PATH_LOGO						PATH_MAIN"/windowbuttons_logo.png"
+#define PATH_MAIN 						"/usr/share"
+#define PATH_THEMES 					PATH_MAIN"/pixmaps/windowbuttons/themes"
+#define PATH_UI_PREFS					PATH_MAIN"/windowbuttons/windowbuttons.ui"
+#define PATH_LOGO						PATH_MAIN"/pixmaps/windowbuttons-applet.png"
 #define METACITY_XML 					"metacity-theme-1.xml"
 #define THEME_EXTENSION					"png"
 #define GCONF_PREFS 					"/schemas/apps/windowbuttons-applet/prefs"
@@ -88,6 +88,7 @@
 #define CFG_REVERSE_ORDER			"reverse_order"
 #define CFG_ORIENTATION				"orientation"
 #define CFG_THEME					"theme"
+#define CFG_SHOW_TOOLTIPS			"show_tooltips"
 
 G_BEGIN_DECLS
 
@@ -159,12 +160,13 @@ typedef struct {
 				use_metacity_layout,
 				reverse_order,
 				click_effect,
-				hover_effect;
+				hover_effect,
+				show_tooltips;
 } WBPreferences;
 
 /* WBApplet definition (inherits from PanelApplet) */
 typedef struct {
-    PanelApplet		parent;
+    PanelApplet		*applet;			// The actual PanelApplet
 	
 	/* Widgets */
 	GtkBox      	*box;				// Main container

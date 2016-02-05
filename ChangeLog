@@ -153,13 +153,23 @@ Initial release.
 - WTA: Bugfix: Icon padding wrong on different panel orientations
 
 0.2.10
-- Fixed makefile docs path to point to /usr/share
+- Bugfix: Makefile docs path should point to /usr/share
 - Disabled applet hiding by default (it was causing confusion with new users)
 - Minor code cleanups
 - WBA: Added option to override button orientation (automatic/default, horizontal and vertical)
 - WBA: Added option to reverse button order
 - WBA: Updated themes: Ambiance-Maverick, Radiance-Maverick (thank you Cierreics)
+- WTA: Bugfix: Desktop icon does not rotate with panel.
 - WTA: Saturate title icon and darken text on inactive
 - WTA: Select a more apropriate non-custom title text color
 - WTA: Added options to set both active and inactive font/color
 - WTA: Added experimental option to show window action menu on title right click. Warning: Overrides applet menu over title.
+
+0.3
+- Ported applets to Gnome 3
+- Migrated Bonobo to DBus
+- Moved logo pixmaps to proper folder
+- Makefile cleanups
+- Added tooltips (off by default)
+- WTA: Improved automatic color detection
+- WBA: Moved themes into proper folder
