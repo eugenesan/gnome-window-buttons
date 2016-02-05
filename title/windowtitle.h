@@ -21,12 +21,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor Boston, MA 02110-1301,  USA
  */
- 
+
+#define PLAINTEXT_CONFIG				0
+
 #ifndef __WT_APPLET_H__
 #define __WT_APPLET_H__
 
 #ifdef HAVE_CONFIG_H
-#  include <config.h>
+#include <config.h>
 #endif
 
 #include <glib.h>
@@ -39,6 +41,10 @@
 #include <gtk/gtklabel.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 
+#if PLAINTEXT_CONFIG == 1
+#include <glib/gstdio.h>
+#endif
+
 #ifndef WNCK_I_KNOW_THIS_IS_UNSTABLE
 #define WNCK_I_KNOW_THIS_IS_UNSTABLE
 #endif
@@ -48,21 +54,27 @@
 #define APPLET_NAME						"Window Title"
 #define APPLET_OAFIID					"OAFIID:WindowTitleApplet"
 #define APPLET_OAFIID_FACTORY			"OAFIID:WindowTitleApplet_Factory"
-#define LOCATION_MAIN 					"/usr/share/windowtitle"
-#define LOCATION_BUILDER 				"/usr/share/gnome-applets/builder"
+#define PATH_MAIN						"/usr/share/windowtitle"
+#define PATH_BUILDER 					"/usr/share/gnome-applets/builder"
+#define PATH_UI_PREFS					PATH_MAIN"/windowtitle.ui"
+#define PATH_LOGO						PATH_MAIN"/windowtitle.png"
+#define FILE_CONFIGFILE					".windowtitle"
 #define GCONF_PREFS 					"/schemas/apps/windowtitle-applet/prefs"
-#define GCONF_COMPIZ_DECORATION_MATCH	"/apps/compiz/plugins/decoration/allscreens/options/decoration_match"
-#define COMPIZ_DECORATION_MATCH			"!(state=maxvert | maxhorz)"
- 
-#define GCK_ALIGNMENT					"alignment"
-#define GCK_SWAP_ORDER					"swap_order"
-#define GCK_HIDE_ICON					"hide_icon"
-#define GCK_HIDE_TITLE					"hide_title"
-#define GCK_CUSTOM_STYLE				"custom_style"
-#define GCK_TITLE_FONT					"title_font"
-#define GCK_TITLE_COLOR_FG				"title_color_fg"
-#define GCK_ONLY_MAXIMIZED				"only_maximized"
-#define GCK_HIDE_ON_UNMAXIMIZED 		"hide_on_unmaximized"
+#define ICON_WIDTH						16
+#define ICON_HEIGHT						16
+#define ICON_PADDING					5
+
+#define CFG_ALIGNMENT					"alignment"
+#define CFG_SWAP_ORDER					"swap_order"
+#define CFG_EXPAND_APPLET				"expand_applet"
+#define CFG_HIDE_ICON					"hide_icon"
+#define CFG_HIDE_TITLE					"hide_title"
+#define CFG_CUSTOM_STYLE				"custom_style"
+#define CFG_TITLE_SIZE					"title_size"
+#define CFG_TITLE_FONT					"title_font"
+#define CFG_TITLE_COLOR_FG				"title_color_fg"
+#define CFG_ONLY_MAXIMIZED				"only_maximized"
+#define CFG_HIDE_ON_UNMAXIMIZED 		"hide_on_unmaximized"
 
 G_BEGIN_DECLS
 
@@ -80,7 +92,9 @@ typedef struct {
 					hide_icon,				// [T/F] Hide the icon
 					hide_title,				// [T/F] Hide the title
 					swap_order,				// [T/F] Swap title/icon
+					expand_applet,			// [T/F] Expand the applet TODO: rename to expand_title
 					custom_style;			// [T/F] Use custom style
+	gint			title_size;				// Title size (minimal w/ expand and absolute w/o expand)
 	gchar			*title_font;			// Custom title font
 	gchar			*title_color;			// Custom title color
 	gdouble			alignment;				// Title alignment [0=left, 0.5=center, 1=right]
@@ -101,20 +115,23 @@ typedef struct {
 	WTPreferences	*prefs;					// Main properties 
 	WnckScreen 		*activescreen;			// Active screen
 	WnckWorkspace	*activeworkspace;		// Active workspace
-	WnckWindow		*currentwindow,			// Upper-most maximized window
+	WnckWindow		*umaxedwindow,			// Upper-most maximized window
 					*activewindow,			// Active window
 					*rootwindow;			// Root window (desktop)
 	gulong			active_handler_state,	// activewindow's statechange event handler ID
 					active_handler_name,	// activewindow's namechange event handler ID
 					active_handler_icon,	// activewindow's iconchange event handler ID
-					current_handler_state,	// currentwindow's statechange event handler ID
-					current_handler_name,	// currentwindow's manechange event handler ID
-					current_handler_icon;	// currentwindow's iconchange event handler ID
+					umaxed_handler_state,	// umaxedwindow's statechange event handler ID
+					umaxed_handler_name,	// umaxedwindow's manechange event handler ID
+					umaxed_handler_icon;	// umaxedwindow's iconchange event handler ID
 	GdkPixbuf		*icon_pixbuf;			// Icon pixle buffer
 	gboolean		focused;				// [T/F] Window state (focused or unfocused)
 	
-	PanelAppletOrient	orient;				// Panel orientation
 	GdkPixbufRotation	angle;				// Applet angle
+	PanelAppletOrient	orient;				// Panel orientation
+	gint				size;				// Panel size
+	gint				asize;				// Applet allocation size
+	gint				*size_hints;		// Applet size hints
 	GtkPackType			packtype;			// Packaging direction of buttons
 	
 	/* GtkBuilder */

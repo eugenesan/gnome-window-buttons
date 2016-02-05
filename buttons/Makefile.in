@@ -50,7 +50,7 @@ am__installdirs = "$(DESTDIR)$(libexecdir)" "$(DESTDIR)$(builderdir)" \
 	"$(DESTDIR)$(schemasdir)" "$(DESTDIR)$(serverdir)"
 PROGRAMS = $(libexec_PROGRAMS)
 am_windowbuttons_OBJECTS = windowbuttons.$(OBJEXT) \
-	preferences.$(OBJEXT)
+	preferences.$(OBJEXT) external.$(OBJEXT) theme.$(OBJEXT)
 windowbuttons_OBJECTS = $(am_windowbuttons_OBJECTS)
 am__DEPENDENCIES_1 =
 windowbuttons_DEPENDENCIES = $(am__DEPENDENCIES_1)
@@ -195,6 +195,8 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 POFILES = @POFILES@
 POSUB = @POSUB@
 PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
@@ -265,7 +267,11 @@ windowbuttons_SOURCES = \
 	windowbuttons.c\
 	windowbuttons.h \
 	preferences.c \
-	preferences.h 
+	preferences.h \
+	external.c \
+	external.h \
+	theme.c \
+	theme.h
 
 windowbuttons_LDFLAGS = \
 	-Wl,--export-dynamic
@@ -375,7 +381,9 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/external.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/preferences.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/theme.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/windowbuttons.Po@am__quote@
 
 .c.o:

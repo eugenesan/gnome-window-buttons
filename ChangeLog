@@ -131,3 +131,23 @@ Initial release.
 - WBA: Updated credits
 - WBA: Minor code cleanups
 - WTA: Bugfix: Crash on startup (gnome 2.30 + libwnck + compiz)
+
+0.2.8
+- WBA: Bugfix: Preferences crash applet if Compiz is not installed
+- WBA: Added new themes: Radiance, WoW, Ambiance-X-Studio, Sorbet, Ambiance-Maverick, Radiance-Maverick.
+- WBA: Fixed theme names in preferences
+- WTA: Bugfix: Memory leak due to refed pixbufs
+- WTA: Bugfix: Segfault on "compiz --replace"
+- WTA: Added option to expand applet
+
+0.2.9
+- WBA, WTA: Major code cleanups, rearangements and optimizations
+- WBA, WTA: Added plaintext settings backend (enable by setting PLAINTEXT_CONFIG to 1)
+- WBA, WTA: Fixed desktop detection (+ got rid of potential segfaults)
+- WBA: Bugfix: hide_on_unmaximized causes buttons to not reappear if disabled when currentwindow not present
+- WBA: Changed theme model from 16 to 24 images (added 2 new unfocused states) and made it backwards compatible
+- WBA: Fixed Compiz detection for maximized windows. Coincidentally this also makes Emerald work
+- WBA: Added new themes: Blubuntu, Equinox-Glass, Plano, New-Hope
+- WTA: Bugfix: Ensure the title gets truncated if it runs out of space
+- WTA: Forced the Expand option due to GTK+ bugs. It can be disabled in gconf-editor, but then you should also set a fixed title_size
+- WTA: Bugfix: Icon padding wrong on different panel orientations

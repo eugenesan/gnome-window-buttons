@@ -26,7 +26,6 @@
 
 typedef struct {
 	WBApplet *wbapplet;
-	const gchar *gconf_key;
 	gushort image_index;
 	gushort image_state;
 } ImageOpenData;

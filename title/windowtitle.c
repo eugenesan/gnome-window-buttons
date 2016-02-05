@@ -1,4 +1,3 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 4; tab-width: 4 -*- */
 /*
  * main.c
  * Copyright (C) Andrej Belcijan 2009 <andrej.{@}.gmail.dot.com>
@@ -21,25 +20,32 @@
 
 /* Prototypes */
 static void applet_change_background (PanelApplet *, PanelAppletBackgroundType, GdkColor *, GdkPixmap *);
+static void applet_change_orient (PanelApplet *, PanelAppletOrient, gpointer);
 static void active_workspace_changed (WnckScreen *, WnckWorkspace *, gpointer);
 static void active_window_changed (WnckScreen *, WnckWindow *, gpointer);
 static void active_window_state_changed (WnckWindow *, WnckWindowState, WnckWindowState, gpointer);
 static void active_window_nameicon_changed (WnckWindow *, gpointer);
-static void current_window_state_changed (WnckWindow *, WnckWindowState, WnckWindowState, gpointer);
-static void current_window_nameicon_changed (WnckWindow *, gpointer);
+static void umaxed_window_state_changed (WnckWindow *, WnckWindowState, WnckWindowState, gpointer);
+static void umaxed_window_nameicon_changed (WnckWindow *, gpointer);
 static void viewports_changed (WnckScreen *, gpointer);
 static void window_closed (WnckScreen *, WnckWindow *, gpointer);
 static void window_opened (WnckScreen *, WnckWindow *, gpointer);
 static void about_cb (BonoboUIComponent *, WTApplet *);
+static WnckWindow *getRootWindow (WnckScreen *);
 static WnckWindow *getUpperMaximized (WTApplet *);
 const gchar *getCheckBoxGConfKey (gushort);
 void properties_cb (BonoboUIComponent *, WTApplet *, const char *);
 void setAlignment(WTApplet *, gfloat);
+void placeWidgets (WTApplet *);
+void reloadWidgets (WTApplet *);
+void rotateWidgets (WTApplet *, GdkPixbufRotation);
 void toggleHidden(WTApplet *);
 void loadPreferencesGConf(WTPreferences *, WTApplet *);
-//void loadPreferencesCfg(WTPreferences *, WTApplet *); //TODO
+void loadPreferencesCfg(WTPreferences *, WTApplet *);
 WTPreferences *loadPreferences(WTApplet *);
 gchar *getButtonLayoutGConf(WTApplet *, gboolean);
+GdkPixbufRotation getOrientAngle (PanelAppletOrient);
+GtkPackType getPackType(GdkPixbufRotation);
 
 G_DEFINE_TYPE (WTApplet, wt_applet, PANEL_TYPE_APPLET);
 
@@ -65,46 +71,19 @@ static void wt_applet_class_init (WTAppletClass *klass) {
 WTPreferences *loadPreferences(WTApplet *wtapplet) {
 	WTPreferences *wtp = g_new0(WTPreferences, 1);
 
-	//TODO
-//	if (reading_from_gconf) {
-		loadPreferencesGConf(wtp, wtapplet);
-//	} else {
-//		loadPreferencesCfg(wtp, wtapplet);
-//	}
+#if PLAINTEXT_CONFIG == 0
+	loadPreferencesGConf(wtp, wtapplet);
+#else
+	loadPreferencesCfg(wtp, wtapplet);
+#endif
 
-	/*
-	//Suggestion from #gtk+
-	 GtkSettings *gtks;
-	if (gtk_widget_has_screen (GTK_WIDGET(wtapplet))) gtks = gtk_settings_get_for_screen (gtk_widget_get_screen (GTK_WIDGET(wtapplet))); else gtks = gtk_settings_get_default();
-	gchar *font_name;
-	g_object_get (gtks, "gtk-font-name", &font_name, NULL);
-	wtp->title_font = font_name;
-	*/
-	 
 	return wtp;
-}
-
-/* In case we're reading the properties from GConf */
-void loadPreferencesGConf(WTPreferences *wtp, WTApplet *wtapplet) {
-	wtp->only_maximized = panel_applet_gconf_get_bool(PANEL_APPLET(wtapplet), GCK_ONLY_MAXIMIZED, NULL);
-	wtp->hide_on_unmaximized = panel_applet_gconf_get_bool(PANEL_APPLET(wtapplet), GCK_HIDE_ON_UNMAXIMIZED, NULL);
-	wtp->hide_icon = panel_applet_gconf_get_bool(PANEL_APPLET(wtapplet), GCK_HIDE_ICON, NULL);
-	wtp->hide_title = panel_applet_gconf_get_bool(PANEL_APPLET(wtapplet), GCK_HIDE_TITLE, NULL);
-	wtp->alignment = panel_applet_gconf_get_float(PANEL_APPLET(wtapplet), GCK_ALIGNMENT, NULL);
-	wtp->swap_order = panel_applet_gconf_get_bool(PANEL_APPLET(wtapplet), GCK_SWAP_ORDER, NULL);
-	wtp->custom_style = panel_applet_gconf_get_bool(PANEL_APPLET(wtapplet), GCK_CUSTOM_STYLE, NULL);
-	wtp->title_font = panel_applet_gconf_get_string(PANEL_APPLET(wtapplet), GCK_TITLE_FONT, NULL);
-	wtp->title_color = panel_applet_gconf_get_string(PANEL_APPLET(wtapplet), GCK_TITLE_COLOR_FG, NULL);
 }
 
 /* The About dialog */
 static void about_cb (BonoboUIComponent *uic, WTApplet *applet) {
         static const gchar *authors [] = {
 		"Andrej Belcijan <{andrejx} at {gmail.com}>",
-		" ",
-		"Special thanks to guys from GimpNet channels",
-		"#gnome-hackers and #gtk+",
-		"for answering my noob questions.",
 		NULL
 	};
 
@@ -118,7 +97,7 @@ static void about_cb (BonoboUIComponent *uic, WTApplet *applet) {
 		NULL
 	};
 
-	GdkPixbuf *logo = gdk_pixbuf_new_from_file (LOCATION_MAIN"/windowtitle.png", NULL);
+	GdkPixbuf *logo = gdk_pixbuf_new_from_file (PATH_LOGO, NULL);
 
 	gtk_show_about_dialog (NULL,
 		"version",	VERSION,
@@ -134,14 +113,26 @@ static void about_cb (BonoboUIComponent *uic, WTApplet *applet) {
 		NULL);
 }
 
+/* Safely returns the bottom-most (root) window */
+static WnckWindow *getRootWindow (WnckScreen *screen) {
+	GList *winstack = wnck_screen_get_windows_stacked(screen);
+	if (winstack)
+		return winstack->data;
+	else
+		return NULL;
+}
+
 /* Returns the highest maximized window */
-static WnckWindow *getUpperMaximized (WTApplet *wtapplet) {
+static WnckWindow *getUpperMaximized (WTApplet *wtapplet) {	
+	if (!wtapplet->prefs->only_maximized)
+		return wtapplet->activewindow;
+	
 	GList *windows = wnck_screen_get_windows_stacked(wtapplet->activescreen);
 	WnckWindow *returnwindow = NULL;
 
-	while (windows) {
+	while (windows && windows->data) {
 		if (wnck_window_is_maximized(windows->data)) {
-			//if(wnck_window_is_on_workspace(windows->data, wtapplet->activeworkspace))
+			// if(wnck_window_is_on_workspace(windows->data, wtapplet->activeworkspace))
 			if (!wnck_window_is_minimized(windows->data))
 				if (wnck_window_is_in_viewport(windows->data, wtapplet->activeworkspace))
 					returnwindow = windows->data;
@@ -149,45 +140,45 @@ static WnckWindow *getUpperMaximized (WTApplet *wtapplet) {
 		windows = windows->next;
 	}
 	 
-	// start tracking the new current window
-	if (wtapplet->currentwindow) {
-		if (g_signal_handler_is_connected(G_OBJECT(wtapplet->currentwindow), wtapplet->current_handler_state))
-			g_signal_handler_disconnect(G_OBJECT(wtapplet->currentwindow), wtapplet->current_handler_state);
-		if (g_signal_handler_is_connected(G_OBJECT(wtapplet->currentwindow), wtapplet->current_handler_name))
-			g_signal_handler_disconnect(G_OBJECT(wtapplet->currentwindow), wtapplet->current_handler_name);
-		if (g_signal_handler_is_connected(G_OBJECT(wtapplet->currentwindow), wtapplet->current_handler_icon))
-			g_signal_handler_disconnect(G_OBJECT(wtapplet->currentwindow), wtapplet->current_handler_icon); 
+	// start tracking the new umaxed window
+	if (wtapplet->umaxedwindow) {
+		if (g_signal_handler_is_connected(G_OBJECT(wtapplet->umaxedwindow), wtapplet->umaxed_handler_state))
+			g_signal_handler_disconnect(G_OBJECT(wtapplet->umaxedwindow), wtapplet->umaxed_handler_state);
+		if (g_signal_handler_is_connected(G_OBJECT(wtapplet->umaxedwindow), wtapplet->umaxed_handler_name))
+			g_signal_handler_disconnect(G_OBJECT(wtapplet->umaxedwindow), wtapplet->umaxed_handler_name);
+		if (g_signal_handler_is_connected(G_OBJECT(wtapplet->umaxedwindow), wtapplet->umaxed_handler_icon))
+			g_signal_handler_disconnect(G_OBJECT(wtapplet->umaxedwindow), wtapplet->umaxed_handler_icon); 
 	}
 	if (returnwindow) {
 		// maxed window was found
-		wtapplet->current_handler_state = g_signal_connect(G_OBJECT(returnwindow),
+		wtapplet->umaxed_handler_state = g_signal_connect(G_OBJECT(returnwindow),
 		                                             "state-changed",
-		                                             G_CALLBACK (current_window_state_changed),
-		                                             wtapplet);
-		wtapplet->current_handler_name = g_signal_connect(G_OBJECT(returnwindow),
+		                                             G_CALLBACK (umaxed_window_state_changed),
+		                                                  wtapplet);
+		wtapplet->umaxed_handler_name = g_signal_connect(G_OBJECT(returnwindow),
 		                                             "name-changed",
-		                                             G_CALLBACK (current_window_nameicon_changed),
+		                                             G_CALLBACK (umaxed_window_nameicon_changed),
 		                                             wtapplet);		
-		wtapplet->current_handler_icon = g_signal_connect(G_OBJECT(returnwindow),
+		wtapplet->umaxed_handler_icon = g_signal_connect(G_OBJECT(returnwindow),
 		                                             "icon-changed",
-		                                             G_CALLBACK (current_window_nameicon_changed),
+		                                             G_CALLBACK (umaxed_window_nameicon_changed),
 		                                             wtapplet);	
-		return returnwindow;
+		//return returnwindow;
 	} else {
 		// maxed window was not found
-		return wtapplet->rootwindow;
-		//return wnck_screen_get_windows_stacked(wtapplet->activescreen)->data;
+		returnwindow = wtapplet->rootwindow; //return wtapplet->rootwindow;
 	}
-	//WARNING: if this function returns NULL, applet won't detect clicks!
+	return returnwindow;
+	// WARNING: if this function returns NULL, applet won't detect clicks!
 }
 
-/* Updates the images according to preferences and the current window situation */
+/* Updates the images according to preferences and the umaxed window situation */
 void updateTitle(WTApplet *wtapplet) {
 	WnckWindow *controlledwindow;
 	gchar *title_text;
 	
 	if (wtapplet->prefs->only_maximized) {
-		controlledwindow = wtapplet->currentwindow;
+		controlledwindow = wtapplet->umaxedwindow;
 	} else {
 		controlledwindow = wtapplet->activewindow;
 	}
@@ -195,25 +186,25 @@ void updateTitle(WTApplet *wtapplet) {
 	if (controlledwindow == wtapplet->rootwindow) {
 		// we're on desktop
 		if (wtapplet->prefs->hide_on_unmaximized) {
-			// clear everything
+			// hide everything
 			gtk_image_clear(wtapplet->icon);
 			title_text = "";
 		} else {
 			// display "custom" icon/title (TODO: customization via preferences)
 			gtk_image_set_from_stock(wtapplet->icon, GTK_STOCK_HOME, GTK_ICON_SIZE_MENU);
-			title_text = "Desktop";
+			title_text = _("Desktop");
 		}
 	} else {
-		// we're updating window info
-		wtapplet->icon_pixbuf = gdk_pixbuf_rotate_simple(
-									gdk_pixbuf_scale_simple(
-										wnck_window_get_icon(controlledwindow),
-										16, 16,
-										GDK_INTERP_BILINEAR
-									),
-									wtapplet->angle
-								);
-		gtk_image_set_from_pixbuf(wtapplet->icon, wtapplet->icon_pixbuf);
+		// We're updating window info (Careful! We've had pixbuf memory leaks here)
+		wtapplet->icon_pixbuf = wnck_window_get_icon(controlledwindow); // This only returns a pointer
+
+		GdkPixbuf *ipb1 = gdk_pixbuf_scale_simple(wtapplet->icon_pixbuf, ICON_WIDTH, ICON_HEIGHT, GDK_INTERP_BILINEAR);
+		GdkPixbuf *ipb2 = gdk_pixbuf_rotate_simple(ipb1, wtapplet->angle);
+		g_object_unref(ipb1);	// Unref ipb1 to get it cleared from memory (we still need ipb2)
+
+		gtk_image_set_from_pixbuf(wtapplet->icon, ipb2); // Apply pixbuf to icon widget
+		g_object_unref(ipb2);   // Unref ipb2 to get it cleared from memory
+		
 		title_text = (gchar*)wnck_window_get_name(controlledwindow);
 	}
 	
@@ -229,6 +220,43 @@ void updateTitle(WTApplet *wtapplet) {
 			gtk_label_set_text(wtapplet->title, title_text); //just use system fonts
 		}
 	}
+}
+
+/* Expand/unexpand applet according to preferences */
+void toggleExpand(WTApplet *wtapplet) {
+	if (wtapplet->prefs->expand_applet) {
+		panel_applet_set_flags (PANEL_APPLET(wtapplet), PANEL_APPLET_EXPAND_MINOR | PANEL_APPLET_EXPAND_MAJOR);
+	} else {
+		// We must have a handle due to bug https://bugzilla.gnome.org/show_bug.cgi?id=556355
+		// panel_applet_set_flags (PANEL_APPLET(wtapplet), PANEL_APPLET_EXPAND_MINOR | PANEL_APPLET_EXPAND_MAJOR | PANEL_APPLET_HAS_HANDLE);
+		panel_applet_set_flags (PANEL_APPLET(wtapplet), PANEL_APPLET_EXPAND_MINOR);
+	}
+	reloadWidgets(wtapplet);
+	setAlignment(wtapplet, (gfloat)wtapplet->prefs->alignment);
+}
+
+/* Hide/unhide stuff according to preferences */
+void toggleHidden (WTApplet *wtapplet) {
+	if (wtapplet->prefs->hide_icon) {
+		gtk_widget_hide (GTK_WIDGET(wtapplet->icon));
+	} else {
+		gtk_widget_show (GTK_WIDGET(wtapplet->icon));
+	}
+	
+	if (wtapplet->prefs->hide_title) {
+		gtk_widget_hide (GTK_WIDGET(wtapplet->title));
+	} else {
+		gtk_widget_show (GTK_WIDGET(wtapplet->title));
+	}
+
+	if (!gtk_widget_get_visible(GTK_WIDGET(wtapplet->eb_icon)))
+		gtk_widget_show(GTK_WIDGET(wtapplet->eb_icon));
+	if (!gtk_widget_get_visible(GTK_WIDGET(wtapplet->eb_title)))
+		gtk_widget_show(GTK_WIDGET(wtapplet->eb_title));
+	if (!gtk_widget_get_visible(GTK_WIDGET(wtapplet->box)))
+		gtk_widget_show(GTK_WIDGET(wtapplet->box));
+	if (!gtk_widget_get_visible(GTK_WIDGET(wtapplet)))
+		gtk_widget_show(GTK_WIDGET(wtapplet));
 }
 
 /* Called when panel background is changed */
@@ -267,6 +295,85 @@ static void applet_change_background (PanelApplet *applet,
 										
 }
 
+/* Triggered when a different panel orientation is detected */
+static void applet_change_orient (PanelApplet *panelapplet,
+                                  PanelAppletOrient orient,
+                                  gpointer user_data)
+{
+	WTApplet *wtapplet = WT_APPLET(user_data);
+
+	if (orient != wtapplet->orient) {
+		wtapplet->orient = orient;
+		wtapplet->angle = getOrientAngle(wtapplet->orient);
+		wtapplet->packtype = getPackType(wtapplet->angle);
+		
+		rotateWidgets(wtapplet, wtapplet->angle);
+		reloadWidgets(wtapplet);
+		updateTitle(wtapplet);
+	}
+}
+
+/* (Supposedly) tiggered when panel size changes */
+static void applet_change_pixel_size (PanelApplet  *applet,
+									  gint          size,
+									  gpointer user_data)
+{
+	WTApplet *wtapplet = WT_APPLET(user_data);
+	
+	if (wtapplet->size == size)
+		return;
+
+	wtapplet->size = size;
+
+	updateTitle(wtapplet);
+}
+
+/*
+static void applet_title_size_request (GtkWidget *widget,
+                                       GtkRequisition *requisition,
+                                       gpointer user_data)
+{
+	WTApplet *wtapplet = WT_APPLET(user_data);
+
+	if (wtapplet->prefs->expand_applet)
+		return;
+
+	gint size_min = MIN(requisition->width, wtapplet->asize);
+	gint size_max = MAX(requisition->width, wtapplet->asize);
+
+	//g_printf("New size: %d\n", new_size);
+	
+	wtapplet->size_hints[0] = size_min;
+	wtapplet->size_hints[1] = wtapplet->asize - 1;
+	panel_applet_set_size_hints (PANEL_APPLET(wtapplet), wtapplet->size_hints, 2, 0);	
+	// This is the only way to go, but it cannot work because of gnome-panel bugs:
+	// * https://bugzilla.gnome.org/show_bug.cgi?id=556355
+	// * https://bugzilla.gnome.org/show_bug.cgi?id=557232
+
+	//	GtkAllocation child_allocation;
+	//	child_allocation.x = 0;
+	//	child_allocation.y = 0;
+	//	child_allocation.width = new_size  - (16+11);
+	//	child_allocation.height = requisition->height;
+	//	gtk_widget_size_allocate (GTK_WIDGET(wtapplet->title), &child_allocation);
+	//	gtk_widget_set_child_visible (GTK_WIDGET(wtapplet->title), TRUE);
+}
+*/
+
+/* Triggered when applet allocates new size */
+static void applet_size_allocate (GtkWidget     *widget,
+                                  GtkAllocation *allocation,
+                                  gpointer       user_data)
+{
+	WTApplet *wtapplet = WT_APPLET(user_data);
+
+	if (wtapplet->prefs->expand_applet) return;
+	
+	if (wtapplet->asize != allocation->width) {
+		wtapplet->asize = allocation->width;
+	}
+}
+
 /* Triggers when a new window has been opened */
 // in case a new maximized non-active window appears
 static void window_opened (WnckScreen *screen,
@@ -275,11 +382,9 @@ static void window_opened (WnckScreen *screen,
 	WTApplet *wtapplet;
 
 	wtapplet = WT_APPLET(user_data);
-	if (wtapplet->prefs->only_maximized) {
-		wtapplet->currentwindow = getUpperMaximized(wtapplet);
-	}
+	wtapplet->umaxedwindow = getUpperMaximized(wtapplet);
 
-	//updateTitle(wtapplet); //not required(?)
+	updateTitle(wtapplet);
 }
 
 /* Triggers when a window has been closed */
@@ -290,9 +395,7 @@ static void window_closed (WnckScreen *screen,
 	WTApplet *wtapplet;
 
 	wtapplet = WT_APPLET(user_data);
-	if (wtapplet->prefs->only_maximized) {
-		wtapplet->currentwindow = getUpperMaximized(wtapplet);
-	}
+	wtapplet->umaxedwindow = getUpperMaximized(wtapplet);
 
 	updateTitle(wtapplet); // required when closing window in the background
 }
@@ -300,37 +403,31 @@ static void window_closed (WnckScreen *screen,
 /* Triggers when a new active window is selected */
 static void active_window_changed (WnckScreen *screen,
                                    WnckWindow *previous,
-                                   gpointer user_data) {
+                                   gpointer user_data)
+{
 	WTApplet *wtapplet;
-	
+
 	wtapplet = WT_APPLET(user_data);
  
 	// Start tracking the new active window:
-	//if (g_signal_handler_is_connected(G_OBJECT(wtapplet->activewindow), wtapplet->active_handler_state))
-		g_signal_handler_disconnect(G_OBJECT(wtapplet->activewindow), wtapplet->active_handler_state);
-	//if (g_signal_handler_is_connected(G_OBJECT(wtapplet->activewindow), wtapplet->active_handler_name))
-		g_signal_handler_disconnect(G_OBJECT(wtapplet->activewindow), wtapplet->active_handler_name);
-	//if (g_signal_handler_is_connected(G_OBJECT(wtapplet->activewindow), wtapplet->active_handler_icon))
-		g_signal_handler_disconnect(G_OBJECT(wtapplet->activewindow), wtapplet->active_handler_icon);
-
+	if (wtapplet->activewindow) {
+		if (g_signal_handler_is_connected(G_OBJECT(wtapplet->activewindow), wtapplet->active_handler_state))
+			g_signal_handler_disconnect(G_OBJECT(wtapplet->activewindow), wtapplet->active_handler_state);
+		if (g_signal_handler_is_connected(G_OBJECT(wtapplet->activewindow), wtapplet->active_handler_name))
+			g_signal_handler_disconnect(G_OBJECT(wtapplet->activewindow), wtapplet->active_handler_name);
+		if (g_signal_handler_is_connected(G_OBJECT(wtapplet->activewindow), wtapplet->active_handler_icon))
+			g_signal_handler_disconnect(G_OBJECT(wtapplet->activewindow), wtapplet->active_handler_icon);
+	}
+	
 	wtapplet->activewindow = wnck_screen_get_active_window(screen);
-	wtapplet->rootwindow = wnck_screen_get_windows_stacked(wtapplet->activescreen)->data;									   
-
+	wtapplet->umaxedwindow = getUpperMaximized(wtapplet); // returns wbapplet->activewindow if not only_maximized
+	wtapplet->rootwindow = getRootWindow(wtapplet->activescreen);
+	
 	if (wtapplet->activewindow) {
 		wtapplet->active_handler_state = g_signal_connect(G_OBJECT (wtapplet->activewindow), "state-changed", G_CALLBACK (active_window_state_changed), wtapplet);
 		wtapplet->active_handler_name = g_signal_connect(G_OBJECT (wtapplet->activewindow), "name-changed", G_CALLBACK (active_window_nameicon_changed), wtapplet);
 		wtapplet->active_handler_icon = g_signal_connect(G_OBJECT (wtapplet->activewindow), "icon-changed", G_CALLBACK (active_window_nameicon_changed), wtapplet);
 										   
-		// if the newly selected window is maximized it is also the current window
-		if (wtapplet->prefs->only_maximized) {
-			//don't use getUpperMaximized(wtapplet) for both! we don't wanna track it twice
-			if (wnck_window_is_maximized(wtapplet->activewindow)) {
-				wtapplet->currentwindow = wtapplet->activewindow;
-			} else {
-				wtapplet->currentwindow = getUpperMaximized(wtapplet);
-			}
-		}
-
 		wtapplet->focused = TRUE;
 
 		updateTitle(wtapplet);
@@ -345,10 +442,8 @@ static void active_window_state_changed (WnckWindow *window,
 	WTApplet *wtapplet;
 	
 	wtapplet = WT_APPLET(user_data);
-	if (wtapplet->prefs->only_maximized) {
-		wtapplet->currentwindow = getUpperMaximized(wtapplet);
-	}
-  	wtapplet->rootwindow = wnck_screen_get_windows_stacked(wtapplet->activescreen)->data;
+	wtapplet->umaxedwindow = getUpperMaximized(wtapplet);
+  	wtapplet->rootwindow = getRootWindow(wtapplet->activescreen);
 
 	if (new_state & (WNCK_WINDOW_STATE_MAXIMIZED_HORIZONTALLY | WNCK_WINDOW_STATE_MAXIMIZED_VERTICALLY)) {
 		wtapplet->focused = TRUE;
@@ -367,8 +462,8 @@ static void active_window_nameicon_changed (WnckWindow *window, gpointer user_da
 	updateTitle(wtapplet);
 }
 
-/* Triggers when currentwindow's state changes */
-static void current_window_state_changed (WnckWindow *window,
+/* Triggers when umaxedwindow's state changes */
+static void umaxed_window_state_changed (WnckWindow *window,
                                           WnckWindowState changed_mask,
                                           WnckWindowState new_state,
                                           gpointer user_data)
@@ -376,21 +471,19 @@ static void current_window_state_changed (WnckWindow *window,
 	WTApplet *wtapplet;
 	
 	wtapplet = WT_APPLET(user_data);
-	if (wtapplet->prefs->only_maximized) {	
-		wtapplet->currentwindow = getUpperMaximized(wtapplet);
-	}
-	wtapplet->rootwindow = wnck_screen_get_windows_stacked(wtapplet->activescreen)->data;
+	wtapplet->umaxedwindow = getUpperMaximized(wtapplet);
+	wtapplet->rootwindow = getRootWindow(wtapplet->activescreen);
 	
 	updateTitle(wtapplet);
 }
 
-/* Triggers when currentwindow's name OR ICON changes */
-static void current_window_nameicon_changed(WnckWindow *window, gpointer user_data) {
+/* Triggers when umaxedwindow's name OR ICON changes */
+static void umaxed_window_nameicon_changed(WnckWindow *window, gpointer user_data) {
 	WTApplet *wtapplet = WT_APPLET(user_data);
 	updateTitle(wtapplet);
 }
 
-/* Triggers when user changes viewports (Compiz?) */
+/* Triggers when user changes viewports (Compiz) */
 static void viewports_changed (WnckScreen *screen,
                                gpointer user_data)
 {
@@ -400,11 +493,10 @@ static void viewports_changed (WnckScreen *screen,
 
 	wtapplet->activeworkspace = wnck_screen_get_active_workspace(screen);
 	wtapplet->activewindow = wnck_screen_get_active_window(screen);
+	wtapplet->rootwindow = getRootWindow(wtapplet->activescreen); //?
+	wtapplet->umaxedwindow = getUpperMaximized(wtapplet);
 
-	if (wtapplet->prefs->only_maximized) {
-		wtapplet->currentwindow = getUpperMaximized(wtapplet);
-	}
-
+	// active_window_changed will do it too, but this one will be sooner
 	updateTitle(wtapplet);
 }
 
@@ -420,9 +512,8 @@ static void active_workspace_changed (WnckScreen *screen,
 	wtapplet->activeworkspace = wnck_screen_get_active_workspace(screen);
 	/*
 	wtapplet->activewindow = wnck_screen_get_active_window(screen);
-	((wtapplet->prefs)->only_maximized) {
-		wtapplet->currentwindow = getUpperMaximized(wtapplet);
-	}
+	// wtapplet->rootwindow = getRootWindow(wtapplet->activescreen); //?
+	wtapplet->umaxedwindow = getUpperMaximized(wtapplet);
 
 	updateTitle(wtapplet);
 	*/
@@ -440,7 +531,7 @@ static gboolean icon_clicked (GtkWidget *icon,
 	wtapplet = WT_APPLET(user_data);
 
 	if (wtapplet->prefs->only_maximized) {
-		controlledwindow = wtapplet->currentwindow;
+		controlledwindow = wtapplet->umaxedwindow;
 	} else {
 		controlledwindow = wtapplet->activewindow;
 	}
@@ -470,7 +561,7 @@ static gboolean title_clicked (GtkWidget *title,
 	wtapplet = WT_APPLET(user_data);
 
 	if (wtapplet->prefs->only_maximized) {
-		controlledwindow = wtapplet->currentwindow;
+		controlledwindow = wtapplet->umaxedwindow;
 	} else {
 		controlledwindow = wtapplet->activewindow;
 	}
@@ -481,15 +572,14 @@ static gboolean title_clicked (GtkWidget *title,
 	}
 
 	// double click:
-	//if (event->type==GDK_2BUTTON_PRESS || event->type==GDK_3BUTTON_PRESS) {
-		if(event->type==GDK_2BUTTON_PRESS) {
-			if(wnck_window_is_maximized(controlledwindow)) {
-				wnck_window_unmaximize(controlledwindow);
-			} else {
-				wnck_window_maximize(controlledwindow);
-			}
-		}	
-	//}
+	if (event->type==GDK_2BUTTON_PRESS || event->type==GDK_3BUTTON_PRESS) {
+	// if (event->type==GDK_2BUTTON_PRESS) {
+		if (wnck_window_is_maximized(controlledwindow)) {
+			wnck_window_unmaximize(controlledwindow);
+		} else {
+			wnck_window_maximize(controlledwindow);
+		}
+	}	
 
 	return TRUE;
 }
@@ -524,16 +614,25 @@ void reloadWidgets (WTApplet *wtapplet) {
 	g_object_unref(wtapplet->eb_title);
 }
 
-/* Sets alignment to title according to panel orientation */
+/* Sets alignment, min size, padding to title according to panel orientation */
 void setAlignment (WTApplet *wtapplet, gfloat alignment) {
+	if (!wtapplet->prefs->expand_applet)
+		alignment = 0.0;
+	
 	if (wtapplet->angle == GDK_PIXBUF_ROTATE_COUNTERCLOCKWISE || wtapplet->angle == GDK_PIXBUF_ROTATE_CLOCKWISE) {
+		// Alignment is vertical
 		if (wtapplet->angle == GDK_PIXBUF_ROTATE_COUNTERCLOCKWISE) {
 			gtk_misc_set_alignment(GTK_MISC(wtapplet->title), 0.5, 1-alignment);
 		} else {
 			gtk_misc_set_alignment(GTK_MISC(wtapplet->title), 0.5, alignment);
 		}
+		gtk_widget_set_size_request(GTK_WIDGET(wtapplet->title), -1, wtapplet->prefs->title_size);
+		gtk_misc_set_padding(GTK_MISC(wtapplet->icon), 0, ICON_PADDING);
 	} else {
+		// Alignment is horizontal
 		gtk_misc_set_alignment(GTK_MISC(wtapplet->title), alignment, 0.5);
+		gtk_widget_set_size_request(GTK_WIDGET(wtapplet->title), wtapplet->prefs->title_size, -1);
+		gtk_misc_set_padding(GTK_MISC(wtapplet->icon), ICON_PADDING, 0);
 	}
 }
 
@@ -565,30 +664,15 @@ void rotateWidgets (WTApplet *wtapplet, GdkPixbufRotation angle) {
 	setAlignment(wtapplet, (gfloat)wtapplet->prefs->alignment);
 }
 
-/* Triggered when a different panel orientation is detected */
-void applet_change_orient (PanelApplet *panelapplet, PanelAppletOrient orient, gpointer user_data) {
-	WTApplet *wtapplet = WT_APPLET(user_data);
-
-	if (orient != wtapplet->orient) {
-		wtapplet->orient = orient;
-		wtapplet->angle = getOrientAngle(wtapplet->orient);
-		wtapplet->packtype = getPackType(wtapplet->angle);
-		
-		rotateWidgets(wtapplet, wtapplet->angle);
-		reloadWidgets(wtapplet);
-		updateTitle(wtapplet);
-	}
-}
-
 /* Do the actual applet initialization */
 static void init_wtapplet (WTApplet *wtapplet) {
+	wtapplet->prefs = loadPreferences(wtapplet);
 	wtapplet->activescreen = wnck_screen_get_default();
 	wnck_screen_force_update(wtapplet->activescreen);
 	wtapplet->activeworkspace = wnck_screen_get_active_workspace(wtapplet->activescreen);
 	wtapplet->activewindow = wnck_screen_get_active_window(wtapplet->activescreen);
-	//wtapplet->rootwindow = wnck_screen_get_windows_stacked(wtapplet->activescreen)->data; //!!! WARNING! THIS CRASHES DURING BOOTUP - MUST BE CALLED ELSEWHERE... but where?
-	wtapplet->rootwindow = NULL;
-	wtapplet->prefs = loadPreferences(wtapplet);
+	wtapplet->umaxedwindow = getUpperMaximized(wtapplet);
+	wtapplet->rootwindow = getRootWindow(wtapplet->activescreen);
 	wtapplet->prefbuilder = gtk_builder_new();
 	wtapplet->box = GTK_BOX(gtk_hbox_new(FALSE, 0));
 	wtapplet->icon = GTK_IMAGE(gtk_image_new());
@@ -596,46 +680,46 @@ static void init_wtapplet (WTApplet *wtapplet) {
 	wtapplet->eb_icon = GTK_EVENT_BOX(gtk_event_box_new());
 	wtapplet->eb_title = GTK_EVENT_BOX(gtk_event_box_new());
 	wtapplet->orient = panel_applet_get_orient(PANEL_APPLET(wtapplet));
+	wtapplet->size = panel_applet_get_size(PANEL_APPLET(wtapplet));
 	wtapplet->angle = getOrientAngle(wtapplet->orient);
 	wtapplet->packtype = getPackType(wtapplet->angle);
-	
-	if (wtapplet->prefs->only_maximized) {
-		wtapplet->currentwindow = getUpperMaximized(wtapplet);
-	}
+	wtapplet->size_hints = g_new(gint,2);
 	
 	// Widgets to eventboxes, eventboxes to box
-	GTK_WIDGET_SET_FLAGS (wtapplet->icon, GTK_CAN_FOCUS);
-	GTK_WIDGET_SET_FLAGS (wtapplet->title, GTK_CAN_FOCUS);
+	gtk_widget_set_can_focus(GTK_WIDGET(wtapplet->icon), TRUE);
+	gtk_widget_set_can_focus(GTK_WIDGET(wtapplet->title), TRUE);
 	gtk_container_add (GTK_CONTAINER (wtapplet->eb_icon), GTK_WIDGET(wtapplet->icon));
 	gtk_container_add (GTK_CONTAINER (wtapplet->eb_title), GTK_WIDGET(wtapplet->title));
 	gtk_event_box_set_visible_window (wtapplet->eb_icon, FALSE);
 	gtk_event_box_set_visible_window (wtapplet->eb_title, FALSE);
-	// Set spacing between icon and label to 5:
-	//gtk_box_set_spacing(wtapplet->box, 5);
-	gtk_misc_set_padding(GTK_MISC(wtapplet->icon), 5, 0);
-	setAlignment(wtapplet, (gfloat)wtapplet->prefs->alignment);
-	// Set event handling (icon & title clicks)
-	g_signal_connect(G_OBJECT (wtapplet->eb_icon), "button-press-event", G_CALLBACK (icon_clicked), wtapplet);
-	g_signal_connect(G_OBJECT (wtapplet->eb_title), "button-press-event", G_CALLBACK (title_clicked), wtapplet);
-	
+
 	// Rotate & place elements
+	setAlignment(wtapplet, (gfloat)wtapplet->prefs->alignment);
 	rotateWidgets(wtapplet, wtapplet->angle);
 	placeWidgets(wtapplet);
 
 	// Add box to applet
 	gtk_container_add (GTK_CONTAINER(wtapplet), GTK_WIDGET(wtapplet->box));
+
+	// Set event handling (icon & title clicks)
+	g_signal_connect(G_OBJECT (wtapplet->eb_icon), "button-press-event", G_CALLBACK (icon_clicked), wtapplet);
+	g_signal_connect(G_OBJECT (wtapplet->eb_title), "button-press-event", G_CALLBACK (title_clicked), wtapplet);
 	
 	// Global window tracking
-	g_signal_connect(wtapplet->activescreen, "active-window-changed", G_CALLBACK (active_window_changed), wtapplet);
+	g_signal_connect(wtapplet->activescreen, "active-window-changed", G_CALLBACK (active_window_changed), wtapplet); // <-- this thing is crashing with compiz !!!
 	g_signal_connect(wtapplet->activescreen, "viewports-changed", G_CALLBACK (viewports_changed), wtapplet);
 	g_signal_connect(wtapplet->activescreen, "active-workspace-changed", G_CALLBACK (active_workspace_changed), wtapplet);
 	g_signal_connect(wtapplet->activescreen, "window-closed", G_CALLBACK (window_closed), wtapplet);
 	g_signal_connect(wtapplet->activescreen, "window-opened", G_CALLBACK (window_opened), wtapplet);
-	
+
+	// g_signal_connect(G_OBJECT (wtapplet->title), "size-request", G_CALLBACK (applet_title_size_request), wtapplet);
+	g_signal_connect(G_OBJECT (wtapplet), "size-allocate", G_CALLBACK (applet_size_allocate), wtapplet);
+
 	g_signal_connect(G_OBJECT (wtapplet), "change-background", G_CALLBACK (applet_change_background), NULL);
 	g_signal_connect(G_OBJECT (wtapplet), "change-orient", G_CALLBACK (applet_change_orient), wtapplet);
-
-	// ???: Is this still necessary?
+	g_signal_connect(G_OBJECT (wtapplet), "change-size", G_CALLBACK (applet_change_pixel_size), wtapplet);
+	
+	// Track active window changes
 	wtapplet->active_handler_state = 
 		g_signal_connect(G_OBJECT (wtapplet->activewindow), "state-changed", G_CALLBACK (active_window_state_changed), wtapplet);
 	wtapplet->active_handler_name = 
@@ -644,41 +728,15 @@ static void init_wtapplet (WTApplet *wtapplet) {
 		g_signal_connect(G_OBJECT (wtapplet->activewindow), "icon-changed", G_CALLBACK (active_window_nameicon_changed), wtapplet);
 }
 
-/* Hide/unhide stuff according to preferences */
-void toggleHidden (WTApplet *wtapplet) {
-	if (wtapplet->prefs->hide_icon) {
-		gtk_widget_hide (GTK_WIDGET(wtapplet->icon));
-	} else {
-		gtk_widget_show (GTK_WIDGET(wtapplet->icon));
-	}
-	
-	if (wtapplet->prefs->hide_title) {
-		gtk_widget_hide (GTK_WIDGET(wtapplet->title));
-
-		//TODO: this could be a separate option:
-		panel_applet_set_flags ((PanelApplet*)wtapplet, PANEL_APPLET_EXPAND_MINOR);
-		// Unset minimal box size:
-		gtk_widget_set_size_request(GTK_WIDGET(wtapplet->box), -1, -1);
-	} else {
-		gtk_widget_show (GTK_WIDGET(wtapplet->title));
-
-		//TODO: this could be a separate option:
-		panel_applet_set_flags ((PanelApplet*)wtapplet, PANEL_APPLET_EXPAND_MINOR | PANEL_APPLET_EXPAND_MAJOR);
-		// Set minimal box size to 5x1, the next time it is resized it will not exceed max panelapplet size:
-		gtk_widget_set_size_request(GTK_WIDGET(wtapplet->box), 5, 1);
-	}
-}
-
 /* Initial function that draws the applet */
 static gboolean windowtitle_applet_fill (PanelApplet *applet, const gchar *iid, gpointer data) {
 	if (strcmp (iid, APPLET_OAFIID) != 0) return FALSE;
 	
 	g_set_application_name (_(APPLET_NAME)); //GLib-WARNING **: g_set_application_name() called multiple times
-	panel_applet_set_flags (applet, PANEL_APPLET_EXPAND_MINOR | PANEL_APPLET_EXPAND_MAJOR);
 	panel_applet_add_preferences (applet, GCONF_PREFS, NULL);
-
+	
 	init_wtapplet(WT_APPLET(applet));
-
+	
 	/* --- Context Menu --- */
 	static const char context_menu_xml [] =
 	   "<popup name=\"button3\">\n"
@@ -693,15 +751,12 @@ static gboolean windowtitle_applet_fill (PanelApplet *applet, const gchar *iid, 
 	   "          pixtype=\"stock\" "
 	   "          pixname=\"gtk-about\"/>\n"
 	   "</popup>\n";
-	//last parameter here will be the second parameter (WTApplet) in all menu callback functions (properties, about...) !!!
+	// Last parameter here will be the second parameter (WTApplet) in all menu callback functions (properties, about...) !
 	panel_applet_setup_menu (applet, context_menu_xml, windowbuttons_menu_verbs, applet);
 
-	/* Draw the damn thing */
+	toggleExpand (WT_APPLET (applet));
+	toggleHidden (WT_APPLET (applet));	// Properly hide or show stuff
 	updateTitle (WT_APPLET(applet));
-	gtk_widget_show_all (GTK_WIDGET (applet));
-	
-	/* We need this because things have to be hidden after we 'show' the applet */
-	toggleHidden (WT_APPLET (applet));
 
 	return TRUE;
 }

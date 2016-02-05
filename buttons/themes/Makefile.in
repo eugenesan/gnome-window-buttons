@@ -66,16 +66,24 @@ am__nobase_list = $(am__nobase_strip_setup); \
 am__base_list = \
   sed '$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;$$!N;s/\n/ /g' | \
   sed '$$!N;$$!N;$$!N;$$!N;s/\n/ /g'
-am__installdirs = "$(DESTDIR)$(ambiancedir)" "$(DESTDIR)$(antiquedir)" \
+am__installdirs = "$(DESTDIR)$(WoWdir)" "$(DESTDIR)$(ambiancedir)" \
+	"$(DESTDIR)$(ambiance_maverickdir)" \
+	"$(DESTDIR)$(ambiance_x_studiodir)" "$(DESTDIR)$(antiquedir)" \
 	"$(DESTDIR)$(blazedir)" "$(DESTDIR)$(blaze_colordir)" \
-	"$(DESTDIR)$(defaultdir)" "$(DESTDIR)$(dustdir)" \
-	"$(DESTDIR)$(dust_invertdir)" "$(DESTDIR)$(dust_sanddir)" \
-	"$(DESTDIR)$(elementarydir)" "$(DESTDIR)$(humandir)" \
-	"$(DESTDIR)$(human_thindir)"
-DATA = $(ambiance_DATA) $(antique_DATA) $(blaze_DATA) \
-	$(blaze_color_DATA) $(default_DATA) $(dust_DATA) \
-	$(dust_invert_DATA) $(dust_sand_DATA) $(elementary_DATA) \
-	$(human_DATA) $(human_thin_DATA)
+	"$(DESTDIR)$(blubuntudir)" "$(DESTDIR)$(defaultdir)" \
+	"$(DESTDIR)$(dustdir)" "$(DESTDIR)$(dust_invertdir)" \
+	"$(DESTDIR)$(dust_sanddir)" "$(DESTDIR)$(elementarydir)" \
+	"$(DESTDIR)$(equinox_glassdir)" "$(DESTDIR)$(humandir)" \
+	"$(DESTDIR)$(human_thindir)" "$(DESTDIR)$(new_hopedir)" \
+	"$(DESTDIR)$(planodir)" "$(DESTDIR)$(radiancedir)" \
+	"$(DESTDIR)$(radiance_maverickdir)" "$(DESTDIR)$(sorbetdir)"
+DATA = $(WoW_DATA) $(ambiance_DATA) $(ambiance_maverick_DATA) \
+	$(ambiance_x_studio_DATA) $(antique_DATA) $(blaze_DATA) \
+	$(blaze_color_DATA) $(blubuntu_DATA) $(default_DATA) \
+	$(dust_DATA) $(dust_invert_DATA) $(dust_sand_DATA) \
+	$(elementary_DATA) $(equinox_glass_DATA) $(human_DATA) \
+	$(human_thin_DATA) $(new_hope_DATA) $(plano_DATA) \
+	$(radiance_DATA) $(radiance_maverick_DATA) $(sorbet_DATA)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 ALL_LINGUAS = @ALL_LINGUAS@
@@ -143,6 +151,8 @@ PACKAGE_URL = @PACKAGE_URL@
 PACKAGE_VERSION = @PACKAGE_VERSION@
 PATH_SEPARATOR = @PATH_SEPARATOR@
 PKG_CONFIG = @PKG_CONFIG@
+PKG_CONFIG_LIBDIR = @PKG_CONFIG_LIBDIR@
+PKG_CONFIG_PATH = @PKG_CONFIG_PATH@
 POFILES = @POFILES@
 POSUB = @POSUB@
 PO_IN_DATADIR_FALSE = @PO_IN_DATADIR_FALSE@
@@ -211,27 +221,44 @@ EXTRA_DIST = \
 	$(blaze_color_DATA) \
 	$(antique_DATA) \
 	$(ambiance_DATA) \
-	$(dust-invert_DATA) \
 	$(dust_invert_DATA) \
-	$(elementary_DATA)
+	$(elementary_DATA) \
+	$(radiance_DATA) \
+	$(WoW_DATA) \
+	$(ambiance_x_studio_DATA) \
+	$(sorbet_DATA) \
+	$(ambiance_maverick_DATA) \
+	$(radiance_maverick_DATA) \
+	$(equinox_glass_DATA) \
+	$(plano_DATA) \
+	$(new_hope_DATA) \
+	$(blubuntu_DATA)
 
 default_DATA = \
-	default/close-clicked.png\
-	default/close-focused.png \
-	default/close-hover.png \
-	default/close-unfocused.png \
-	default/maximize-clicked.png \
-	default/maximize-focused.png \
-	default/maximize-hover.png \
-	default/maximize-unfocused.png \
-	default/minimize-clicked.png \
-	default/minimize-hover.png \
-	default/minimize-focused.png \
-	default/minimize-unfocused.png \
-	default/unmaximize-clicked.png \
-	default/unmaximize-focused.png \
-	default/unmaximize-hover.png \
-	default/unmaximize-unfocused.png
+	default/close-focused-normal.png \
+	default/close-focused-clicked.png\
+	default/close-focused-hover.png \
+	default/close-unfocused-normal.png \
+	default/close-unfocused-clicked.png \
+	default/close-unfocused-hover.png \
+	default/maximize-focused-normal.png \
+	default/maximize-focused-clicked.png \
+	default/maximize-focused-hover.png \
+	default/maximize-unfocused-normal.png \
+	default/maximize-unfocused-clicked.png \
+	default/maximize-unfocused-hover.png \
+	default/minimize-focused-normal.png \
+	default/minimize-focused-clicked.png \
+	default/minimize-focused-hover.png \
+	default/minimize-unfocused-normal.png \
+	default/minimize-unfocused-clicked.png \
+	default/minimize-unfocused-hover.png \
+	default/unmaximize-focused-normal.png \
+	default/unmaximize-focused-clicked.png \
+	default/unmaximize-focused-hover.png \
+	default/unmaximize-unfocused-normal.png \
+	default/unmaximize-unfocused-clicked.png \
+	default/unmaximize-unfocused-hover.png
 
 defaultdir = \
 	${prefix}/share/windowbuttons/themes/default
@@ -447,6 +474,217 @@ elementary_DATA = \
 elementarydir = \
 	${prefix}/share/windowbuttons/themes/elementary
 
+radiance_DATA = \
+	radiance/unmaximize-hover.png\
+	radiance/unmaximize-clicked.png \
+	radiance/minimize-hover.png \
+	radiance/minimize-clicked.png \
+	radiance/maximize-hover.png \
+	radiance/maximize-clicked.png \
+	radiance/close-hover.png \
+	radiance/close-clicked.png \
+	radiance/unmaximize-unfocused.png \
+	radiance/unmaximize-focused.png \
+	radiance/minimize-unfocused.png \
+	radiance/minimize-focused.png \
+	radiance/maximize-unfocused.png \
+	radiance/maximize-focused.png \
+	radiance/close-unfocused.png \
+	radiance/close-focused.png
+
+radiancedir = \
+	${prefix}/share/windowbuttons/themes/radiance
+
+WoW_DATA = \
+	WoW/minimize-hover.png\
+	WoW/minimize-unfocused.png \
+	WoW/maximize-unfocused.png \
+	WoW/unmaximize-unfocused.png \
+	WoW/close-unfocused.png \
+	WoW/minimize-clicked.png \
+	WoW/unmaximize-clicked.png \
+	WoW/maximize-clicked.png \
+	WoW/close-clicked.png \
+	WoW/maximize-hover.png \
+	WoW/unmaximize-hover.png \
+	WoW/minimize-focused.png \
+	WoW/unmaximize-focused.png \
+	WoW/maximize-focused.png \
+	WoW/close-focused.png \
+	WoW/close-hover.png
+
+WoWdir = \
+	${prefix}/share/windowbuttons/themes/WoW
+
+ambiance_x_studio_DATA = \
+	ambiance-x-studio/close-clicked.png\
+	ambiance-x-studio/close-focused.png\
+	ambiance-x-studio/close-hover.png \
+	ambiance-x-studio/close-unfocused.png \
+	ambiance-x-studio/maximize-clicked.png \
+	ambiance-x-studio/maximize-focused.png \
+	ambiance-x-studio/maximize-hover.png \
+	ambiance-x-studio/maximize-unfocused.png \
+	ambiance-x-studio/minimize-clicked.png \
+	ambiance-x-studio/minimize-focused.png \
+	ambiance-x-studio/minimize-hover.png \
+	ambiance-x-studio/minimize-unfocused.png \
+	ambiance-x-studio/unmaximize-clicked.png \
+	ambiance-x-studio/unmaximize-focused.png \
+	ambiance-x-studio/unmaximize-hover.png \
+	ambiance-x-studio/unmaximize-unfocused.png
+
+ambiance_x_studiodir = \
+	${prefix}/share/windowbuttons/themes/ambiance-x-studio
+
+sorbet_DATA = \
+	sorbet/close-clicked.png\
+	sorbet/close-focused.png \
+	sorbet/close-hover.png \
+	sorbet/close-unfocused.png \
+	sorbet/maximize-clicked.png \
+	sorbet/maximize-focused.png \
+	sorbet/maximize-hover.png \
+	sorbet/maximize-unfocused.png \
+	sorbet/minimize-clicked.png \
+	sorbet/minimize-focused.png \
+	sorbet/minimize-hover.png \
+	sorbet/minimize-unfocused.png \
+	sorbet/unmaximize-clicked.png \
+	sorbet/unmaximize-focused.png \
+	sorbet/unmaximize-hover.png \
+	sorbet/unmaximize-unfocused.png
+
+sorbetdir = \
+	${prefix}/share/windowbuttons/themes/sorbet
+
+ambiance_maverick_DATA = \
+	ambiance-maverick/close-clicked.png\
+	ambiance-maverick/close-focused.png\
+	ambiance-maverick/close-hover.png \
+	ambiance-maverick/close-unfocused.png \
+	ambiance-maverick/maximize-clicked.png \
+	ambiance-maverick/maximize-focused.png \
+	ambiance-maverick/maximize-hover.png \
+	ambiance-maverick/maximize-unfocused.png \
+	ambiance-maverick/minimize-clicked.png \
+	ambiance-maverick/minimize-focused.png \
+	ambiance-maverick/minimize-hover.png \
+	ambiance-maverick/minimize-unfocused.png \
+	ambiance-maverick/unmaximize-clicked.png \
+	ambiance-maverick/unmaximize-focused.png \
+	ambiance-maverick/unmaximize-hover.png \
+	ambiance-maverick/unmaximize-unfocused.png
+
+ambiance_maverickdir = \
+	${prefix}/share/windowbuttons/themes/ambiance-maverick
+
+radiance_maverick_DATA = \
+	radiance-maverick/close-clicked.png\
+	radiance-maverick/close-focused.png\
+	radiance-maverick/close-hover.png \
+	radiance-maverick/close-unfocused.png \
+	radiance-maverick/maximize-clicked.png \
+	radiance-maverick/maximize-focused.png \
+	radiance-maverick/maximize-hover.png \
+	radiance-maverick/maximize-unfocused.png \
+	radiance-maverick/minimize-clicked.png \
+	radiance-maverick/minimize-focused.png \
+	radiance-maverick/minimize-hover.png \
+	radiance-maverick/minimize-unfocused.png \
+	radiance-maverick/unmaximize-clicked.png \
+	radiance-maverick/unmaximize-focused.png \
+	radiance-maverick/unmaximize-hover.png \
+	radiance-maverick/unmaximize-unfocused.png
+
+radiance_maverickdir = \
+	${prefix}/share/windowbuttons/themes/radiance-maverick
+
+equinox_glass_DATA = \
+	equinox-glass/README      \
+	equinox-glass/unmaximize-unfocused.png      \
+	equinox-glass/unmaximize-hover.png      \
+	equinox-glass/unmaximize-focused.png      \
+	equinox-glass/unmaximize-clicked.png      \
+	equinox-glass/minimize-unfocused.png      \
+	equinox-glass/minimize-hover.png      \
+	equinox-glass/minimize-focused.png      \
+	equinox-glass/minimize-clicked.png      \
+	equinox-glass/maximize-unfocused.png      \
+	equinox-glass/maximize-hover.png      \
+	equinox-glass/maximize-focused.png      \
+	equinox-glass/maximize-clicked.png      \
+	equinox-glass/close-unfocused.png      \
+	equinox-glass/close-hover.png      \
+	equinox-glass/close-focused.png      \
+	equinox-glass/close-clicked.png
+
+equinox_glassdir = \
+	${prefix}/share/windowbuttons/themes/equinox-glass
+
+plano_DATA = \
+	plano/minimize-unfocused.png\
+	plano/close-unfocused.png \
+	plano/maximize-unfocused.png \
+	plano/unmaximize-unfocused.png \
+	plano/close-clicked.png \
+	plano/minimize-clicked.png \
+	plano/minimize-hover.png \
+	plano/unmaximize-clicked.png \
+	plano/maximize-clicked.png \
+	plano/maximize-hover.png \
+	plano/unmaximize-hover.png \
+	plano/close-hover.png \
+	plano/minimize-focused.png \
+	plano/unmaximize-focused.png \
+	plano/maximize-focused.png \
+	plano/close-focused.png
+
+planodir = \
+	${prefix}/share/windowbuttons/themes/plano
+
+new_hope_DATA = \
+	new-hope/minimize-focused.png\
+	new-hope/minimize-unfocused.png \
+	new-hope/minimize-clicked.png \
+	new-hope/minimize-hover.png \
+	new-hope/unmaximize-focused.png \
+	new-hope/maximize-focused.png \
+	new-hope/maximize-clicked.png \
+	new-hope/unmaximize-clicked.png \
+	new-hope/maximize-unfocused.png \
+	new-hope/unmaximize-unfocused.png \
+	new-hope/unmaximize-hover.png \
+	new-hope/maximize-hover.png \
+	new-hope/close-clicked.png \
+	new-hope/close-unfocused.png \
+	new-hope/close-focused.png \
+	new-hope/close-hover.png
+
+new_hopedir = \
+	${prefix}/share/windowbuttons/themes/new-hope
+
+blubuntu_DATA = \
+	blubuntu/minimize-hover.png\
+	blubuntu/close-hover.png \
+	blubuntu/close-unfocused.png \
+	blubuntu/maximize-clicked.png \
+	blubuntu/maximize-focused.png \
+	blubuntu/maximize-unfocused.png \
+	blubuntu/maximize-hover.png \
+	blubuntu/minimize-clicked.png \
+	blubuntu/minimize-unfocused.png \
+	blubuntu/unmaximize-clicked.png \
+	blubuntu/unmaximize-focused.png \
+	blubuntu/unmaximize-hover.png \
+	blubuntu/unmaximize-unfocused.png \
+	blubuntu/close-clicked.png \
+	blubuntu/minimize-focused.png \
+	blubuntu/close-focused.png
+
+blubuntudir = \
+	${prefix}/share/windowbuttons/themes/blubuntu
+
 all: all-am
 
 .SUFFIXES:
@@ -480,6 +718,26 @@ $(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 $(am__aclocal_m4_deps):
+install-WoWDATA: $(WoW_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(WoWdir)" || $(MKDIR_P) "$(DESTDIR)$(WoWdir)"
+	@list='$(WoW_DATA)'; test -n "$(WoWdir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(WoWdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(WoWdir)" || exit $$?; \
+	done
+
+uninstall-WoWDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(WoW_DATA)'; test -n "$(WoWdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(WoWdir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(WoWdir)" && rm -f $$files
 install-ambianceDATA: $(ambiance_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(ambiancedir)" || $(MKDIR_P) "$(DESTDIR)$(ambiancedir)"
@@ -500,6 +758,46 @@ uninstall-ambianceDATA:
 	test -n "$$files" || exit 0; \
 	echo " ( cd '$(DESTDIR)$(ambiancedir)' && rm -f" $$files ")"; \
 	cd "$(DESTDIR)$(ambiancedir)" && rm -f $$files
+install-ambiance_maverickDATA: $(ambiance_maverick_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(ambiance_maverickdir)" || $(MKDIR_P) "$(DESTDIR)$(ambiance_maverickdir)"
+	@list='$(ambiance_maverick_DATA)'; test -n "$(ambiance_maverickdir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(ambiance_maverickdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(ambiance_maverickdir)" || exit $$?; \
+	done
+
+uninstall-ambiance_maverickDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(ambiance_maverick_DATA)'; test -n "$(ambiance_maverickdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(ambiance_maverickdir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(ambiance_maverickdir)" && rm -f $$files
+install-ambiance_x_studioDATA: $(ambiance_x_studio_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(ambiance_x_studiodir)" || $(MKDIR_P) "$(DESTDIR)$(ambiance_x_studiodir)"
+	@list='$(ambiance_x_studio_DATA)'; test -n "$(ambiance_x_studiodir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(ambiance_x_studiodir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(ambiance_x_studiodir)" || exit $$?; \
+	done
+
+uninstall-ambiance_x_studioDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(ambiance_x_studio_DATA)'; test -n "$(ambiance_x_studiodir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(ambiance_x_studiodir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(ambiance_x_studiodir)" && rm -f $$files
 install-antiqueDATA: $(antique_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(antiquedir)" || $(MKDIR_P) "$(DESTDIR)$(antiquedir)"
@@ -560,6 +858,26 @@ uninstall-blaze_colorDATA:
 	test -n "$$files" || exit 0; \
 	echo " ( cd '$(DESTDIR)$(blaze_colordir)' && rm -f" $$files ")"; \
 	cd "$(DESTDIR)$(blaze_colordir)" && rm -f $$files
+install-blubuntuDATA: $(blubuntu_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(blubuntudir)" || $(MKDIR_P) "$(DESTDIR)$(blubuntudir)"
+	@list='$(blubuntu_DATA)'; test -n "$(blubuntudir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(blubuntudir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(blubuntudir)" || exit $$?; \
+	done
+
+uninstall-blubuntuDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(blubuntu_DATA)'; test -n "$(blubuntudir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(blubuntudir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(blubuntudir)" && rm -f $$files
 install-defaultDATA: $(default_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(defaultdir)" || $(MKDIR_P) "$(DESTDIR)$(defaultdir)"
@@ -660,6 +978,26 @@ uninstall-elementaryDATA:
 	test -n "$$files" || exit 0; \
 	echo " ( cd '$(DESTDIR)$(elementarydir)' && rm -f" $$files ")"; \
 	cd "$(DESTDIR)$(elementarydir)" && rm -f $$files
+install-equinox_glassDATA: $(equinox_glass_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(equinox_glassdir)" || $(MKDIR_P) "$(DESTDIR)$(equinox_glassdir)"
+	@list='$(equinox_glass_DATA)'; test -n "$(equinox_glassdir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(equinox_glassdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(equinox_glassdir)" || exit $$?; \
+	done
+
+uninstall-equinox_glassDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(equinox_glass_DATA)'; test -n "$(equinox_glassdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(equinox_glassdir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(equinox_glassdir)" && rm -f $$files
 install-humanDATA: $(human_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(humandir)" || $(MKDIR_P) "$(DESTDIR)$(humandir)"
@@ -700,6 +1038,106 @@ uninstall-human_thinDATA:
 	test -n "$$files" || exit 0; \
 	echo " ( cd '$(DESTDIR)$(human_thindir)' && rm -f" $$files ")"; \
 	cd "$(DESTDIR)$(human_thindir)" && rm -f $$files
+install-new_hopeDATA: $(new_hope_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(new_hopedir)" || $(MKDIR_P) "$(DESTDIR)$(new_hopedir)"
+	@list='$(new_hope_DATA)'; test -n "$(new_hopedir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(new_hopedir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(new_hopedir)" || exit $$?; \
+	done
+
+uninstall-new_hopeDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(new_hope_DATA)'; test -n "$(new_hopedir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(new_hopedir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(new_hopedir)" && rm -f $$files
+install-planoDATA: $(plano_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(planodir)" || $(MKDIR_P) "$(DESTDIR)$(planodir)"
+	@list='$(plano_DATA)'; test -n "$(planodir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(planodir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(planodir)" || exit $$?; \
+	done
+
+uninstall-planoDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(plano_DATA)'; test -n "$(planodir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(planodir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(planodir)" && rm -f $$files
+install-radianceDATA: $(radiance_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(radiancedir)" || $(MKDIR_P) "$(DESTDIR)$(radiancedir)"
+	@list='$(radiance_DATA)'; test -n "$(radiancedir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(radiancedir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(radiancedir)" || exit $$?; \
+	done
+
+uninstall-radianceDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(radiance_DATA)'; test -n "$(radiancedir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(radiancedir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(radiancedir)" && rm -f $$files
+install-radiance_maverickDATA: $(radiance_maverick_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(radiance_maverickdir)" || $(MKDIR_P) "$(DESTDIR)$(radiance_maverickdir)"
+	@list='$(radiance_maverick_DATA)'; test -n "$(radiance_maverickdir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(radiance_maverickdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(radiance_maverickdir)" || exit $$?; \
+	done
+
+uninstall-radiance_maverickDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(radiance_maverick_DATA)'; test -n "$(radiance_maverickdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(radiance_maverickdir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(radiance_maverickdir)" && rm -f $$files
+install-sorbetDATA: $(sorbet_DATA)
+	@$(NORMAL_INSTALL)
+	test -z "$(sorbetdir)" || $(MKDIR_P) "$(DESTDIR)$(sorbetdir)"
+	@list='$(sorbet_DATA)'; test -n "$(sorbetdir)" || list=; \
+	for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  echo "$$d$$p"; \
+	done | $(am__base_list) | \
+	while read files; do \
+	  echo " $(INSTALL_DATA) $$files '$(DESTDIR)$(sorbetdir)'"; \
+	  $(INSTALL_DATA) $$files "$(DESTDIR)$(sorbetdir)" || exit $$?; \
+	done
+
+uninstall-sorbetDATA:
+	@$(NORMAL_UNINSTALL)
+	@list='$(sorbet_DATA)'; test -n "$(sorbetdir)" || list=; \
+	files=`for p in $$list; do echo $$p; done | sed -e 's|^.*/||'`; \
+	test -n "$$files" || exit 0; \
+	echo " ( cd '$(DESTDIR)$(sorbetdir)' && rm -f" $$files ")"; \
+	cd "$(DESTDIR)$(sorbetdir)" && rm -f $$files
 tags: TAGS
 TAGS:
 
@@ -741,7 +1179,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(ambiancedir)" "$(DESTDIR)$(antiquedir)" "$(DESTDIR)$(blazedir)" "$(DESTDIR)$(blaze_colordir)" "$(DESTDIR)$(defaultdir)" "$(DESTDIR)$(dustdir)" "$(DESTDIR)$(dust_invertdir)" "$(DESTDIR)$(dust_sanddir)" "$(DESTDIR)$(elementarydir)" "$(DESTDIR)$(humandir)" "$(DESTDIR)$(human_thindir)"; do \
+	for dir in "$(DESTDIR)$(WoWdir)" "$(DESTDIR)$(ambiancedir)" "$(DESTDIR)$(ambiance_maverickdir)" "$(DESTDIR)$(ambiance_x_studiodir)" "$(DESTDIR)$(antiquedir)" "$(DESTDIR)$(blazedir)" "$(DESTDIR)$(blaze_colordir)" "$(DESTDIR)$(blubuntudir)" "$(DESTDIR)$(defaultdir)" "$(DESTDIR)$(dustdir)" "$(DESTDIR)$(dust_invertdir)" "$(DESTDIR)$(dust_sanddir)" "$(DESTDIR)$(elementarydir)" "$(DESTDIR)$(equinox_glassdir)" "$(DESTDIR)$(humandir)" "$(DESTDIR)$(human_thindir)" "$(DESTDIR)$(new_hopedir)" "$(DESTDIR)$(planodir)" "$(DESTDIR)$(radiancedir)" "$(DESTDIR)$(radiance_maverickdir)" "$(DESTDIR)$(sorbetdir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -789,11 +1227,15 @@ info: info-am
 
 info-am:
 
-install-data-am: install-ambianceDATA install-antiqueDATA \
-	install-blazeDATA install-blaze_colorDATA install-defaultDATA \
-	install-dustDATA install-dust_invertDATA install-dust_sandDATA \
-	install-elementaryDATA install-humanDATA \
-	install-human_thinDATA
+install-data-am: install-WoWDATA install-ambianceDATA \
+	install-ambiance_maverickDATA install-ambiance_x_studioDATA \
+	install-antiqueDATA install-blazeDATA install-blaze_colorDATA \
+	install-blubuntuDATA install-defaultDATA install-dustDATA \
+	install-dust_invertDATA install-dust_sandDATA \
+	install-elementaryDATA install-equinox_glassDATA \
+	install-humanDATA install-human_thinDATA install-new_hopeDATA \
+	install-planoDATA install-radianceDATA \
+	install-radiance_maverickDATA install-sorbetDATA
 
 install-dvi: install-dvi-am
 
@@ -837,34 +1279,48 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-ambianceDATA uninstall-antiqueDATA \
+uninstall-am: uninstall-WoWDATA uninstall-ambianceDATA \
+	uninstall-ambiance_maverickDATA \
+	uninstall-ambiance_x_studioDATA uninstall-antiqueDATA \
 	uninstall-blazeDATA uninstall-blaze_colorDATA \
-	uninstall-defaultDATA uninstall-dustDATA \
-	uninstall-dust_invertDATA uninstall-dust_sandDATA \
-	uninstall-elementaryDATA uninstall-humanDATA \
-	uninstall-human_thinDATA
+	uninstall-blubuntuDATA uninstall-defaultDATA \
+	uninstall-dustDATA uninstall-dust_invertDATA \
+	uninstall-dust_sandDATA uninstall-elementaryDATA \
+	uninstall-equinox_glassDATA uninstall-humanDATA \
+	uninstall-human_thinDATA uninstall-new_hopeDATA \
+	uninstall-planoDATA uninstall-radianceDATA \
+	uninstall-radiance_maverickDATA uninstall-sorbetDATA
 
 .MAKE: install-am install-strip
 
 .PHONY: all all-am check check-am clean clean-generic distclean \
 	distclean-generic distdir dvi dvi-am html html-am info info-am \
-	install install-am install-ambianceDATA install-antiqueDATA \
-	install-blazeDATA install-blaze_colorDATA install-data \
-	install-data-am install-defaultDATA install-dustDATA \
-	install-dust_invertDATA install-dust_sandDATA install-dvi \
-	install-dvi-am install-elementaryDATA install-exec \
+	install install-WoWDATA install-am install-ambianceDATA \
+	install-ambiance_maverickDATA install-ambiance_x_studioDATA \
+	install-antiqueDATA install-blazeDATA install-blaze_colorDATA \
+	install-blubuntuDATA install-data install-data-am \
+	install-defaultDATA install-dustDATA install-dust_invertDATA \
+	install-dust_sandDATA install-dvi install-dvi-am \
+	install-elementaryDATA install-equinox_glassDATA install-exec \
 	install-exec-am install-html install-html-am install-humanDATA \
 	install-human_thinDATA install-info install-info-am \
-	install-man install-pdf install-pdf-am install-ps \
-	install-ps-am install-strip installcheck installcheck-am \
+	install-man install-new_hopeDATA install-pdf install-pdf-am \
+	install-planoDATA install-ps install-ps-am \
+	install-radianceDATA install-radiance_maverickDATA \
+	install-sorbetDATA install-strip installcheck installcheck-am \
 	installdirs maintainer-clean maintainer-clean-generic \
 	mostlyclean mostlyclean-generic pdf pdf-am ps ps-am uninstall \
-	uninstall-am uninstall-ambianceDATA uninstall-antiqueDATA \
+	uninstall-WoWDATA uninstall-am uninstall-ambianceDATA \
+	uninstall-ambiance_maverickDATA \
+	uninstall-ambiance_x_studioDATA uninstall-antiqueDATA \
 	uninstall-blazeDATA uninstall-blaze_colorDATA \
-	uninstall-defaultDATA uninstall-dustDATA \
-	uninstall-dust_invertDATA uninstall-dust_sandDATA \
-	uninstall-elementaryDATA uninstall-humanDATA \
-	uninstall-human_thinDATA
+	uninstall-blubuntuDATA uninstall-defaultDATA \
+	uninstall-dustDATA uninstall-dust_invertDATA \
+	uninstall-dust_sandDATA uninstall-elementaryDATA \
+	uninstall-equinox_glassDATA uninstall-humanDATA \
+	uninstall-human_thinDATA uninstall-new_hopeDATA \
+	uninstall-planoDATA uninstall-radianceDATA \
+	uninstall-radiance_maverickDATA uninstall-sorbetDATA
 
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.

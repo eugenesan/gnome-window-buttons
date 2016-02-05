@@ -1,40 +1,40 @@
 <gconfschemafile>
     <schemalist>
         <schema>
-            <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_close</key>
+            <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_normal_close</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/close-focused.png</default>
+            <default>/usr/share/windowbuttons/themes/default/close-focused-normal.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
             </locale>
         </schema>
         <schema>
-            <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_minimize</key>
+            <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_normal_minimize</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/minimize-focused.png</default>
+            <default>/usr/share/windowbuttons/themes/default/minimize-focused-normal.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
             </locale>
         </schema>
         <schema>
-            <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_maximize</key>
+            <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_normal_maximize</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/maximize-focused.png</default>
+            <default>/usr/share/windowbuttons/themes/default/maximize-focused-normal.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
             </locale>
         </schema>
         <schema>
-            <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_unmaximize</key>
+            <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_normal_unmaximize</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/unmaximize-focused.png</default>
+            <default>/usr/share/windowbuttons/themes/default/unmaximize-focused-normal.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
@@ -42,40 +42,40 @@
         </schema>
 
         <schema>
-            <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_close</key>
+            <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_clicked_close</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/close-unfocused.png</default>
+            <default>/usr/share/windowbuttons/themes/default/close-focused-clicked.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
             </locale>
         </schema>
         <schema>
-            <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_minimize</key>
+            <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_clicked_minimize</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/minimize-unfocused.png</default>
+            <default>/usr/share/windowbuttons/themes/default/minimize-focused-clicked.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
             </locale>
         </schema>
         <schema>
-            <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_maximize</key>
+            <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_clicked_maximize</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/maximize-unfocused.png</default>
+            <default>/usr/share/windowbuttons/themes/default/maximize-focused-clicked.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
             </locale>
         </schema>
         <schema>
-            <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_unmaximize</key>
+            <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_clicked_unmaximize</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/unmaximize-unfocused.png</default>
+            <default>/usr/share/windowbuttons/themes/default/unmaximize-focused-clicked.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
@@ -83,40 +83,40 @@
         </schema>
 
         <schema>
-            <key>/schemas/apps/windowbuttons-applet/prefs/btn_clicked_close</key>
+            <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_hover_close</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/close-clicked.png</default>
+            <default>/usr/share/windowbuttons/themes/default/close-focused-hover.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
             </locale>
         </schema>
         <schema>
-            <key>/schemas/apps/windowbuttons-applet/prefs/btn_clicked_minimize</key>
+            <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_hover_minimize</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/minimize-clicked.png</default>
+            <default>/usr/share/windowbuttons/themes/default/minimize-focused-hover.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
             </locale>
         </schema>
         <schema>
-            <key>/schemas/apps/windowbuttons-applet/prefs/btn_clicked_maximize</key>
+            <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_hover_maximize</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/maximize-clicked.png</default>
+            <default>/usr/share/windowbuttons/themes/default/maximize-focused-hover.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
             </locale>
         </schema>
         <schema>
-            <key>/schemas/apps/windowbuttons-applet/prefs/btn_clicked_unmaximize</key>
+            <key>/schemas/apps/windowbuttons-applet/prefs/btn_focused_hover_unmaximize</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/unmaximize-clicked.png</default>
+            <default>/usr/share/windowbuttons/themes/default/unmaximize-focused-hover.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
@@ -124,45 +124,128 @@
         </schema>
 
         <schema>
-            <key>/schemas/apps/windowbuttons-applet/prefs/btn_hover_close</key>
+            <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_normal_close</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/close-hover.png</default>
+            <default>/usr/share/windowbuttons/themes/default/close-unfocused-normal.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
             </locale>
         </schema>
         <schema>
-            <key>/schemas/apps/windowbuttons-applet/prefs/btn_hover_minimize</key>
+            <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_normal_minimize</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/minimize-hover.png</default>
+            <default>/usr/share/windowbuttons/themes/default/minimize-unfocused-normal.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
             </locale>
         </schema>
         <schema>
-            <key>/schemas/apps/windowbuttons-applet/prefs/btn_hover_maximize</key>
+            <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_normal_maximize</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/maximize-hover.png</default>
+            <default>/usr/share/windowbuttons/themes/default/maximize-unfocused-normal.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
             </locale>
         </schema>
         <schema>
-            <key>/schemas/apps/windowbuttons-applet/prefs/btn_hover_unmaximize</key>
+            <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_normal_unmaximize</key>
             <owner>windowbuttons</owner>
             <type>string</type>
-            <default>/usr/share/windowbuttons/themes/default/unmaximize-hover.png</default>
+            <default>/usr/share/windowbuttons/themes/default/unmaximize-unfocused-normal.png</default>
             <locale name="C">
                 <short></short>
                 <long></long>
             </locale>
         </schema>
+
+        <schema>
+            <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_clicked_close</key>
+            <owner>windowbuttons</owner>
+            <type>string</type>
+            <default>/usr/share/windowbuttons/themes/default/close-unfocused-clicked.png</default>
+            <locale name="C">
+                <short></short>
+                <long></long>
+            </locale>
+        </schema>
+        <schema>
+            <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_clicked_minimize</key>
+            <owner>windowbuttons</owner>
+            <type>string</type>
+            <default>/usr/share/windowbuttons/themes/default/minimize-unfocused-clicked.png</default>
+            <locale name="C">
+                <short></short>
+                <long></long>
+            </locale>
+        </schema>
+        <schema>
+            <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_clicked_maximize</key>
+            <owner>windowbuttons</owner>
+            <type>string</type>
+            <default>/usr/share/windowbuttons/themes/default/maximize-unfocused-clicked.png</default>
+            <locale name="C">
+                <short></short>
+                <long></long>
+            </locale>
+        </schema>
+        <schema>
+            <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_clicked_unmaximize</key>
+            <owner>windowbuttons</owner>
+            <type>string</type>
+            <default>/usr/share/windowbuttons/themes/default/unmaximize-unfocused-clicked.png</default>
+            <locale name="C">
+                <short></short>
+                <long></long>
+            </locale>
+        </schema>
+
+        <schema>
+            <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_hover_close</key>
+            <owner>windowbuttons</owner>
+            <type>string</type>
+            <default>/usr/share/windowbuttons/themes/default/close-unfocused-hover.png</default>
+            <locale name="C">
+                <short></short>
+                <long></long>
+            </locale>
+        </schema>
+        <schema>
+            <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_hover_minimize</key>
+            <owner>windowbuttons</owner>
+            <type>string</type>
+            <default>/usr/share/windowbuttons/themes/default/minimize-unfocused-hover.png</default>
+            <locale name="C">
+                <short></short>
+                <long></long>
+            </locale>
+        </schema>
+        <schema>
+            <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_hover_maximize</key>
+            <owner>windowbuttons</owner>
+            <type>string</type>
+            <default>/usr/share/windowbuttons/themes/default/maximize-unfocused-normal.png</default>
+            <locale name="C">
+                <short></short>
+                <long></long>
+            </locale>
+        </schema>
+        <schema>
+            <key>/schemas/apps/windowbuttons-applet/prefs/btn_unfocused_hover_unmaximize</key>
+            <owner>windowbuttons</owner>
+            <type>string</type>
+            <default>/usr/share/windowbuttons/themes/default/unmaximize-unfocused-hover.png</default>
+            <locale name="C">
+                <short></short>
+                <long></long>
+            </locale>
+        </schema>
+ 
 
         <schema>
             <key>/schemas/apps/windowbuttons-applet/prefs/use_metacity_layout</key>
