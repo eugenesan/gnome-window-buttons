@@ -1,6 +1,0 @@
-#!/bin/sh
-set -e
-if [ "$1" = "configure" ]; then
-	gconf-schemas --register windowbuttons.schemas
-	gconf-schemas --register windowtitle.schemas
-fi
