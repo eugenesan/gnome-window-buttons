@@ -1,0 +1,133 @@
+0.1:
+Initial release.
+
+0.1.1:
+- The applet now works as a full substitution for maximized window buttons by default. It will disappear when there are no maximized windows the screen.
+- The 'click effect' option now works.
+- A quite extensive code cleanup.
+- Some minor properties window changes.
+- Performance/memory usage optimizations.
+- Should now compile without any warnings.
+
+0.1.2:
+- Fixed a proliferation issue.
+
+0.1.3:
+- Fixed a bug where new windows didn't register until unmaximizing.
+- Some code cleanups.
+
+0.1.4:
+- Fixed a little usability problem with non-maximized windows not registering.
+- Fixed wrong logo path in About dialog.
+
+0.1.5:
+- Rewrote the window tracking system from scratch. It finally works now.
+
+0.1.6:
+- Saving preferences to GConf now works.
+- Fixed viewport switching issue.
+- Re-created the project using IDE w/ makefiles: should now be possible to generate packages.
+- Localization should now be possible.
+- Restructured the initialization.
+- Other minor fixes.
+
+0.1.7:
+- Hover effect (additional pixmaps).
+- Button order now same as Metacity's.
+- Lots of code cleanups.
+- Should now work with all panel sizes, no matter where on the panel it is located.
+- Used a different libpanel-applet bug workaround (buttons now have separators between them).
+- Some preferences window redesigns.
+- Various other changes.
+
+0.1.8:
+- Fixed background transparency issue.
+
+0.1.9:
+- Added unfocused windows support.
+
+0.1.10:
+- Code cleanups
+- Added checkbox to remove Compiz decorations on maximized windows
+- Checkbutton values are now saved to GConf
+- Some minor patches
+
+0.1.11:
+- Hiding of unwanted buttons.
+- Now handling button states with bitmasks.
+- Custom button order.
+- Code cleanups.
+
+0.1.12:
+- Removed the workaround with separators
+- Fixed missing button in "Add to Panel" dialog
+- Fixed the button selection (it wasn't setting buttons correctly)
+- Minor code cleanups
+
+0.1.13:
+- Fixed incorrect focus handing when controlling all windows.
+- Some visual changes to Preferences.
+
+0.2:
+- Joined Window Buttons Applet and Window Title Applet into a single project: Window Applets
+- WTA: Added Preferences
+- WTA: Added alignment setting
+- WTA: Double click now un/maximizes window
+- Misc code fixes
+
+0.2.1:
+- WTA, WBA: Fixed preferences title
+- WTA: Fixed initial alignment bug
+- WTA: Added padding to icon
+- WTA: Added option to swap icon/label order
+- WTA: Added font & color settings
+- WTA: Icon double-click closes window
+
+0.2.2:
+- WTA: Some preferences redesigns
+- WTA: Added tooltip texts in preferences
+- WTA: Font style and color now use system theme by default
+
+0.2.3:
+- WTA, WBA: Rotating with panel now works
+- WTA, WBA: Properly define gconftool-2 in Makefiles
+- WTA, WBA: Link to gnome-look in about dialogs
+- WTA: Renamed .server file
+- WTA: New logo
+- WBA: Now stores images in memory instead of loading them from hard drive
+- WBA: Theming support
+- WBA: Lots of themes included: human, human-thin, dust, dust-sand, blaze
+- WBA: Saving all preferences now done in one place (need for plaintext configuration)
+- WBA: Window will now focus on unmaximize
+- WBA: Various code cleanups
+
+0.2.4:
+- WTA, WBA: Fixed initial orientation bugs
+- WTA, WBA: Minor code cleanup
+- WTA: Fixed preferences bug
+- WTA: Preferences now saved in one place, like in WBA
+
+0.2.5:
+- WTA, WBA: Fixed segfault on theme change after preferences were closed
+- WTA, WBA: No more warnings when trying to disconnect non-existant handler
+- WTA, WBA: Fixed initialization bugs
+- WTA, WBA: Code cleanups
+- WTA: Added option to hide icon
+- WBA: Fixed button hiding bug
+
+0.2.6:
+- WTA, WBA: Fixed multi-instance preferences bug
+- WBA: Bugfix: Does not hide until un-hover (when last window closed)
+- WBA: Brighter unfocused images for "dust-sand" theme
+- WBA: New logo
+- WTA: Bugfix: Font selection issue
+- WTA: Added option to hide title (also removes horizontal expand)
+- WTA: Improved preferences layout
+
+0.2.7:
+- WBA: Bugfix: Applet not hidden on startup
+- WBA: Bugfix: Does not hide until unhover
+- WBA: Added new themes: Ambiance, Dust-Invert, Elementary
+- WBA: Updated credits
+- WBA: Minor code cleanups
+- WTA: Bugfix: Crash on startup (gnome 2.30 + libwnck + compiz)

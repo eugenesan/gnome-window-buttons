@@ -1,0 +1,100 @@
+<gconfschemafile>
+    <schemalist>
+        <schema>
+            <key>/schemas/apps/windowtitle-applet/prefs/hide_on_unmaximized</key>
+            <owner>windowtitle</owner>
+            <type>bool</type>
+            <default>true</default>
+            <locale name="C">
+                <short>Hides title when there are no windows present.</short>
+                <long>When enabled, the title will disappear when there are no maximized (or active) windows on the screen.</long>
+            </locale>
+        </schema>
+        <schema>
+            <key>/schemas/apps/windowtitle-applet/prefs/only_maximized</key>
+            <owner>windowtitle</owner>
+            <type>bool</type>
+            <default>true</default>
+            <locale name="C">
+                <short>Only control maximized windows.</short>
+                <long>When enabled, the window title will always display the upper-most maximized window's name.</long>
+            </locale>
+        </schema>
+
+        <schema>
+            <key>/schemas/apps/windowtitle-applet/prefs/alignment</key>
+            <owner>windowtitle</owner>
+            <type>float</type>
+            <default>0.5</default>
+            <locale name="C">
+                <short>Set the title alignment.</short>
+                <long>Legal values are between 0 and 1.</long>
+            </locale>
+        </schema>
+        
+	<schema>
+            <key>/schemas/apps/windowtitle-applet/prefs/swap_order</key>
+            <owner>windowtitle</owner>
+            <type>bool</type>
+            <default>false</default>
+            <locale name="C">
+                <short>Swap icon and title.</short>
+                <long>When enabled, window title will be on the left side and the icon on the right side.</long>
+            </locale>
+        </schema>
+
+	<schema>
+            <key>/schemas/apps/windowtitle-applet/prefs/hide_icon</key>
+            <owner>windowtitle</owner>
+            <type>bool</type>
+            <default>false</default>
+            <locale name="C">
+                <short>Hide the icon</short>
+                <long>When enabled, the window icon will not be displayed.</long>
+            </locale>
+        </schema>
+
+	<schema>
+            <key>/schemas/apps/windowtitle-applet/prefs/hide_title</key>
+            <owner>windowtitle</owner>
+            <type>bool</type>
+            <default>false</default>
+            <locale name="C">
+                <short>Hide the title</short>
+                <long>When enabled, the window title will not be displayed.</long>
+            </locale>
+        </schema>
+
+	<schema>
+            <key>/schemas/apps/windowtitle-applet/prefs/custom_style</key>
+            <owner>windowtitle</owner>
+            <type>bool</type>
+            <default>false</default>
+            <locale name="C">
+                <short>Use a custom style.</short>
+                <long>When enabled, custom font style and color will be used. When disabled, system theme defaults will be used.</long>
+            </locale>
+        </schema>
+
+	<schema>
+            <key>/schemas/apps/windowtitle-applet/prefs/title_font</key>
+            <owner>windowtitle</owner>
+            <type>string</type>
+            <default>Sans 10</default>
+            <locale name="C">
+                <short>Title font.</short>
+                <long>Font name and size.</long>
+            </locale>
+        </schema>
+	<schema>
+            <key>/schemas/apps/windowtitle-applet/prefs/title_color_fg</key>
+            <owner>windowtitle</owner>
+            <type>string</type>
+            <default>#000000</default>
+            <locale name="C">
+                <short>Title foreground color.</short>
+                <long>Title foreground color in hex format.</long>
+            </locale>
+        </schema>
+    </schemalist>
+</gconfschemafile>

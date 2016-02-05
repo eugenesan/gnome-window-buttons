@@ -1,0 +1,18 @@
+***** ABOUT *****
+This package contains these applets:
+	- Window Buttons Applet
+	- Window Title Applet
+GNOME Panel applets that substitute the maximized window toolbar.
+I decided to make this because GNOME violates Fitts's Law by putting
+a panel between the maxed window buttons and the corner of the screen.
+These applets were designed to solve the problem.
+
+***** REQUIREMENTS *****
+Ubuntu: build-essential, intltool, libwnck-dev, libpanel-applet2-dev
+
+***** INSTALLATION *****
+1) Unpack
+2) ./configure --prefix=/usr --with-gconf-schema-file-dir=/usr/share/gconf/schemas
+3) make
+4) make install
+5) Add applets to panel (restart/kill gnome-panel if applet is not listed)

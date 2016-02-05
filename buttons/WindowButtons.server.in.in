@@ -1,0 +1,21 @@
+<oaf_info>
+	<oaf_server iid="OAFIID:WindowButtonsApplet_Factory" type="exe" location="@LIBEXECDIR@/windowbuttons">
+		<oaf_attribute name="repo_ids" type="stringv">
+			<item value="IDL:Bonobo/GenericFactory:1.0"/>
+			<item value="IDL:Bonobo/Unknown:1.0"/>
+		</oaf_attribute>
+		<oaf_attribute name="name" type="string" value="Window Buttons applet Factory"/>
+		<oaf_attribute name="description" type="string" value="Window buttons for your GNOME Panel."/>
+	</oaf_server>
+
+	<oaf_server iid="OAFIID:WindowButtonsApplet" type="factory" location="OAFIID:WindowButtonsApplet_Factory">
+		<oaf_attribute name="repo_ids" type="stringv">
+			<item value="IDL:GNOME/Vertigo/PanelAppletShell:1.0"/>
+			<item value="IDL:Bonobo/Control:1.0"/>
+			<item value="IDL:Bonobo/Unknown:1.0"/>
+		</oaf_attribute>
+		<oaf_attribute name="name" type="string" value="Window Buttons"/>
+		<oaf_attribute name="description" type="string" value="Window buttons for your GNOME Panel"/>
+		<oaf_attribute name="panel:icon" type="string" value="/usr/share/windowbuttons/windowbuttons_logo.png"/>
+	</oaf_server>
+</oaf_info>
