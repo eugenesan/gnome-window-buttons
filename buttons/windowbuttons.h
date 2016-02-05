@@ -77,6 +77,7 @@
 /* Key strings (used by GConf, Plaintext and GtkBuilder .ui file) */
 #define CFG_ONLY_MAXIMIZED			"only_maximized"
 #define CFG_HIDE_ON_UNMAXIMIZED 	"hide_on_unmaximized"
+#define CFG_HIDE_DECORATION			"hide_decoration"
 #define CFG_CLICK_EFFECT			"click_effect"
 #define CFG_HOVER_EFFECT			"hover_effect"
 #define CFG_USE_METACITY_LAYOUT		"use_metacity_layout"
@@ -84,6 +85,8 @@
 #define CFG_UNMAXIMIZE_HIDDEN		"button_maximize_hidden"
 #define CFG_CLOSE_HIDDEN			"button_close_hidden"
 #define CFG_BUTTON_LAYOUT			"button_layout"
+#define CFG_REVERSE_ORDER			"reverse_order"
+#define CFG_ORIENTATION				"orientation"
 #define CFG_THEME					"theme"
 
 G_BEGIN_DECLS
@@ -134,28 +137,30 @@ typedef enum {
 	WB_BUTTON_STATE_HIDDEN	= 1 << 3  // [1000]
 } WBButtonState;
 
-/* Applet properties (things that get saved) */
-typedef struct {
-	gchar		*theme;					// Selected theme name [NULL = "Custom"]
-	gchar		***images;				// Absolute paths to images
-	gshort 		*eventboxposition;		// Position of eventboxes (left=0 to right=WB_BUTTONS-1)
-										// the index represents the button [0=minimize,unmaximize,close]
-										// index of -1 means the button will not be put into box
-	gchar		*button_layout;			// Button layout string
-	gboolean	*button_hidden;			// Indicates whether a button is hidden
-	gboolean 	only_maximized,
-				hide_on_unmaximized,
-				use_metacity_layout,
-				click_effect,
-				hover_effect;
-} WBPreferences;
-
 /* Definition for our button */
 typedef struct {
 	GtkEventBox 	*eventbox;
 	GtkImage 		*image;
 	WBButtonState 	state;
 } WindowButton;
+
+/* Applet properties (things that get saved) */
+typedef struct {
+	gchar		*theme;					// Selected theme name [NULL = "Custom"]
+	gchar		***images;				// Absolute paths to images
+	gshort 		*eventboxposition;		// Position of eventboxes (left=0 to right=WB_BUTTONS-1)
+										// The index represents the button [0=minimize,unmaximize,close]
+										// Index of -1 means the button will not be put into box
+	gshort		orientation;			// Orientation type (0=automatic, 1=horizontal, 2=vertical)
+	gchar		*button_layout;			// Button layout string
+	gboolean	*button_hidden;			// Indicates whether a button is hidden
+	gboolean 	only_maximized,
+				hide_on_unmaximized,
+				use_metacity_layout,
+				reverse_order,
+				click_effect,
+				hover_effect;
+} WBPreferences;
 
 /* WBApplet definition (inherits from PanelApplet) */
 typedef struct {
@@ -166,7 +171,7 @@ typedef struct {
 	GtkWidget		*window_prefs;		// Preferences window
 	
 	/* Variables */
-	WBPreferences	*prefs;				// Main properties 
+	WBPreferences	*prefs;				// Main preferences
 	WindowButton	**button;			// Array of buttons
 	WnckScreen 		*activescreen;		// Active screen
 	WnckWorkspace	*activeworkspace;	// Active workspace

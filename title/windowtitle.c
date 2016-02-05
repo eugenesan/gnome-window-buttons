@@ -38,16 +38,27 @@ void properties_cb (BonoboUIComponent *, WTApplet *, const char *);
 void setAlignment(WTApplet *, gfloat);
 void placeWidgets (WTApplet *);
 void reloadWidgets (WTApplet *);
-void rotateWidgets (WTApplet *, GdkPixbufRotation);
 void toggleHidden(WTApplet *);
-void loadPreferencesGConf(WTPreferences *, WTApplet *);
-void loadPreferencesCfg(WTPreferences *, WTApplet *);
+void savePreferences(WTPreferences *, WTApplet *);
 WTPreferences *loadPreferences(WTApplet *);
 gchar *getButtonLayoutGConf(WTApplet *, gboolean);
-GdkPixbufRotation getOrientAngle (PanelAppletOrient);
-GtkPackType getPackType(GdkPixbufRotation);
 
 G_DEFINE_TYPE (WTApplet, wt_applet, PANEL_TYPE_APPLET);
+
+// --- Context Menu ---
+static char context_menu_xml [] =
+   "<popup name=\"button3\">\n"
+   "   <menuitem name=\"Properties Item\" "
+   "             verb=\"WTPreferences\" "
+   "           _label=\"_Preferences...\"\n"
+   "          pixtype=\"stock\" "
+   "          pixname=\"gtk-properties\"/>\n"
+   "   <menuitem name=\"About Item\" "
+   "             verb=\"WTAbout\" "
+   "           _label=\"_About...\"\n"
+   "          pixtype=\"stock\" "
+   "          pixname=\"gtk-about\"/>\n"
+   "</popup>\n";
 
 static const BonoboUIVerb windowbuttons_menu_verbs [] = {
         BONOBO_UI_UNSAFE_VERB ("WTPreferences", properties_cb),
@@ -59,41 +70,32 @@ WTApplet* wt_applet_new (void) {
         return g_object_new (WT_TYPE_APPLET, NULL);
 }
 
-static void wt_applet_init(WTApplet *wtapplet) {
-	// Bullshit Function
-}
-
 static void wt_applet_class_init (WTAppletClass *klass) {
-	// Nothing
+	// Not required
 }
 
-/* Get our properties (the only properties getter that should be called) */
-WTPreferences *loadPreferences(WTApplet *wtapplet) {
-	WTPreferences *wtp = g_new0(WTPreferences, 1);
-
-#if PLAINTEXT_CONFIG == 0
-	loadPreferencesGConf(wtp, wtapplet);
-#else
-	loadPreferencesCfg(wtp, wtapplet);
-#endif
-
-	return wtp;
+static void wt_applet_init(WTApplet *wtapplet) {
+	// Not required
 }
 
 /* The About dialog */
-static void about_cb (BonoboUIComponent *uic, WTApplet *applet) {
+//static void about_cb (GtkAction *action, WTApplet *wtapplet) {
+static void about_cb (BonoboUIComponent *uic, WTApplet *wtapplet) {
         static const gchar *authors [] = {
-		"Andrej Belcijan <{andrejx} at {gmail.com}>",
+		"Andrej Belcijan <{andrejx}at{gmail.com}>",
+		" ",
+		"Also contributed:",
+		"Niko Bellic <{yurik81}at{gmail.com}>",
 		NULL
 	};
 
 	const gchar *artists[] = {
-		"Nasser Alshammari <{designernasser} at {gmail.com}>",
+		"Nasser Alshammari <{designernasser}at{gmail.com}>",
 		NULL
 	};
 	
 	const gchar *documenters[] = {
-        "Andrej Belcijan <{andrejx} at {gmail.com}>",
+        "Andrej Belcijan <{andrejx}at{gmail.com}>",
 		NULL
 	};
 
@@ -102,7 +104,7 @@ static void about_cb (BonoboUIComponent *uic, WTApplet *applet) {
 	gtk_show_about_dialog (NULL,
 		"version",	VERSION,
 		"comments",	_("Window title for your GNOME Panel."),
-		"copyright",	"\xC2\xA9 2009 Andrej Belcijan",
+		"copyright",	"\xC2\xA9 2010 Andrej Belcijan",
 		"authors",	authors,
 	    "artists",	artists,	    
 		"documenters",	documenters,
@@ -172,10 +174,12 @@ static WnckWindow *getUpperMaximized (WTApplet *wtapplet) {
 	// WARNING: if this function returns NULL, applet won't detect clicks!
 }
 
-/* Updates the images according to preferences and the umaxed window situation */
+// Updates the images according to preferences and the window situation
+// Warning! This function is called very often, so it should only do the most necessary things!
 void updateTitle(WTApplet *wtapplet) {
 	WnckWindow *controlledwindow;
-	gchar *title_text;
+	gchar *title_text, *title_color, *title_font;
+	GdkPixbuf *icon_pixbuf;
 	
 	if (wtapplet->prefs->only_maximized) {
 		controlledwindow = wtapplet->umaxedwindow;
@@ -183,43 +187,73 @@ void updateTitle(WTApplet *wtapplet) {
 		controlledwindow = wtapplet->activewindow;
 	}
 
+	if (controlledwindow == NULL)
+		return;
+	
 	if (controlledwindow == wtapplet->rootwindow) {
 		// we're on desktop
 		if (wtapplet->prefs->hide_on_unmaximized) {
 			// hide everything
-			gtk_image_clear(wtapplet->icon);
+			icon_pixbuf = NULL;
 			title_text = "";
 		} else {
-			// display "custom" icon/title (TODO: customization via preferences)
-			gtk_image_set_from_stock(wtapplet->icon, GTK_STOCK_HOME, GTK_ICON_SIZE_MENU);
+			// display "custom" icon/title (TODO: customization via preferences?)
+			icon_pixbuf = gtk_widget_render_icon(GTK_WIDGET(wtapplet),GTK_STOCK_HOME,GTK_ICON_SIZE_MENU,NULL); // This has to be unrefed!
 			title_text = _("Desktop");
 		}
 	} else {
-		// We're updating window info (Careful! We've had pixbuf memory leaks here)
-		wtapplet->icon_pixbuf = wnck_window_get_icon(controlledwindow); // This only returns a pointer
-
-		GdkPixbuf *ipb1 = gdk_pixbuf_scale_simple(wtapplet->icon_pixbuf, ICON_WIDTH, ICON_HEIGHT, GDK_INTERP_BILINEAR);
-		GdkPixbuf *ipb2 = gdk_pixbuf_rotate_simple(ipb1, wtapplet->angle);
-		g_object_unref(ipb1);	// Unref ipb1 to get it cleared from memory (we still need ipb2)
-
-		gtk_image_set_from_pixbuf(wtapplet->icon, ipb2); // Apply pixbuf to icon widget
-		g_object_unref(ipb2);   // Unref ipb2 to get it cleared from memory
-		
+		icon_pixbuf = wnck_window_get_icon(controlledwindow); // This only returns a pointer - it SHOULDN'T be unrefed!
 		title_text = (gchar*)wnck_window_get_name(controlledwindow);
 	}
 	
-	if (controlledwindow) {
-		if (wtapplet->prefs->custom_style) {
-			title_text = g_markup_printf_escaped("<span font=\"%s\" color=\"%s\">%s</span>",
-					                        	 wtapplet->prefs->title_font,
-					                             wtapplet->prefs->title_color,
-					                             title_text);
-			gtk_label_set_markup (GTK_LABEL(wtapplet->title), title_text);
-			g_free(title_text);
+	// TODO: we need the default font to somehow be the same in both modes
+	if (wtapplet->prefs->custom_style) {
+		// custom style
+		if (controlledwindow == wtapplet->activewindow) {
+			// window focused
+			title_color = wtapplet->prefs->title_active_color;
+			title_font = wtapplet->prefs->title_active_font;
 		} else {
-			gtk_label_set_text(wtapplet->title, title_text); //just use system fonts
+			// window unfocused
+			title_color = wtapplet->prefs->title_inactive_color;
+			title_font = wtapplet->prefs->title_inactive_font;	
 		}
+	} else {
+		// automatic (non-custom) style
+		if (controlledwindow == wtapplet->activewindow) {
+			// window focused				
+			title_color = wtapplet->panel_color_fg;
+			title_font = "";
+		} else {
+			// window unfocused
+			title_color = "#808080"; // inactive title color. best fits for any panel regardless of color
+			title_font = "";
+		}		
 	}
+
+	if (icon_pixbuf == NULL) {
+		gtk_image_clear(wtapplet->icon);
+	} else {
+		// We're updating window info (Careful! We've had pixbuf memory leaks here)
+		GdkPixbuf *ipb1 = gdk_pixbuf_scale_simple(icon_pixbuf, ICON_WIDTH, ICON_HEIGHT, GDK_INTERP_BILINEAR);
+		if (controlledwindow == wtapplet->rootwindow) g_object_unref(icon_pixbuf); //this is stupid beyond belief, thanks to the retarded GTK framework
+		GdkPixbuf *ipb2 = gdk_pixbuf_rotate_simple(ipb1, wtapplet->angle);
+		g_object_unref(ipb1);	// Unref ipb1 to get it cleared from memory (we still need ipb2)
+
+		// Saturate icon when window is not focused
+		if (controlledwindow != wtapplet->activewindow) 
+			gdk_pixbuf_saturate_and_pixelate(ipb2, ipb2, 0, FALSE);
+		
+		// Apply pixbuf to icon widget
+		gtk_image_set_from_pixbuf(wtapplet->icon, ipb2);
+		g_object_unref(ipb2);   // Unref ipb2 to get it cleared from memory			
+	}
+	
+	title_text = g_markup_printf_escaped("<span font=\"%s\" color=\"%s\">%s</span>",
+										 title_font, title_color, title_text);
+	// Apply text to label widget
+	gtk_label_set_markup(GTK_LABEL(wtapplet->title), title_text);
+	g_free(title_text);
 }
 
 /* Expand/unexpand applet according to preferences */
@@ -268,7 +302,8 @@ static void applet_change_background (PanelApplet *applet,
 									   
 	GtkRcStyle *rc_style;
 	GtkStyle *style;
-								   
+	GdkColor color;
+							   
 	// reset style
 	gtk_widget_set_style (GTK_WIDGET (applet), NULL);
 	rc_style = gtk_rc_style_new ();
@@ -292,7 +327,16 @@ static void applet_change_background (PanelApplet *applet,
 			g_object_unref (style);
 			break;
 	}
-										
+
+	WTApplet *wtapplet = WT_APPLET (applet);
+	// adjust title's color to the new theme
+	// there is no need to do extra calculations because applet's foreground colour already contains proper value
+	// TODO: gtk_widget_get_style() is deprecated - use GtkStyleContext instead (NOTE: requires GTK+ 3.0 !)
+	if (wtapplet->panel_color_fg)
+		g_free(wtapplet->panel_color_fg);	
+	color = GTK_WIDGET(applet)->style->fg[GTK_STATE_NORMAL];
+	wtapplet->panel_color_fg = gdk_color_to_string(&color);
+	updateTitle(wtapplet); // We need to redraw the title using the new colors
 }
 
 /* Triggered when a different panel orientation is detected */
@@ -304,10 +348,7 @@ static void applet_change_orient (PanelApplet *panelapplet,
 
 	if (orient != wtapplet->orient) {
 		wtapplet->orient = orient;
-		wtapplet->angle = getOrientAngle(wtapplet->orient);
-		wtapplet->packtype = getPackType(wtapplet->angle);
-		
-		rotateWidgets(wtapplet, wtapplet->angle);
+
 		reloadWidgets(wtapplet);
 		updateTitle(wtapplet);
 	}
@@ -542,8 +583,8 @@ static gboolean icon_clicked (GtkWidget *icon,
 	}
 
 	// double click:
-	if (event->type==GDK_2BUTTON_PRESS) {
-		wnck_window_close(controlledwindow, GDK_CURRENT_TIME);
+	if (event->type == GDK_2BUTTON_PRESS) {
+		wnck_window_close(controlledwindow, gtk_get_current_event_time());
 	}		
 
 	return TRUE;
@@ -553,7 +594,8 @@ static gboolean title_clicked (GtkWidget *title,
                                GdkEventButton *event,
                                gpointer user_data)
 {
-	if (event->button != 1) return FALSE;
+	// only allow left and right mouse button
+	//if (event->button != 1 && event->button != 3) return FALSE;
 	
 	WTApplet *wtapplet;
 	WnckWindow *controlledwindow;
@@ -566,26 +608,56 @@ static gboolean title_clicked (GtkWidget *title,
 		controlledwindow = wtapplet->activewindow;
 	}
 
-	// single click:
-	if (controlledwindow) {
+	if (!controlledwindow) 
+		return FALSE;
+	
+	// single click (left/right)
+	if (event->button == 1) {
+		// left-click
 		wnck_window_activate(controlledwindow, gtk_get_current_event_time());
-	}
-
-	// double click:
-	if (event->type==GDK_2BUTTON_PRESS || event->type==GDK_3BUTTON_PRESS) {
-	// if (event->type==GDK_2BUTTON_PRESS) {
-		if (wnck_window_is_maximized(controlledwindow)) {
-			wnck_window_unmaximize(controlledwindow);
-		} else {
-			wnck_window_maximize(controlledwindow);
+		if (event->type==GDK_2BUTTON_PRESS || event->type==GDK_3BUTTON_PRESS) {
+			// double/tripple click
+			//if (event->type==GDK_2BUTTON_PRESS) {
+			if (wnck_window_is_maximized(controlledwindow)) {
+				wnck_window_unmaximize(controlledwindow);
+			} else {
+				wnck_window_maximize(controlledwindow);
+			}
 		}
-	}	
-
+	} else if (event->button == 3) {
+		// right-click
+		if (wtapplet->prefs->show_window_menu) {
+			wnck_window_activate(controlledwindow, gtk_get_current_event_time());
+			GtkMenu *window_menu = GTK_MENU(wnck_action_menu_new(controlledwindow));
+			gtk_menu_popup(window_menu, NULL, NULL, NULL, NULL, event->button, gtk_get_current_event_time());
+			//TODO: somehow alter the panel action menu to also display the wnck_action_menu !
+		} else {
+			return FALSE;
+		}
+	} else {
+		return FALSE;
+	}
 	return TRUE;
 }
 
 /* Places widgets in box accordingly with angle and order */
 void placeWidgets (WTApplet *wtapplet) {
+
+	// TODO: merge all this... or not?
+	if (wtapplet->orient == PANEL_APPLET_ORIENT_RIGHT) {
+		wtapplet->angle = GDK_PIXBUF_ROTATE_COUNTERCLOCKWISE;
+	} else if (wtapplet->orient == PANEL_APPLET_ORIENT_LEFT) {
+		wtapplet->angle = GDK_PIXBUF_ROTATE_CLOCKWISE;
+	} else {
+		wtapplet->angle = GDK_PIXBUF_ROTATE_NONE;
+	}
+
+	if (wtapplet->angle == GDK_PIXBUF_ROTATE_COUNTERCLOCKWISE) {
+		wtapplet->packtype = GTK_PACK_END;
+	} else {
+		wtapplet->packtype = GTK_PACK_START;
+	}
+	
 	// set box orientation
 	if (wtapplet->angle == GDK_PIXBUF_ROTATE_COUNTERCLOCKWISE || wtapplet->angle == GDK_PIXBUF_ROTATE_CLOCKWISE) {
 		gtk_orientable_set_orientation(GTK_ORIENTABLE(wtapplet->box), GTK_ORIENTATION_VERTICAL);
@@ -594,13 +666,17 @@ void placeWidgets (WTApplet *wtapplet) {
 	}
 
 	// set packing order
-	if (!(wtapplet->prefs->swap_order == wtapplet->packtype)) {
-		gtk_box_pack_start(wtapplet->box, GTK_WIDGET(wtapplet->eb_title), TRUE, TRUE, 0);
+	if (wtapplet->prefs->swap_order == wtapplet->packtype) {
 		gtk_box_pack_start(wtapplet->box, GTK_WIDGET(wtapplet->eb_icon), FALSE, TRUE, 0);
+		gtk_box_pack_start(wtapplet->box, GTK_WIDGET(wtapplet->eb_title), TRUE, TRUE, 0);
 	} else {
-		gtk_box_pack_start(wtapplet->box, GTK_WIDGET(wtapplet->eb_icon), FALSE, TRUE, 0);
 		gtk_box_pack_start(wtapplet->box, GTK_WIDGET(wtapplet->eb_title), TRUE, TRUE, 0);
+		gtk_box_pack_start(wtapplet->box, GTK_WIDGET(wtapplet->eb_icon), FALSE, TRUE, 0);
 	}
+
+	// Set alignment/orientation
+	gtk_label_set_angle( wtapplet->title, wtapplet->angle );
+	setAlignment(wtapplet, (gfloat)wtapplet->prefs->alignment);
 }
 
 /* Reloads all widgets */
@@ -636,34 +712,6 @@ void setAlignment (WTApplet *wtapplet, gfloat alignment) {
 	}
 }
 
-/* Returns the apropriate angle for respective panel orientations */
-GdkPixbufRotation getOrientAngle (PanelAppletOrient orient) {
-	GdkPixbufRotation new_angle;
-	if (orient == PANEL_APPLET_ORIENT_RIGHT) {
-		new_angle = GDK_PIXBUF_ROTATE_COUNTERCLOCKWISE;
-	} else if (orient == PANEL_APPLET_ORIENT_LEFT) {
-		new_angle = GDK_PIXBUF_ROTATE_CLOCKWISE;
-	} else {
-		new_angle = GDK_PIXBUF_ROTATE_NONE;
-	}
-	return new_angle;
-}
-
-/* Returns packtype according to panel angle */
-GtkPackType getPackType(GdkPixbufRotation angle) {
-	if (angle == GDK_PIXBUF_ROTATE_COUNTERCLOCKWISE) {
-		return GTK_PACK_END;
-	} else {
-		return GTK_PACK_START;
-	}
-}
-
-/* Sets angle to widgets */
-void rotateWidgets (WTApplet *wtapplet, GdkPixbufRotation angle) {
-	gtk_label_set_angle( wtapplet->title, angle );
-	setAlignment(wtapplet, (gfloat)wtapplet->prefs->alignment);
-}
-
 /* Do the actual applet initialization */
 static void init_wtapplet (WTApplet *wtapplet) {
 	wtapplet->prefs = loadPreferences(wtapplet);
@@ -680,9 +728,6 @@ static void init_wtapplet (WTApplet *wtapplet) {
 	wtapplet->eb_icon = GTK_EVENT_BOX(gtk_event_box_new());
 	wtapplet->eb_title = GTK_EVENT_BOX(gtk_event_box_new());
 	wtapplet->orient = panel_applet_get_orient(PANEL_APPLET(wtapplet));
-	wtapplet->size = panel_applet_get_size(PANEL_APPLET(wtapplet));
-	wtapplet->angle = getOrientAngle(wtapplet->orient);
-	wtapplet->packtype = getPackType(wtapplet->angle);
 	wtapplet->size_hints = g_new(gint,2);
 	
 	// Widgets to eventboxes, eventboxes to box
@@ -695,7 +740,6 @@ static void init_wtapplet (WTApplet *wtapplet) {
 
 	// Rotate & place elements
 	setAlignment(wtapplet, (gfloat)wtapplet->prefs->alignment);
-	rotateWidgets(wtapplet, wtapplet->angle);
 	placeWidgets(wtapplet);
 
 	// Add box to applet
@@ -731,39 +775,28 @@ static void init_wtapplet (WTApplet *wtapplet) {
 /* Initial function that draws the applet */
 static gboolean windowtitle_applet_fill (PanelApplet *applet, const gchar *iid, gpointer data) {
 	if (strcmp (iid, APPLET_OAFIID) != 0) return FALSE;
+
+	WTApplet *wtapplet = WT_APPLET (applet);
 	
 	g_set_application_name (_(APPLET_NAME)); //GLib-WARNING **: g_set_application_name() called multiple times
 	panel_applet_add_preferences (applet, GCONF_PREFS, NULL);
-	
-	init_wtapplet(WT_APPLET(applet));
-	
-	/* --- Context Menu --- */
-	static const char context_menu_xml [] =
-	   "<popup name=\"button3\">\n"
-	   "   <menuitem name=\"Properties Item\" "
-	   "             verb=\"WTPreferences\" "
-	   "           _label=\"_Preferences...\"\n"
-	   "          pixtype=\"stock\" "
-	   "          pixname=\"gtk-properties\"/>\n"
-	   "   <menuitem name=\"About Item\" "
-	   "             verb=\"WTAbout\" "
-	   "           _label=\"_About...\"\n"
-	   "          pixtype=\"stock\" "
-	   "          pixname=\"gtk-about\"/>\n"
-	   "</popup>\n";
+	wnck_set_client_type (WNCK_CLIENT_TYPE_PAGER);
+
 	// Last parameter here will be the second parameter (WTApplet) in all menu callback functions (properties, about...) !
 	panel_applet_setup_menu (applet, context_menu_xml, windowbuttons_menu_verbs, applet);
-
-	toggleExpand (WT_APPLET (applet));
-	toggleHidden (WT_APPLET (applet));	// Properly hide or show stuff
-	updateTitle (WT_APPLET(applet));
+	
+	init_wtapplet (wtapplet);
+	toggleExpand  (wtapplet);
+	toggleHidden  (wtapplet);	// Properly hide or show stuff
+	updateTitle   (wtapplet);
 
 	return TRUE;
 }
 
+
 PANEL_APPLET_BONOBO_FACTORY (APPLET_OAFIID_FACTORY,
 							 WT_TYPE_APPLET,
-							 "windowtitle",//APPLET_NAME,
+							 "WindowTitle",//APPLET_NAME,
 							 "0",//VERSION,
 							 windowtitle_applet_fill,
-							 NULL);
+							 NULL)

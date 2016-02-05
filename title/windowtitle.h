@@ -71,10 +71,13 @@
 #define CFG_HIDE_TITLE					"hide_title"
 #define CFG_CUSTOM_STYLE				"custom_style"
 #define CFG_TITLE_SIZE					"title_size"
-#define CFG_TITLE_FONT					"title_font"
-#define CFG_TITLE_COLOR_FG				"title_color_fg"
 #define CFG_ONLY_MAXIMIZED				"only_maximized"
 #define CFG_HIDE_ON_UNMAXIMIZED 		"hide_on_unmaximized"
+#define CFG_SHOW_WINDOW_MENU			"show_window_menu"
+#define CFG_TITLE_ACTIVE_FONT			"title_active_font"
+#define CFG_TITLE_ACTIVE_COLOR_FG		"title_active_color_fg"
+#define CFG_TITLE_INACTIVE_FONT			"title_inactive_font"
+#define CFG_TITLE_INACTIVE_COLOR_FG		"title_inactive_color_fg"
 
 G_BEGIN_DECLS
 
@@ -92,11 +95,14 @@ typedef struct {
 					hide_icon,				// [T/F] Hide the icon
 					hide_title,				// [T/F] Hide the title
 					swap_order,				// [T/F] Swap title/icon
-					expand_applet,			// [T/F] Expand the applet TODO: rename to expand_title
-					custom_style;			// [T/F] Use custom style
+					expand_applet,			// [T/F] Expand the applet TODO: rename to expand_title ?
+					custom_style,			// [T/F] Use custom style
+					show_window_menu;		// [T/F] Show window action menu on right click
 	gint			title_size;				// Title size (minimal w/ expand and absolute w/o expand)
-	gchar			*title_font;			// Custom title font
-	gchar			*title_color;			// Custom title color
+	gchar			*title_active_font;		// Custom active title font
+	gchar			*title_active_color;	// Custom active title color
+	gchar			*title_inactive_font;	// Custom inactive title font
+	gchar			*title_inactive_color;	// Custom inactive title color
 	gdouble			alignment;				// Title alignment [0=left, 0.5=center, 1=right]
 } WTPreferences;
 
@@ -124,8 +130,8 @@ typedef struct {
 					umaxed_handler_state,	// umaxedwindow's statechange event handler ID
 					umaxed_handler_name,	// umaxedwindow's manechange event handler ID
 					umaxed_handler_icon;	// umaxedwindow's iconchange event handler ID
-	GdkPixbuf		*icon_pixbuf;			// Icon pixle buffer
 	gboolean		focused;				// [T/F] Window state (focused or unfocused)
+	gchar			*panel_color_fg;		// Foreground color determined by the panel
 	
 	GdkPixbufRotation	angle;				// Applet angle
 	PanelAppletOrient	orient;				// Panel orientation

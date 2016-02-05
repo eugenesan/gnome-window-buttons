@@ -44,7 +44,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkComboBox" id="combo_theme">
+                          <object class="GtkComboBox" id="theme">
                             <property name="visible">True</property>
                           </object>
                           <packing>
@@ -580,9 +580,6 @@ Clicked</property>
                           </packing>
                         </child>
                         <child>
-                          <placeholder/>
-                        </child>
-                        <child>
                           <object class="GtkButton" id="btn_unfocused_clicked_close">
                             <property name="width_request">40</property>
                             <property name="height_request">40</property>
@@ -598,6 +595,9 @@ Clicked</property>
                             <property name="x_options">GTK_EXPAND</property>
                             <property name="y_options">GTK_EXPAND</property>
                           </packing>
+                        </child>
+                        <child>
+                          <placeholder/>
                         </child>
                       </object>
                       <packing>
@@ -643,7 +643,7 @@ Clicked</property>
                               <object class="GtkVBox" id="vbox4">
                                 <property name="visible">True</property>
                                 <child>
-                                  <object class="GtkCheckButton" id="chkb_metacity_order">
+                                  <object class="GtkCheckButton" id="use_metacity_layout">
                                     <property name="label" translatable="yes">Use Metacity's button order</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
@@ -663,9 +663,11 @@ Clicked</property>
                                     <child>
                                       <object class="GtkLabel" id="label6">
                                         <property name="visible">True</property>
+                                        <property name="xalign">0</property>
                                         <property name="label" translatable="yes">Custom order:</property>
                                       </object>
                                       <packing>
+                                        <property name="expand">False</property>
                                         <property name="position">0</property>
                                       </packing>
                                     </child>
@@ -702,6 +704,19 @@ Do NOT use double values!</property>
                                     <property name="position">1</property>
                                   </packing>
                                 </child>
+                                <child>
+                                  <object class="GtkCheckButton" id="reverse_order">
+                                    <property name="label" translatable="yes">Reverse order</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="draw_indicator">True</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="position">2</property>
+                                  </packing>
+                                </child>
                               </object>
                             </child>
                           </object>
@@ -716,6 +731,81 @@ Do NOT use double values!</property>
                       </object>
                       <packing>
                         <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkFrame" id="frame5">
+                        <property name="visible">True</property>
+                        <property name="label_xalign">0</property>
+                        <property name="shadow_type">out</property>
+                        <child>
+                          <object class="GtkAlignment" id="alignment8">
+                            <property name="visible">True</property>
+                            <property name="bottom_padding">10</property>
+                            <property name="left_padding">10</property>
+                            <property name="right_padding">10</property>
+                            <child>
+                              <object class="GtkVBox" id="vbox8">
+                                <property name="visible">True</property>
+                                <child>
+                                  <object class="GtkRadioButton" id="orientation_automatic">
+                                    <property name="label" translatable="yes">Automatic</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="tooltip_text" translatable="yes">Align buttons with panel orientation.</property>
+                                    <property name="active">True</property>
+                                    <property name="draw_indicator">True</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="position">0</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkRadioButton" id="orientation_horizontal">
+                                    <property name="label" translatable="yes">Horizontal</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="tooltip_text" translatable="yes">Force buttons to always appear horizontal.</property>
+                                    <property name="draw_indicator">True</property>
+                                    <property name="group">orientation_automatic</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="position">1</property>
+                                  </packing>
+                                </child>
+                                <child>
+                                  <object class="GtkRadioButton" id="orientation_vertical">
+                                    <property name="label" translatable="yes">Vertical</property>
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="receives_default">False</property>
+                                    <property name="tooltip_text" translatable="yes">Force buttons to always appear horizontal.</property>
+                                    <property name="draw_indicator">True</property>
+                                    <property name="group">orientation_horizontal</property>
+                                  </object>
+                                  <packing>
+                                    <property name="expand">False</property>
+                                    <property name="position">2</property>
+                                  </packing>
+                                </child>
+                              </object>
+                            </child>
+                          </object>
+                        </child>
+                        <child type="label">
+                          <object class="GtkLabel" id="label13">
+                            <property name="visible">True</property>
+                            <property name="label" translatable="yes">&lt;b&gt;Button Orientation&lt;/b&gt;</property>
+                            <property name="use_markup">True</property>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="position">1</property>
                       </packing>
                     </child>
                     <child>
@@ -784,7 +874,7 @@ Do NOT use double values!</property>
                         </child>
                       </object>
                       <packing>
-                        <property name="position">1</property>
+                        <property name="position">2</property>
                       </packing>
                     </child>
                   </object>
@@ -797,7 +887,7 @@ Do NOT use double values!</property>
             <child type="tab">
               <object class="GtkLabel" id="label3">
                 <property name="visible">True</property>
-                <property name="label" translatable="yes">Order &amp; Visibility</property>
+                <property name="label" translatable="yes">Positioning &amp; Visibility</property>
               </object>
               <packing>
                 <property name="position">2</property>
@@ -829,8 +919,8 @@ Do NOT use double values!</property>
                                 <property name="visible">True</property>
                                 <property name="spacing">5</property>
                                 <child>
-                                  <object class="GtkCheckButton" id="chkb_only_maximized">
-                                    <property name="label" translatable="yes">Control only _maximized windows</property>
+                                  <object class="GtkCheckButton" id="only_maximized">
+                                    <property name="label" translatable="yes">Control _maximized windows only</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
@@ -843,8 +933,8 @@ Do NOT use double values!</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkCheckButton" id="chkb_hide_on_unmaximized">
-                                    <property name="label" translatable="yes">_Hide buttons when no maximized window is active</property>
+                                  <object class="GtkCheckButton" id="hide_on_unmaximized">
+                                    <property name="label" translatable="yes">_Hide when no active maximized window</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
@@ -857,7 +947,7 @@ Do NOT use double values!</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkCheckButton" id="chkb_click_effect">
+                                  <object class="GtkCheckButton" id="click_effect">
                                     <property name="label" translatable="yes">Enable _click effect</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
@@ -871,7 +961,7 @@ Do NOT use double values!</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkCheckButton" id="chkb_hover_effect">
+                                  <object class="GtkCheckButton" id="hover_effect">
                                     <property name="label" translatable="yes">Enable _hover effect</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
@@ -915,7 +1005,7 @@ Do NOT use double values!</property>
                               <object class="GtkVBox" id="vbox6">
                                 <property name="visible">True</property>
                                 <child>
-                                  <object class="GtkCheckButton" id="chkb_hide_decoration">
+                                  <object class="GtkCheckButton" id="hide_decoration">
                                     <property name="label" translatable="yes">Hide Compiz _decorations for maximized windows</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>

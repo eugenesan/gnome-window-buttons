@@ -8,7 +8,7 @@ SUBDIRS = \
 
 ACLOCAL_AMFLAGS = -I m4
 
-windowappletsdocdir = ${prefix}/doc/windowapplets
+windowappletsdocdir = ${docdir}
 windowappletsdoc_DATA = \
 	README\
 	COPYING\
