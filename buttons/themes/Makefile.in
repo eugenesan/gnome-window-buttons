@@ -559,43 +559,60 @@ sorbetdir = \
 	${prefix}/share/windowbuttons/themes/sorbet
 
 ambiance_maverick_DATA = \
-	ambiance-maverick/close-clicked.png\
-	ambiance-maverick/close-focused.png\
-	ambiance-maverick/close-hover.png \
-	ambiance-maverick/close-unfocused.png \
-	ambiance-maverick/maximize-clicked.png \
-	ambiance-maverick/maximize-focused.png \
-	ambiance-maverick/maximize-hover.png \
-	ambiance-maverick/maximize-unfocused.png \
-	ambiance-maverick/minimize-clicked.png \
-	ambiance-maverick/minimize-focused.png \
-	ambiance-maverick/minimize-hover.png \
-	ambiance-maverick/minimize-unfocused.png \
-	ambiance-maverick/unmaximize-clicked.png \
-	ambiance-maverick/unmaximize-focused.png \
-	ambiance-maverick/unmaximize-hover.png \
-	ambiance-maverick/unmaximize-unfocused.png
+	ambiance-maverick/bg.png          \
+	ambiance-maverick/close-unfocused-hover.png          \
+	ambiance-maverick/unmaximize-unfocused-hover.png          \
+	ambiance-maverick/unmaximize-focused-hover.png          \
+	ambiance-maverick/unmaximize-unfocused-clicked.png          \
+	ambiance-maverick/unmaximize-focused-clicked.png          \
+	ambiance-maverick/minimize-focused-hover.png          \
+	ambiance-maverick/minimize-unfocused-hover.png          \
+	ambiance-maverick/minimize-unfocused-clicked.png          \
+	ambiance-maverick/minimize-focused-clicked.png          \
+	ambiance-maverick/maximize-focused-hover.png          \
+	ambiance-maverick/maximize-unfocused-hover.png          \
+	ambiance-maverick/maximize-unfocused-clicked.png          \
+	ambiance-maverick/maximize-focused-clicked.png          \
+	ambiance-maverick/close-focused-hover.png          \
+	ambiance-maverick/close-unfocused-clicked.png          \
+	ambiance-maverick/close-focused-clicked.png          \
+	ambiance-maverick/unmaximize-focused-normal.png          \
+	ambiance-maverick/unmaximize-unfocused-normal.png          \
+	ambiance-maverick/close-focused-normal.png          \
+	ambiance-maverick/minimize-unfocused-normal.png          \
+	ambiance-maverick/minimize-focused-normal.png          \
+	ambiance-maverick/close-unfocused-normal.png          \
+	ambiance-maverick/maximize-unfocused-normal.png          \
+	ambiance-maverick/maximize-focused-normal.png
 
 ambiance_maverickdir = \
 	${prefix}/share/windowbuttons/themes/ambiance-maverick
 
 radiance_maverick_DATA = \
-	radiance-maverick/close-clicked.png\
-	radiance-maverick/close-focused.png\
-	radiance-maverick/close-hover.png \
-	radiance-maverick/close-unfocused.png \
-	radiance-maverick/maximize-clicked.png \
-	radiance-maverick/maximize-focused.png \
-	radiance-maverick/maximize-hover.png \
-	radiance-maverick/maximize-unfocused.png \
-	radiance-maverick/minimize-clicked.png \
-	radiance-maverick/minimize-focused.png \
-	radiance-maverick/minimize-hover.png \
-	radiance-maverick/minimize-unfocused.png \
-	radiance-maverick/unmaximize-clicked.png \
-	radiance-maverick/unmaximize-focused.png \
-	radiance-maverick/unmaximize-hover.png \
-	radiance-maverick/unmaximize-unfocused.png
+	radiance-maverick/close-unfocused-hover.png\
+	radiance-maverick/close-unfocused-clicked.png \
+	radiance-maverick/unmaximize-focused-hover.png \
+	radiance-maverick/close-focused-clicked.png \
+	radiance-maverick/minimize-focused-hover.png \
+	radiance-maverick/unmaximize-focused-clicked.png \
+	radiance-maverick/close-focused-normal.png \
+	radiance-maverick/unmaximize-unfocused-normal.png \
+	radiance-maverick/minimize-focused-normal.png \
+	radiance-maverick/maximize-focused-hover.png \
+	radiance-maverick/minimize-focused-clicked.png \
+	radiance-maverick/maximize-focused-normal.png \
+	radiance-maverick/unmaximize-focused-normal.png \
+	radiance-maverick/maximize-unfocused-normal.png \
+	radiance-maverick/maximize-unfocused-clicked.png \
+	radiance-maverick/maximize-unfocused-hover.png \
+	radiance-maverick/minimize-unfocused-clicked.png \
+	radiance-maverick/minimize-unfocused-hover.png \
+	radiance-maverick/unmaximize-unfocused-clicked.png \
+	radiance-maverick/unmaximize-unfocused-hover.png \
+	radiance-maverick/maximize-focused-clicked.png \
+	radiance-maverick/close-focused-hover.png \
+	radiance-maverick/close-unfocused-normal.png \
+	radiance-maverick/minimize-unfocused-normal.png
 
 radiance_maverickdir = \
 	${prefix}/share/windowbuttons/themes/radiance-maverick

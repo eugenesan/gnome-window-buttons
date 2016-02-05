@@ -151,3 +151,15 @@ Initial release.
 - WTA: Bugfix: Ensure the title gets truncated if it runs out of space
 - WTA: Forced the Expand option due to GTK+ bugs. It can be disabled in gconf-editor, but then you should also set a fixed title_size
 - WTA: Bugfix: Icon padding wrong on different panel orientations
+
+0.2.10
+- Fixed makefile docs path to point to /usr/share
+- Disabled applet hiding by default (it was causing confusion with new users)
+- Minor code cleanups
+- WBA: Added option to override button orientation (automatic/default, horizontal and vertical)
+- WBA: Added option to reverse button order
+- WBA: Updated themes: Ambiance-Maverick, Radiance-Maverick (thank you Cierreics)
+- WTA: Saturate title icon and darken text on inactive
+- WTA: Select a more apropriate non-custom title text color
+- WTA: Added options to set both active and inactive font/color
+- WTA: Added experimental option to show window action menu on title right click. Warning: Overrides applet menu over title.

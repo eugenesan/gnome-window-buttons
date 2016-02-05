@@ -51,7 +51,6 @@ SUBDIRS = \
 %.server: %.server.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*.po)
 	LC_ALL=C $(INTLTOOL_MERGE) -s -u -c $(top_buildir)/po/.intltool-merge-cache $(top_srcdir)/po $< $@
 
-
 # Display a message at the end of install
 install-data-hook:
 	@echo "***"

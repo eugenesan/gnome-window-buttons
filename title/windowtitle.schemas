@@ -4,7 +4,7 @@
             <key>/schemas/apps/windowtitle-applet/prefs/hide_on_unmaximized</key>
             <owner>windowtitle</owner>
             <type>bool</type>
-            <default>true</default>
+            <default>false</default>
             <locale name="C">
                 <short>Hides title when there are no windows present.</short>
                 <long>When enabled, the title will disappear when there are no maximized (or active) windows on the screen.</long>
@@ -99,23 +99,54 @@
         </schema>
 
 	<schema>
-            <key>/schemas/apps/windowtitle-applet/prefs/title_font</key>
+            <key>/schemas/apps/windowtitle-applet/prefs/show_window_menu</key>
+            <owner>windowtitle</owner>
+            <type>bool</type>
+            <default>false</default>
+            <locale name="C">
+                <short>Show the window action menu on right click.</short>
+                <long>Will cause the window action menu to appear when the title is right-clicked. This experimental feature is still under development! Warning! In current feature state you will be unable to access the applet action menu via title-right click when this option is enabled! You may still do so by right-clicking the icon if it is not hidden.</long>
+            </locale>
+        </schema>
+
+	<schema>
+            <key>/schemas/apps/windowtitle-applet/prefs/title_active_font</key>
             <owner>windowtitle</owner>
             <type>string</type>
             <default>Sans 10</default>
             <locale name="C">
-                <short>Title font.</short>
-                <long>Font name and size.</long>
+                <short>Active title font.</short>
+                <long>Font name and size for the active window state.</long>
             </locale>
         </schema>
 	<schema>
-            <key>/schemas/apps/windowtitle-applet/prefs/title_color_fg</key>
+            <key>/schemas/apps/windowtitle-applet/prefs/title_inactive_font</key>
+            <owner>windowtitle</owner>
+            <type>string</type>
+            <default>Sans 10</default>
+            <locale name="C">
+                <short>Inactive title font.</short>
+                <long>Font name and size for the inactive window state.</long>
+            </locale>
+        </schema>
+	<schema>
+            <key>/schemas/apps/windowtitle-applet/prefs/title_active_color_fg</key>
             <owner>windowtitle</owner>
             <type>string</type>
             <default>#000000</default>
             <locale name="C">
-                <short>Title foreground color.</short>
-                <long>Title foreground color in hex format.</long>
+                <short>Active title foreground color.</short>
+                <long>Title foreground color in hex format for the active window state.</long>
+            </locale>
+        </schema>
+	<schema>
+            <key>/schemas/apps/windowtitle-applet/prefs/title_inactive_color_fg</key>
+            <owner>windowtitle</owner>
+            <type>string</type>
+            <default>#808080</default>
+            <locale name="C">
+                <short>Inactive title foreground color.</short>
+                <long>Title foreground color in hex format for the inactive window state.</long>
             </locale>
         </schema>
     </schemalist>

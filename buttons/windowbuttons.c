@@ -42,14 +42,13 @@ static WnckWindow *getRootWindow (WnckScreen *screen);
 static WnckWindow *getUpperMaximized (WBApplet *);
 void properties_cb (BonoboUIComponent *, WBApplet *, const char *);
 void setCustomLayout (WBPreferences *, gchar *);
+void rotatePixbufs(WBApplet *);
 void placeButtons(WBApplet *);
 void reloadButtons(WBApplet *);
 void toggleHidden(WBApplet *);
-void loadPreferencesGConf(WBPreferences *, WBApplet *);
-void loadPreferencesCfg(WBPreferences *, WBApplet *);
+void savePreferences(WBPreferences *, WBApplet *);
 void loadThemes(GtkComboBox *, gchar *);
 WBPreferences *loadPreferences(WBApplet *);
-gshort *getEBPos(gchar *);
 gchar *getButtonLayoutGConf(WBApplet *, gboolean);
 gchar *getMetacityLayout(void);
 const gchar *getCheckBoxCfgKey (gushort);
@@ -58,6 +57,21 @@ GdkPixbuf ***getPixbufs(gchar ***);
 //G_DEFINE_TYPE(TN, t_n, T_P) G_DEFINE_TYPE_EXTENDED (TN, t_n, T_P, 0, {})
 //This line is very important! It defines how the requested functions will be called
 G_DEFINE_TYPE (WBApplet, wb_applet, PANEL_TYPE_APPLET);
+
+// --- Context Menu ---
+static const char context_menu_xml [] =
+   "<popup name=\"button3\">\n"
+   "   <menuitem name=\"Properties Item\" "
+   "             verb=\"WBPreferences\" "
+   "           _label=\"_Preferences...\"\n"
+   "          pixtype=\"stock\" "
+   "          pixname=\"gtk-properties\"/>\n"
+   "   <menuitem name=\"About Item\" "
+   "             verb=\"WBAbout\" "
+   "           _label=\"_About...\"\n"
+   "          pixtype=\"stock\" "
+   "          pixname=\"gtk-about\"/>\n"
+   "</popup>\n";
 
 static const BonoboUIVerb windowbuttons_menu_verbs [] = {
         BONOBO_UI_UNSAFE_VERB ("WBPreferences", properties_cb),
@@ -77,67 +91,21 @@ static void wb_applet_init(WBApplet *wbapplet) {
 	// Called before windowbuttons_applet_fill(), after wb_applet_class_init()
 }
 
-/* Parses Metacity's GConf entry to get the button order */
-gshort *getEBPos(gchar *button_layout) {
-	gshort *ebps = g_new(gshort, WB_BUTTONS);
-	gint i, j;
-
-	// in case we got a faulty button_layout:
-	for (i=0; i<WB_BUTTONS; i++) ebps[i] = i;
-		if (button_layout == NULL || *button_layout == '\0')
-			return ebps;
-	
-//	for(i=0; i<WB_BUTTONS; i++) ebps[i] = -1; //set to -1 if we don't find some
-	gchar **pch = g_strsplit_set(button_layout, ":, ", -1);
-	i = 0; j = 0;
-	while (pch[j]) {
-		if (!g_strcmp0(pch[j], "minimize")) ebps[0] = i++;
-		if (!g_strcmp0(pch[j], "maximize")) ebps[1] = i++;
-		if (!g_strcmp0(pch[j], "close"))	ebps[2] = i++;
-		j++;
-	}
-	
-	g_strfreev(pch);
-	return ebps;
-}
-
-/* Get our properties (the only properties getter that should be called) */
-WBPreferences *loadPreferences(WBApplet *wbapplet) {
-	WBPreferences *wbp = g_new0(WBPreferences, 1);
-	gint i;
-	
-	wbp->images = g_new(gchar**, WB_IMAGE_STATES);
-	wbp->button_hidden = g_new(gboolean, WB_BUTTONS);
-	
-	for (i=0; i<WB_IMAGE_STATES; i++) {
-		wbp->images[i] = g_new(gchar*, WB_IMAGES);
-	}
-
-#if PLAINTEXT_CONFIG == 0
-	loadPreferencesGConf(wbp, wbapplet);
-#else
-	loadPreferencesCfg(wbp, wbapplet);
-#endif
-
-	wbp->eventboxposition = getEBPos(wbp->button_layout);
-	
-	return wbp;
-}
-
 /* The About dialog */
 static void about_cb (BonoboUIComponent *uic, WBApplet *applet) {
     static const gchar *authors [] = {
-		"Andrej Belcijan <{andrejx} at {gmail.com}>",
+		"Andrej Belcijan <{andrejx}at{gmail.com}>",
 		" ",
-		"Also contributed: quiescens",
+		"Also contributed:",
+		"quiescens",
 		NULL
 	};
 
 	const gchar *artists[] = {
-		"Andrej Belcijan <{andrejx} at {gmail.com}> for theme \"Default\" and contribution moderating",
-		"Maurizio De Santis <{desantis.maurizio} at {gmail.com}> for theme \"Blubuntu\"",
-		"Nasser Alshammari <{designernasser} at {gmail.com}> for logo design",
-		"Jeff M. Hubbard <{jeffmhubbard} at {gmail.com}> for theme \"Elementary\"",
+		"Andrej Belcijan <{andrejx}at{gmail.com}> for theme \"Default\" and contribution moderating",
+		"Maurizio De Santis <{desantis.maurizio}at{gmail.com}> for theme \"Blubuntu\"",
+		"Nasser Alshammari <{designernasser}at{gmail.com}> for logo design",
+		"Jeff M. Hubbard <{jeffmhubbard}at{gmail.com}> for theme \"Elementary\"",
 		"Gaurang Arora for theme \"Dust-Invert\"",
 		"Giacomo Porrà for themes \"Ambiance\", \"Ambiance-Maverick\", \"Radiance\", \"Radiance-Maverick\"",
 		"Vitalii Dmytruk for theme \"Ambiance-X-Studio\"",
@@ -148,7 +116,7 @@ static void about_cb (BonoboUIComponent *uic, WBApplet *applet) {
 	};
 	
 	const gchar *documenters[] = {
-        "Andrej Belcijan <{andrejx} at {gmail.com}>",
+        "Andrej Belcijan <{andrejx}at{gmail.com}>",
 		NULL
 	};
 
@@ -157,7 +125,7 @@ static void about_cb (BonoboUIComponent *uic, WBApplet *applet) {
 	gtk_show_about_dialog (NULL,
 		"version",	VERSION,
 		"comments",	_("Window buttons for your GNOME Panel."),
-		"copyright",	"\xC2\xA9 2009 Andrej Belcijan",
+		"copyright",	"\xC2\xA9 2010 Andrej Belcijan",
 		"authors",	authors,
 	    "artists",	artists,
 		"documenters",	documenters,
@@ -244,10 +212,10 @@ void updateImages (WBApplet *wbapplet) {
 	}
 
 	if (controlledwindow == wbapplet->rootwindow) {
-		/* There are no maximized windows (or any windows at all) left */
+		// There are no maximized windows (or any windows at all) left
 		for (i=0; i<WB_BUTTONS; i++) wbapplet->button[i]->state &= ~WB_BUTTON_STATE_FOCUSED;
 
-		/* Hide/unhide all buttons according to hide_on_unmaximized and button_hidden */
+		// Hide/unhide all buttons according to hide_on_unmaximized and button_hidden
 		for (i=0; i<WB_BUTTONS; i++) {
 			if (wbapplet->prefs->hide_on_unmaximized || wbapplet->prefs->button_hidden[i]) {
 				// hide if we want them hidden or it is hidden anyway
@@ -623,14 +591,45 @@ WindowButton **createButtons (WBApplet *wbapplet) {
 void placeButtons(WBApplet *wbapplet) {
 	gint i, j;
 
-	// Set box orientation
-	if (wbapplet->angle == GDK_PIXBUF_ROTATE_COUNTERCLOCKWISE || wbapplet->angle == GDK_PIXBUF_ROTATE_CLOCKWISE) {
+	// Determine angle for pixmaps, box orientation and packing direction
+	// TODO: It's a bit messy, there's got to be a way to simplify this cluster!
+	if (wbapplet->prefs->orientation == 1) {
+		// Horizontal position: The pixmaps need to be rotated to 0° in every case
+		wbapplet->angle = GDK_PIXBUF_ROTATE_NONE; //0;
+		wbapplet->packtype = GTK_PACK_START;		
+		gtk_orientable_set_orientation(GTK_ORIENTABLE(wbapplet->box), GTK_ORIENTATION_HORIZONTAL);
+	} else if (wbapplet->prefs->orientation == 2) {
+		// Vertical position: The pixmaps need to be rotated to: Left/Down=270°, Right/Up=90°
+		if (wbapplet->orient == PANEL_APPLET_ORIENT_LEFT || wbapplet->orient == PANEL_APPLET_ORIENT_DOWN) {
+			wbapplet->angle = GDK_PIXBUF_ROTATE_CLOCKWISE; // = 270°
+			wbapplet->packtype = GTK_PACK_START;
+		} else {
+			wbapplet->angle = GDK_PIXBUF_ROTATE_COUNTERCLOCKWISE; // = 90°
+			wbapplet->packtype = GTK_PACK_END;
+		}
 		gtk_orientable_set_orientation(GTK_ORIENTABLE(wbapplet->box), GTK_ORIENTATION_VERTICAL);
 	} else {
-		gtk_orientable_set_orientation(GTK_ORIENTABLE(wbapplet->box), GTK_ORIENTATION_HORIZONTAL);
+		// Automatic position (default setting)
+		if (wbapplet->orient == PANEL_APPLET_ORIENT_RIGHT) {
+			wbapplet->angle = GDK_PIXBUF_ROTATE_COUNTERCLOCKWISE;
+			wbapplet->packtype = GTK_PACK_END;
+			gtk_orientable_set_orientation(GTK_ORIENTABLE(wbapplet->box), GTK_ORIENTATION_VERTICAL);
+		} else if (wbapplet->orient == PANEL_APPLET_ORIENT_LEFT) {
+			wbapplet->angle = GDK_PIXBUF_ROTATE_CLOCKWISE;
+			wbapplet->packtype = GTK_PACK_START;
+			gtk_orientable_set_orientation(GTK_ORIENTABLE(wbapplet->box), GTK_ORIENTATION_VERTICAL);
+		} else {
+			wbapplet->angle = GDK_PIXBUF_ROTATE_NONE;
+			wbapplet->packtype = GTK_PACK_START;
+			gtk_orientable_set_orientation(GTK_ORIENTABLE(wbapplet->box), GTK_ORIENTATION_HORIZONTAL);
+		}
+	}
+
+	if (wbapplet->prefs->reverse_order) {
+		wbapplet->packtype = (wbapplet->packtype==GTK_PACK_START)?GTK_PACK_END:GTK_PACK_START;
 	}
 	
-	// Add eventboxes to box in preferred order:	
+	// Add eventboxes to box in preferred order	
 	for (i=0; i<WB_BUTTONS; i++) {
 		for (j=0; j<WB_BUTTONS; j++) {
 			if (wbapplet->prefs->eventboxposition[j] == i) {
@@ -641,6 +640,13 @@ void placeButtons(WBApplet *wbapplet) {
 				}
 				break;
 			}
+		}
+	}
+
+	// Rotate pixmaps
+	for (i=0; i<WB_IMAGE_STATES; i++) {
+		for (j=0; j<WB_IMAGES; j++) {
+			wbapplet->pixbufs[i][j] = gdk_pixbuf_rotate_simple(wbapplet->pixbufs[i][j], wbapplet->angle);
 		}
 	}
 }
@@ -661,49 +667,13 @@ void reloadButtons(WBApplet *wbapplet) {
 	}
 }
 
-/* Returns the apropriate angle for respective panel orientations */
-GdkPixbufRotation getOrientAngle(PanelAppletOrient orient) {
-	GdkPixbufRotation new_angle;
-	if (orient == PANEL_APPLET_ORIENT_RIGHT) {
-		new_angle = GDK_PIXBUF_ROTATE_COUNTERCLOCKWISE;
-	} else if (orient == PANEL_APPLET_ORIENT_LEFT) {
-		new_angle = GDK_PIXBUF_ROTATE_CLOCKWISE;
-	} else {
-		new_angle = GDK_PIXBUF_ROTATE_NONE;
-	}
-	return new_angle;
-}
-
-/* Returns packtype according to panel angle */
-GtkPackType getPackType(GdkPixbufRotation angle) {
-	if (angle == GDK_PIXBUF_ROTATE_COUNTERCLOCKWISE) {
-		return GTK_PACK_END;
-	} else {
-		return GTK_PACK_START;
-	}
-}
-
-/* Rotates all the pixbufs by an angle */
-void rotatePixbufs(WBApplet *wbapplet, GdkPixbufRotation angle) {
-	gint i,j;
-	for (i=0; i<WB_IMAGE_STATES; i++) {
-		for (j=0; j<WB_IMAGES; j++) {
-			wbapplet->pixbufs[i][j] = gdk_pixbuf_rotate_simple(wbapplet->pixbufs[i][j], angle);
-		}
-	}
-}
-
 /* Triggered when a different panel orientation is detected */
 void applet_change_orient (PanelApplet *panelapplet, PanelAppletOrient orient, gpointer user_data) {
 	WBApplet *wbapplet = WB_APPLET(user_data);
 
 	if (orient != wbapplet->orient) {
 		wbapplet->orient = orient;
-		wbapplet->pixbufs = getPixbufs(wbapplet->prefs->images);
-		wbapplet->angle = getOrientAngle(wbapplet->orient);
-		wbapplet->packtype = getPackType(wbapplet->angle);
-		
-		rotatePixbufs(wbapplet, wbapplet->angle);
+		wbapplet->pixbufs = getPixbufs(wbapplet->prefs->images);	
 		reloadButtons(wbapplet);
 		updateImages(wbapplet);
 	}
@@ -721,13 +691,10 @@ static void init_wbapplet(WBApplet *wbapplet) {
 	wbapplet->prefbuilder = gtk_builder_new();
 	wbapplet->box = GTK_BOX(gtk_hbox_new(FALSE, 0));
 	wbapplet->button = createButtons(wbapplet);
-	wbapplet->pixbufs = getPixbufs(wbapplet->prefs->images);
 	wbapplet->orient = panel_applet_get_orient(PANEL_APPLET(wbapplet));
-	wbapplet->angle = getOrientAngle(wbapplet->orient);
-	wbapplet->packtype = getPackType(wbapplet->angle);
+	wbapplet->pixbufs = getPixbufs(wbapplet->prefs->images);
 
 	// Rotate & place buttons
-	rotatePixbufs(wbapplet, wbapplet->angle);
 	placeButtons(wbapplet);	
 	
 	// Add box to applet
@@ -770,38 +737,25 @@ void toggleHidden (WBApplet *wbapplet) {
 static gboolean windowbuttons_applet_fill (PanelApplet *applet, const gchar *iid, gpointer data) {
 	if (g_strcmp0(iid, APPLET_OAFIID) != 0) return FALSE;
 
+	WBApplet *wbapplet = WB_APPLET (applet);
+	
 	g_set_application_name (_(APPLET_NAME));
 	panel_applet_set_flags (applet, PANEL_APPLET_EXPAND_MINOR);
 	panel_applet_add_preferences (applet, GCONF_PREFS, NULL);
 
-	init_wbapplet(WB_APPLET(applet));
-
-	/* --- Context Menu --- */
-	static const char context_menu_xml [] =
-	   "<popup name=\"button3\">\n"
-	   "   <menuitem name=\"Properties Item\" "
-	   "             verb=\"WBPreferences\" "
-	   "           _label=\"_Preferences...\"\n"
-	   "          pixtype=\"stock\" "
-	   "          pixname=\"gtk-properties\"/>\n"
-	   "   <menuitem name=\"About Item\" "
-	   "             verb=\"WBAbout\" "
-	   "           _label=\"_About...\"\n"
-	   "          pixtype=\"stock\" "
-	   "          pixname=\"gtk-about\"/>\n"
-	   "</popup>\n";
 	//last parameter here will be the second parameter (WBApplet) in all menu callback functions (properties, about...) !!!
 	panel_applet_setup_menu (applet, context_menu_xml, windowbuttons_menu_verbs, applet);
 
-	toggleHidden (WB_APPLET(applet));	// Properly hide or show stuff
-	updateImages (WB_APPLET(applet));
+	init_wbapplet(wbapplet);
+	toggleHidden (wbapplet);	// Properly hide or show stuff
+	updateImages (wbapplet);
 
 	return TRUE;
 }
 
 PANEL_APPLET_BONOBO_FACTORY (APPLET_OAFIID_FACTORY,
 							 WB_TYPE_APPLET,
-							 "windowbuttons",//APPLET_NAME,
+							 "WindowButtons",//APPLET_NAME,
 							 "0",//VERSION,
 							 windowbuttons_applet_fill,
 							 NULL);
