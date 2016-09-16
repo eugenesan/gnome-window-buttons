@@ -55,7 +55,7 @@
 #define APPLET_OAFIID_FACTORY			"WindowTitleAppletFactory"
 #define PATH_MAIN				"/usr/share"
 #define PATH_BUILDER 				"/usr/share/gnome-applets/builder"
-#define PATH_UI_PREFS				PATH_MAIN"/windowtitle.ui"
+#define PATH_UI_PREFS				PATH_MAIN"/windowtitle/windowtitle.ui"
 #define PATH_LOGO				PATH_MAIN"/pixmaps/windowtitle-applet.png"
 #define FILE_CONFIGFILE				".windowtitle"
 #define G_SETTINGS_WINDOW_TITLE_SCHEMA 		"org.gnome.window-applets.windowtitle"

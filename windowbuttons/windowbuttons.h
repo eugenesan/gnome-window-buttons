@@ -54,7 +54,7 @@
 #define PATH_BUILDER				"/usr/share/gnome-applets/builder"
 #define PATH_MAIN				"/usr/share"
 #define PATH_THEMES				PATH_MAIN"/pixmaps/windowbuttons/themes"
-#define PATH_UI_PREFS				PATH_MAIN"/windowbuttons.ui"
+#define PATH_UI_PREFS				PATH_MAIN"/windowbuttons/windowbuttons.ui"
 #define PATH_LOGO				PATH_MAIN"/pixmaps/windowbuttons-applet.png"
 #define METACITY_XML				"metacity-theme-1.xml"
 #define THEME_EXTENSION				"png"
