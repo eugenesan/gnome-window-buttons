@@ -73,31 +73,32 @@ void loadThemeComboBox(GtkComboBox *combo, gchar *active_theme) {
 	const gchar *curtheme;
 	while ((curtheme = g_dir_read_name(dir_themes))) { //TODO: do this in a separate function
 		if ( g_strcmp0(
-		    	g_ascii_strdown(curtheme,-1),
-		    	g_ascii_strdown(active_theme,-1)
-		    ) == 0 )
+		               g_ascii_strdown(curtheme,-1),
+		               g_ascii_strdown(active_theme,-1)
+		              ) == 0 )
 		{
 			active = N_THEMES;
 		}
-			
+
 		gtk_list_store_append( store, &iter );
-		gtk_list_store_set( store, &iter, 
-		    	0, curtheme,
-		        1, fixThemeName(g_strdup(curtheme)),
-				2, 1+N_THEMES++,
-				-1 );
+		gtk_list_store_set( store, &iter,
+		                    0, curtheme,
+		                    1, fixThemeName(g_strdup(curtheme)),
+		                    2, 1+N_THEMES++,
+		                    -1 );
 	}
+
 	if (active<0) active = N_THEMES;
-	
-    gtk_list_store_append( store, &iter );
-    gtk_list_store_set( store, &iter, 0,"custom", 1,"Custom", 2,0, -1 );
-	
+
+	gtk_list_store_append( store, &iter );
+	gtk_list_store_set( store, &iter, 0,"custom", 1,"Custom", 2,0, -1 );
+
 	gtk_combo_box_set_model( combo, GTK_TREE_MODEL(store) );
-    g_object_unref( G_OBJECT( store ) );
+	g_object_unref( G_OBJECT( store ) );
 
 	GtkCellRenderer	*cell = gtk_cell_renderer_text_new();
-    gtk_cell_layout_pack_start( GTK_CELL_LAYOUT( combo ), cell, TRUE );
-    gtk_cell_layout_set_attributes( GTK_CELL_LAYOUT( combo ), cell, "text",1, NULL );
+	gtk_cell_layout_pack_start( GTK_CELL_LAYOUT( combo ), cell, TRUE );
+	gtk_cell_layout_set_attributes( GTK_CELL_LAYOUT( combo ), cell, "text",1, NULL );
 
 	gtk_combo_box_set_active(combo, active);
 }
@@ -113,8 +114,8 @@ void loadThemeButtons(GtkWidget ***button, GdkPixbuf ***pixbufs, gchar ***images
 	}
 }
 
-/* Returns absolute image paths and makes sure they exist */
-//TODO: different extensions
+/* Returns absolute image paths and makes sure they exist
+   TODO: different extensions */
 gchar ***getImages(gchar *location) {
 	gint i,j;
 	gchar ***images = g_new(gchar**, WB_IMAGE_STATES);
@@ -159,7 +160,7 @@ gchar *fixThemeName(gchar *theme_name) {
 			if (prev == '-') theme_name[i] = g_ascii_toupper(theme_name[i]);
 			prev = theme_name[i];
 		}
-		
+
 		return theme_name;
 	} else if (len == 1) {
 		return g_ascii_strup(theme_name,1);

@@ -122,7 +122,7 @@ WTPreferences *loadPreferences(WTApplet *wtapplet) {
 		fclose (cfg);		
 	} else {
 		// Defaults if the file doesn't exist
-		
+
 		wtp->only_maximized = TRUE;
 		wtp->hide_on_unmaximized = FALSE;
 		wtp->hide_icon = FALSE;
@@ -150,19 +150,20 @@ WTPreferences *loadPreferences(WTApplet *wtapplet) {
 /* Returns a string value of the specified configuration parameter (key) */
 // TODO: It wouldn't be too bad if we had this function in a common file instead of duplicating it for both applets
 gchar* getCfgValue(FILE *f, gchar *key) {
-    gchar tmp[256] = {0x0};
+	gchar tmp[256] = {0x0};
 	long int pos = ftell(f);
-	
-    while (f!=NULL && fgets(tmp,sizeof(tmp),f)!=NULL) {
+
+	while (f!=NULL && fgets(tmp,sizeof(tmp),f)!=NULL) {
 		if (g_strrstr(tmp, key))
-		    break;
-    }
+			break;
+	}
 
 	gchar *r = g_strndup(tmp+strlen(key)+1,strlen(tmp)-strlen(key)+1);
 	g_strstrip(r);
 
 	fseek(f,pos,SEEK_SET);
-    return r;
+
+	return r;
 }
 #endif
 
@@ -230,7 +231,7 @@ static void cb_alignment_changed(GtkRange *range, WTApplet *wtapplet)
 
 static void cb_font_active_set(GtkFontButton *widget, WTApplet *wtapplet)
 {
-	//we need to copy the new font string, because we lose the pointer after prefs close
+	// We need to copy the new font string, because we lose the pointer after prefs close
 	wtapplet->prefs->title_active_font = g_strdup(gtk_font_button_get_font_name(widget));		
 	savePreferences(wtapplet->prefs, wtapplet);
 	updateTitle(wtapplet);
@@ -238,7 +239,7 @@ static void cb_font_active_set(GtkFontButton *widget, WTApplet *wtapplet)
 
 static void cb_font_inactive_set(GtkFontButton *widget, WTApplet *wtapplet)
 {
-	//we need to copy the new font string, because we lose the pointer after prefs close
+	// We need to copy the new font string, because we lose the pointer after prefs close
 	wtapplet->prefs->title_inactive_font = g_strdup(gtk_font_button_get_font_name(widget));		
 	savePreferences(wtapplet->prefs, wtapplet);
 	updateTitle(wtapplet);
@@ -271,7 +272,7 @@ void properties_cb (GSimpleAction *action, GVariant *parameter, gpointer user_da
 	GdkRGBA btn_color_color;
 
 	WTApplet *wtapplet = (WTApplet *) user_data;
-	
+
 	// Create the Properties dialog from the GtkBuilder file
 	if(wtapplet->window_prefs) {
 		gtk_window_present(GTK_WINDOW(wtapplet->window_prefs));
@@ -298,8 +299,8 @@ void properties_cb (GSimpleAction *action, GVariant *parameter, gpointer user_da
 	GtkFontButton *btn_font_inactive = GTK_FONT_BUTTON (gtk_builder_get_object(wtapplet->prefbuilder, "btn-font-inactive"));
 	GtkButton *btn_close = GTK_BUTTON (gtk_builder_get_object(wtapplet->prefbuilder, "btn-close"));
 	GtkGrid *grid_custom_style = GTK_GRID(gtk_builder_get_object(wtapplet->prefbuilder, "grid-custom-style"));
-	
-	// set widgets according to preferences
+
+	// Set widgets according to preferences
 	gtk_toggle_button_set_active (chkb_only_maximized, wtapplet->prefs->only_maximized);
 	gtk_toggle_button_set_active (chkb_hide_on_unmaximized, wtapplet->prefs->hide_on_unmaximized);
 	gtk_toggle_button_set_active (chkb_hide_icon, wtapplet->prefs->hide_icon);
@@ -317,7 +318,7 @@ void properties_cb (GSimpleAction *action, GVariant *parameter, gpointer user_da
 	gtk_font_button_set_font_name(btn_font_active, wtapplet->prefs->title_active_font);
 	gtk_font_button_set_font_name(btn_font_inactive, wtapplet->prefs->title_inactive_font);
 	gtk_widget_set_sensitive(GTK_WIDGET(grid_custom_style), gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(chkb_custom_style)));
-	
+
 	g_signal_connect(G_OBJECT(chkb_only_maximized), "clicked", G_CALLBACK (cb_only_maximized), wtapplet);
 	g_signal_connect(G_OBJECT(chkb_hide_on_unmaximized), "clicked", G_CALLBACK (cb_hide_on_unmaximized), wtapplet);
 	g_signal_connect(G_OBJECT(chkb_hide_icon), "clicked", G_CALLBACK (cb_hide_icon), wtapplet);
@@ -334,7 +335,7 @@ void properties_cb (GSimpleAction *action, GVariant *parameter, gpointer user_da
 	g_signal_connect(G_OBJECT(btn_font_inactive), "font-set", G_CALLBACK(cb_font_inactive_set), wtapplet);
 	g_signal_connect(G_OBJECT(btn_close), "clicked", G_CALLBACK (properties_close), wtapplet);
 	g_signal_connect(G_OBJECT(wtapplet->window_prefs), "destroy", G_CALLBACK(properties_close), wtapplet);
-	
+
 	gtk_widget_show_all (wtapplet->window_prefs);
 }
 

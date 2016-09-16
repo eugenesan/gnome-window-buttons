@@ -64,22 +64,19 @@ GdkPixbuf ***getPixbufs(gchar ***);
 G_DEFINE_TYPE (WBApplet, wb_applet, PANEL_TYPE_APPLET);
 
 static const gchar windowbuttons_menu_items [] =
-    "<section>"
-        "<item>"
-            "<attribute name=\"label\" translatable=\"yes\">_Preferences</attribute>"
-            "<attribute name=\"action\">windowbuttons.preferences</attribute>"
-        "</item>"
-        "<item>"
-            "<attribute name=\"label\" translatable=\"yes\">_About</attribute>"
-            "<attribute name=\"action\">windowbuttons.about</attribute>"
-        "</item>"
-    "</section>";
-    
-//	"<menuitem name=\"Preferences\"	action=\"WBPreferences\" />"
-//	"<menuitem name=\"About\"		action=\"WBAbout\" />";
+	"<section>"
+		"<item>"
+			"<attribute name=\"label\" translatable=\"yes\">_Preferences</attribute>"
+			"<attribute name=\"action\">windowbuttons.preferences</attribute>"
+		"</item>"
+		"<item>"
+			"<attribute name=\"label\" translatable=\"yes\">_About</attribute>"
+			"<attribute name=\"action\">windowbuttons.about</attribute>"
+		"</item>"
+	"</section>";
 
 WBApplet* wb_applet_new (void) {
-        return g_object_new (WB_TYPE_APPLET, NULL);
+	return g_object_new (WB_TYPE_APPLET, NULL);
 }
 
 static void wb_applet_class_init (WBAppletClass *klass) {
@@ -93,7 +90,7 @@ static void wb_applet_init(WBApplet *wbapplet) {
 /* The About dialog */
 //static void about_cb (BonoboUIComponent *uic, WBApplet *applet) {
 static void about_cb (GSimpleAction *action, GVariant *activate, gpointer user_data) {
-    static const gchar *authors [] = {
+	static const gchar *authors [] = {
 		"Andrej Belcijan <{andrejx}at{gmail.com}>",
 		" ",
 		"Also contributed:",
@@ -116,29 +113,30 @@ static void about_cb (GSimpleAction *action, GVariant *activate, gpointer user_d
 	};
 
 	const gchar *documenters[] = {
-        "Andrej Belcijan <{andrejx}at{gmail.com}>",
+		"Andrej Belcijan <{andrejx}at{gmail.com}>",
 		NULL
 	};
 
 	GdkPixbuf *logo = gdk_pixbuf_new_from_file (PATH_LOGO, NULL);
 
-	gtk_show_about_dialog (NULL,
-		"version",	VERSION,
-		"comments",	N_("Window buttons for your GNOME Panel."),
-		"copyright",	"\xC2\xA9 2011 Andrej Belcijan",
-		"authors",	authors,
-	    "artists",	artists,
-		"documenters",	documenters,
-		"translator-credits", ("translator-credits"),
-		"logo",		logo,
-	    "website",	"http://www.gnome-look.org/content/show.php?content=103732",
-   		"website-label", N_("Window Applets on Gnome-Look"),
+	gtk_show_about_dialog (
+		NULL,
+		"version",		VERSION,
+		"comments",		N_("Window buttons for your GNOME Panel."),
+		"copyright",		"\xC2\xA9 2011 Andrej Belcijan",
+		"authors",		authors,
+		"artists",		artists,
+		"documenters",		documenters,
+		"translator-credits",	("translator-credits"),
+		"logo",			logo,
+		"website",		"http://www.gnome-look.org/content/show.php?content=103732",
+		"website-label",	N_("Window Applets on Gnome-Look"),
 		NULL);
 }
 
 static WnckWindow *getRootWindow (WnckScreen *screen) {
 	GList *winstack = wnck_screen_get_windows_stacked(screen);
-	if (winstack) // we can't access data directly because sometimes we will get NULL
+	if (winstack) // We can't access data directly because sometimes we will get NULL
 		return winstack->data;
 	else
 		return NULL;
@@ -154,7 +152,6 @@ static WnckWindow *getUpperMaximized (WBApplet *wbapplet) {
 
 	while (windows && windows->data) {
 		if (wnck_window_is_maximized(windows->data)) {
-			//if (wnck_window_is_on_workspace(windows->data, wbapplet->activeworkspace))
 			if (!wnck_window_is_minimized(windows->data))
 				if (wnck_window_is_in_viewport(windows->data, wbapplet->activeworkspace))
 					returnwindow = windows->data;
@@ -162,16 +159,16 @@ static WnckWindow *getUpperMaximized (WBApplet *wbapplet) {
 		windows = windows->next;
 	}
 
-	// start tracking the new umaxed window
+	// Start tracking the new umaxed window
 	if (wbapplet->umaxedwindow) {
 		if (g_signal_handler_is_connected(G_OBJECT(wbapplet->umaxedwindow), wbapplet->umaxed_handler))
 			g_signal_handler_disconnect(G_OBJECT(wbapplet->umaxedwindow), wbapplet->umaxed_handler);
 	}
 	if (returnwindow) {
 		wbapplet->umaxed_handler = g_signal_connect(G_OBJECT(returnwindow),
-		                                             "state-changed",
-		                                             G_CALLBACK (umaxed_window_state_changed),
-		                                             wbapplet);
+		                                            "state-changed",
+		                                            G_CALLBACK (umaxed_window_state_changed),
+		                                            wbapplet);
 	} else {
 		returnwindow = wbapplet->rootwindow;
 	}
@@ -219,7 +216,7 @@ void updateImages (WBApplet *wbapplet) {
 		// Hide/unhide all buttons according to hide_on_unmaximized and button_hidden
 		for (i=0; i<WB_BUTTONS; i++) {
 			if (wbapplet->prefs->hide_on_unmaximized || wbapplet->prefs->button_hidden[i]) {
-				// hide if we want them hidden or it is hidden anyway
+				// Hide if we want them hidden or it is hidden anyway
 				wbapplet->button[i]->state |= WB_BUTTON_STATE_HIDDEN;
 			} else {
 				if (!wbapplet->prefs->button_hidden[i]) {
@@ -229,7 +226,7 @@ void updateImages (WBApplet *wbapplet) {
 			}
 		}
 	} else {
-		for (i=0; i<WB_BUTTONS; i++) { // update states
+		for (i=0; i<WB_BUTTONS; i++) { // Update states
 			if (wbapplet->prefs->button_hidden[i]) {
 				wbapplet->button[i]->state |= WB_BUTTON_STATE_HIDDEN;
 			} else {
@@ -240,9 +237,9 @@ void updateImages (WBApplet *wbapplet) {
 
 	toggleHidden(wbapplet);
 
-	//update minimize button:
+	// Update minimize button:
 	gtk_image_set_from_pixbuf (wbapplet->button[WB_BUTTON_MINIMIZE]->image, wbapplet->pixbufs[getImageState(wbapplet->button[WB_BUTTON_MINIMIZE]->state)][WB_IMAGE_MINIMIZE]);
-	// update maximize/unmaximize button:
+	// Update maximize/unmaximize button:
 	if (controlledwindow && wnck_window_is_maximized(controlledwindow)) {
 		gtk_image_set_from_pixbuf (wbapplet->button[WB_BUTTON_UMAXIMIZE]->image, wbapplet->pixbufs[getImageState(wbapplet->button[WB_BUTTON_UMAXIMIZE]->state)][WB_IMAGE_UNMAXIMIZE]);
 		if (wbapplet->prefs->show_tooltips)
@@ -252,18 +249,18 @@ void updateImages (WBApplet *wbapplet) {
 		if (wbapplet->prefs->show_tooltips)
 			gtk_widget_set_tooltip_text (GTK_WIDGET(wbapplet->button[WB_BUTTON_UMAXIMIZE]->image), N_("Maximize")); // Set correct tooltip
 	}
-	//update close button
+	// Update close button
 	gtk_image_set_from_pixbuf (wbapplet->button[WB_BUTTON_CLOSE]->image, wbapplet->pixbufs[getImageState(wbapplet->button[WB_BUTTON_CLOSE]->state)][WB_IMAGE_CLOSE]);
 
-	//set remaining tooltips
+	// Set remaining tooltips
 	if (wbapplet->prefs->show_tooltips) {
 		gtk_widget_set_tooltip_text (GTK_WIDGET(wbapplet->button[WB_BUTTON_MINIMIZE]->image), N_("Minimize"));
 		gtk_widget_set_tooltip_text (GTK_WIDGET(wbapplet->button[WB_BUTTON_CLOSE]->image), N_("Close"));
 	}
 }
 
-/* Triggers when a new window has been opened */
-// in case a new maximized non-active window appears
+/* Triggers when a new window has been opened
+   in case a new maximized non-active window appears */
 static void window_opened (WnckScreen *screen,
                            WnckWindow *window,
                            WBApplet *wbapplet) {
@@ -273,15 +270,15 @@ static void window_opened (WnckScreen *screen,
 	//updateImages(wbapplet); // not required(?)
 }
 
-/* Triggers when a window has been closed */
-// in case the last maximized window was closed
+/* Triggers when a window has been closed
+   in case the last maximized window was closed */
 static void window_closed (WnckScreen *screen,
                            WnckWindow *window,
                            WBApplet *wbapplet) {
 
 	wbapplet->umaxedwindow = getUpperMaximized(wbapplet);
 
-	updateImages(wbapplet); //required to hide buttons when last window is closed
+	updateImages(wbapplet); // Required to hide buttons when last window is closed
 }
 
 /* Triggers when a new active window is selected */
@@ -298,12 +295,12 @@ static void active_window_changed (WnckScreen *screen,
 	wbapplet->umaxedwindow = getUpperMaximized (wbapplet); // returns wbapplet->activewindow if not only_maximized
 	wbapplet->rootwindow = getRootWindow(wbapplet->activescreen);
 
-	// if we got NULL it would start flickering (but we shouldn't get NULL anymore)
+	// If we got NULL it would start flickering (but we shouldn't get NULL anymore)
 	if (wbapplet->activewindow) {
 		wbapplet->active_handler = g_signal_connect(G_OBJECT (wbapplet->activewindow), "state-changed", G_CALLBACK (active_window_state_changed), wbapplet);
 
 		if (wbapplet->activewindow == wbapplet->umaxedwindow) {
-			// maximized window is on top
+			// Maximized window is on top
 			for (i=0; i<WB_BUTTONS; i++) {
 				wbapplet->button[i]->state |= WB_BUTTON_STATE_FOCUSED;
 			}
@@ -356,8 +353,8 @@ static void umaxed_window_state_changed (WnckWindow *window,
 	updateImages(wbapplet); // need to hide buttons after click if desktop is below
 }
 
-/* Triggers when user changes viewports on Compiz */
-// We ONLY need this for Compiz (Metacity doesn't use viewports)
+/* Triggers when user changes viewports on Compiz
+   We ONLY need this for Compiz (Metacity doesn't use viewports) */
 static void viewports_changed (WnckScreen *screen,
                                WBApplet *wbapplet)
 {
@@ -366,7 +363,7 @@ static void viewports_changed (WnckScreen *screen,
 	wbapplet->rootwindow = getRootWindow(wbapplet->activescreen);
 	wbapplet->umaxedwindow = getUpperMaximized(wbapplet);
 
-	// active_window_changed should do this too, because this one will be too sooner
+	// Active_window_changed should do this too, because this one will be too sooner
 	updateImages(wbapplet);
 }
 
@@ -376,13 +373,14 @@ static void active_workspace_changed (WnckScreen *screen,
                                       WBApplet *wbapplet) {
 
 	wbapplet->activeworkspace = wnck_screen_get_active_workspace(screen);
-	/* // apparently active_window_changed handles this (?)
+	// Apparently active_window_changed handles this (?)
+	/*
 	wbapplet->activewindow = wnck_screen_get_active_window(screen);
 	wbapplet->rootwindow = getRootWindow(wbapplet->activescreen);
 	wbapplet->umaxedwindow = getUpperMaximized(wbapplet);
-	*/
 
-	//updateImages(wbapplet);
+	updateImages(wbapplet);
+	*/
 }
 
 /* Called when we release the click on a button */
@@ -678,7 +676,7 @@ static void init_wbapplet(PanelApplet *applet) {
 
 	g_signal_connect(wbapplet->applet, "size_allocate",
 				 G_CALLBACK (size_allocate), wbapplet->grid);
-//	g_signal_connect(G_OBJECT (wbapplet->applet), "change-background", G_CALLBACK (applet_change_background), wbapplet);
+	//g_signal_connect(G_OBJECT (wbapplet->applet), "change-background", G_CALLBACK (applet_change_background), wbapplet);
 	g_signal_connect(G_OBJECT (wbapplet->applet), "change-orient", G_CALLBACK (applet_change_orient), wbapplet);
 
 	// ???: Is this still necessary?
@@ -697,7 +695,7 @@ static void init_wbapplet(PanelApplet *applet) {
 	panel_applet_set_background_widget (wbapplet->applet, GTK_WIDGET (wbapplet->applet)); // Automatic background update
 
 	gtk_widget_insert_action_group (GTK_WIDGET (wbapplet->applet), "windowbuttons",
-	                                G_ACTION_GROUP (action_group));	
+	                                G_ACTION_GROUP (action_group));
     g_object_unref (action_group);
     
 	toggleHidden (wbapplet);	// Properly hide or show stuff
