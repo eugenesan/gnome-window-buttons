@@ -1,6 +1,6 @@
 SUBDIRS = \
-	gnome-buttons \
-	gnome-title \
+	windowbuttons \
+	windowtitle \
 	po
 
 ACLOCAL_AMFLAGS = -I m4

@@ -20,7 +20,11 @@ dnl ***************************************************************************
 GETTEXT_PACKAGE=gnome-window-applets
 AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE", [GETTEXT package name])
-AC_DEFINE_DIR(GNOMELOCALEDIR, "${datadir}/locale", [locale directory])
+AC_ARG_WITH([localedir], AS_HELP_STRING([--with-localedir=<path>],
+         [Path to install message files in (default: datadir/locale)]),
+         [LOCALEDIR=${withval}], [LOCALEDIR=${datadir}/locale])
+AC_SUBST([LOCALEDIR])
+AX_DEFINE_DIR(GNOMELOCALEDIR, "${datadir}/locale", [locale directory])
 AM_GLIB_GNU_GETTEXT
 IT_PROG_INTLTOOL([0.35.0])
 
@@ -45,10 +49,10 @@ AC_SUBST(DATADIR)
 
 AC_OUTPUT([
 Makefile
-gnome-buttons/Makefile
-gnome-buttons/pixmaps/Makefile
-gnome-buttons/themes/Makefile
-gnome-title/Makefile
-gnome-title/pixmaps/Makefile
+windowbuttons/Makefile
+windowbuttons/pixmaps/Makefile
+windowbuttons/themes/Makefile
+windowtitle/Makefile
+windowtitle/pixmaps/Makefile
 po/Makefile.in
 ])

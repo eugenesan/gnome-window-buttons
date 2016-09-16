@@ -28,10 +28,10 @@ applet_DATA     = $(applet_in_files:.panel-applet.in=.panel-applet)
 
 $(applet_in_files): $(applet_in_files).in Makefile
 	$(AM_V_GEN)sed \
-	    -e "s|\@LIBEXECDIR\@|$(libexecdir)|" \
-		-e "s|\@DATADIR\@|$(datadir)|" \
-	    -e "s|\@VERSION\@|$(PACKAGE_VERSION)|" \
-	    $< > $@
+	-e "s|\@LIBEXECDIR\@|$(libexecdir)|" \
+	-e "s|\@DATADIR\@|$(datadir)|" \
+	-e "s|\@VERSION\@|$(PACKAGE_VERSION)|" \
+	$< > $@
 
 %.panel-applet: %.panel-applet.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*po) ; $(INTLTOOL_MERGE) $(top_srcdir)/po $< $@ -d -u -c $(top_builddir)/po/.intltool-merge-cache
 
@@ -68,7 +68,6 @@ EXTRA_DIST = \
 	$(service_in_files) \
 	$(schemas_in_files) \
 	$(builder_DATA)
-	
 
 SUBDIRS = \
 	pixmaps

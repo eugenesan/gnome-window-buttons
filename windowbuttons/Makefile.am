@@ -1,12 +1,14 @@
 AM_CPPFLAGS = \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
+	-DGNOMELOCALEDIR=\"$(LOCALEDIR)\" \
 	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
 	$(WINDOWBUTTONS_CFLAGS)
 
-AM_CFLAGS =\
-	 -Wall\
-	 -g
+AM_CFLAGS = \
+	-Wall \
+	-DGNOMELOCALEDIR=\"$(LOCALEDIR)\" \
+	-g
 
 libexec_PROGRAMS = windowbuttons
 
@@ -32,10 +34,10 @@ applet_DATA     = $(applet_in_files:.panel-applet.in=.panel-applet)
 
 $(applet_in_files): $(applet_in_files).in Makefile
 	$(AM_V_GEN)sed \
-	    -e "s|\@LIBEXECDIR\@|$(libexecdir)|" \
-	    -e "s|\@DATADIR\@|$(datadir)|" \
-	    -e "s|\@VERSION\@|$(PACKAGE_VERSION)|" \
-	    $< > $@
+		-e "s|\@LIBEXECDIR\@|$(libexecdir)|" \
+		-e "s|\@DATADIR\@|$(datadir)|" \
+		-e "s|\@VERSION\@|$(PACKAGE_VERSION)|" \
+		$< > $@
 
 %.panel-applet: %.panel-applet.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*po) ; $(INTLTOOL_MERGE) $(top_srcdir)/po $< $@ -d -u -c $(top_builddir)/po/.intltool-merge-cache
 
@@ -46,8 +48,8 @@ service_DATA     = $(service_in_files:.service.in=.service)
 
 org.gnome.panel.applet.WindowButtonsAppletFactory.service: $(service_in_files)
 	$(AM_V_GEN)sed \
-	    -e "s|\@LIBEXECDIR\@|$(libexecdir)|" \
-	    $< > $@
+		-e "s|\@LIBEXECDIR\@|$(libexecdir)|" \
+		$< > $@
 
 # Schemas for GConf
 schemasdir       = @GCONF_SCHEMA_FILE_DIR@
