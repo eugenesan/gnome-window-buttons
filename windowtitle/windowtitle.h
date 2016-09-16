@@ -34,12 +34,11 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <glib/gi18n.h>
-#include <gconf/gconf-client.h>
 #include <panel-applet.h>
-#include <panel-applet-gconf.h>
 #include <gdk/gdk.h>
 #include <gtk/gtk.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include <math.h>
 
 #if PLAINTEXT_CONFIG == 1
 #include <glib/gstdio.h>
@@ -56,29 +55,30 @@
 #define APPLET_OAFIID_FACTORY			"WindowTitleAppletFactory"
 #define PATH_MAIN						"/usr/share"
 #define PATH_BUILDER 					"/usr/share/gnome-applets/builder"
-#define PATH_UI_PREFS					PATH_MAIN"/windowtitle/windowtitle.ui"
-#define PATH_LOGO						PATH_MAIN"/pixmaps/windowtitle-applet.png"
+#define PATH_UI_PREFS					PATH_MAIN"/windowtitle.ui"
+#define PATH_LOGO					PATH_MAIN"/pixmaps/windowtitle-applet.png"
 #define FILE_CONFIGFILE					".windowtitle"
-#define GCONF_PREFS 					"/schemas/apps/windowtitle-applet/prefs"
+#define G_SETTINGS_WINDOW_TITLE_SCHEMA 					"org.gnome.window-applets.windowtitle"
+#define G_SETTINGS_WINDOW_TITLE_PATH "/org/gnome/window-applets/"
 #define ICON_WIDTH						16
 #define ICON_HEIGHT						16
 #define ICON_PADDING					5
 
 #define CFG_ALIGNMENT					"alignment"
-#define CFG_SWAP_ORDER					"swap_order"
-#define CFG_EXPAND_APPLET				"expand_applet"
-#define CFG_HIDE_ICON					"hide_icon"
-#define CFG_HIDE_TITLE					"hide_title"
-#define CFG_CUSTOM_STYLE				"custom_style"
-#define CFG_TITLE_SIZE					"title_size"
-#define CFG_ONLY_MAXIMIZED				"only_maximized"
-#define CFG_HIDE_ON_UNMAXIMIZED 		"hide_on_unmaximized"
-#define CFG_SHOW_WINDOW_MENU			"show_window_menu"
-#define CFG_SHOW_TOOLTIPS				"show_tooltips"
-#define CFG_TITLE_ACTIVE_FONT			"title_active_font"
-#define CFG_TITLE_ACTIVE_COLOR_FG		"title_active_color_fg"
-#define CFG_TITLE_INACTIVE_FONT			"title_inactive_font"
-#define CFG_TITLE_INACTIVE_COLOR_FG		"title_inactive_color_fg"
+#define CFG_SWAP_ORDER					"swap-order"
+#define CFG_EXPAND_APPLET				"expand-applet"
+#define CFG_HIDE_ICON					"hide-icon"
+#define CFG_HIDE_TITLE					"hide-title"
+#define CFG_CUSTOM_STYLE				"custom-style"
+#define CFG_TITLE_SIZE					"title-size"
+#define CFG_ONLY_MAXIMIZED				"only-maximized"
+#define CFG_HIDE_ON_UNMAXIMIZED 		"hide-on-unmaximized"
+#define CFG_SHOW_WINDOW_MENU			"show-window-menu"
+#define CFG_SHOW_TOOLTIPS				"show-tooltips"
+#define CFG_TITLE_ACTIVE_FONT			"title-active-font"
+#define CFG_TITLE_ACTIVE_COLOR_FG		"title-active-color-fg"
+#define CFG_TITLE_INACTIVE_FONT			"title-inactive-font"
+#define CFG_TITLE_INACTIVE_COLOR_FG		"title-inactive-color-fg"
 
 G_BEGIN_DECLS
 
@@ -113,7 +113,7 @@ typedef struct {
     PanelApplet		*applet;				// The actual PanelApplet
 
 	/* Widgets */
-	GtkBox      	*box;					// Main container widget
+	GtkGrid      	*grid;					// Main container widget
 	GtkEventBox		*eb_icon, *eb_title;	// Eventbox widgets
 	GtkImage		*icon;					// Icon image widget
 	GtkLabel		*title;					// Title label widget
@@ -144,6 +144,7 @@ typedef struct {
 	
 	/* GtkBuilder */
 	GtkBuilder 		*prefbuilder;			// Glade GtkBuilder for the preferences
+	GSettings       *settings;
 } WTApplet;
 
 typedef struct {

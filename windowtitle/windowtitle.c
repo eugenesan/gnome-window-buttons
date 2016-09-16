@@ -18,6 +18,9 @@
 
 #include "windowtitle.h"
 
+/* constants */
+char translation_domain[] = "gnome-window-applets";
+
 /* Prototypes */
 //static void applet_change_background (PanelApplet *, PanelAppletBackgroundType, GdkColor *, GdkPixmap *);
 static void applet_change_orient (PanelApplet *, PanelAppletOrient, WTApplet *);
@@ -30,13 +33,13 @@ static void umaxed_window_nameicon_changed (WnckWindow *, WTApplet *);
 static void viewports_changed (WnckScreen *, WTApplet *);
 static void window_closed (WnckScreen *, WnckWindow *, WTApplet *);
 static void window_opened (WnckScreen *, WnckWindow *, WTApplet *);
-//static void about_cb (BonoboUIComponent *, WTApplet *);
-static void about_cb (GtkAction *, WTApplet *);
+//static void about_cb (GtkAction *, WTApplet *);
+static void about_cb (GSimpleAction *, GVariant *, gpointer);
 static WnckWindow *getRootWindow (WnckScreen *);
 static WnckWindow *getUpperMaximized (WTApplet *);
 const gchar *getCheckBoxGConfKey (gushort);
 //void properties_cb (BonoboUIComponent *, WTApplet *, const char *);
-void properties_cb (GtkAction *, WTApplet *);
+void properties_cb (GSimpleAction *, GVariant *, gpointer);
 void setAlignment(WTApplet *, gfloat);
 void placeWidgets (WTApplet *);
 void reloadWidgets (WTApplet *);
@@ -47,14 +50,17 @@ gchar *getButtonLayoutGConf(WTApplet *, gboolean);
 
 G_DEFINE_TYPE (WTApplet, wt_applet, PANEL_TYPE_APPLET);
 
-static GtkActionEntry windowtitle_menu_actions [] = {
-        { "WTPreferences", GTK_STOCK_PROPERTIES, N_("_Properties"), NULL, NULL, G_CALLBACK (properties_cb) },
-        { "WTAbout", GTK_STOCK_ABOUT, N_("_About"), NULL, NULL, G_CALLBACK (about_cb) }
-};
-
 static const gchar windowtitle_menu_items [] =
-	"<menuitem name=\"Preferences\"	action=\"WTPreferences\" />"
-	"<menuitem name=\"About\"		action=\"WTAbout\" />";
+    "<section>"
+        "<item>"
+            "<attribute name=\"label\" translatable=\"yes\">_Preferences</attribute>"
+            "<attribute name=\"action\">windowtitle.preferences</attribute>"
+        "</item>"
+        "<item>"
+            "<attribute name=\"label\" translatable=\"yes\">_About</attribute>"
+            "<attribute name=\"action\">windowtitle.about</attribute>"
+        "</item>"
+    "</section>";
 
 WTApplet* wt_applet_new (void) {
         return g_object_new (WT_TYPE_APPLET, NULL);
@@ -70,7 +76,7 @@ static void wt_applet_init(WTApplet *wtapplet) {
 
 /* The About dialog */
 //static void about_cb (BonoboUIComponent *uic, WTApplet *wtapplet) {
-static void about_cb (GtkAction *action, WTApplet *wtapplet) {
+static void about_cb (GSimpleAction *action, GVariant *activate, gpointer user_data) {
         static const gchar *authors [] = {
 		"Andrej Belcijan <{andrejx}at{gmail.com}>",
 		" ",
@@ -188,7 +194,11 @@ void updateTitle(WTApplet *wtapplet) {
 			title_text = "";
 		} else {
 			// display "custom" icon/title (TODO: customization via preferences?)
-			icon_pixbuf = gtk_widget_render_icon(GTK_WIDGET(wtapplet),GTK_STOCK_HOME,GTK_ICON_SIZE_MENU,NULL); // This has to be unrefed!
+			icon_pixbuf = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
+                          "go-home",
+                          GTK_ICON_SIZE_MENU,
+                          GTK_ICON_LOOKUP_USE_BUILTIN,
+                          NULL); // This has to be unrefed!
 			title_text = ("Desktop");
 		}
 	} else {
@@ -282,10 +292,20 @@ void toggleHidden (WTApplet *wtapplet) {
 		gtk_widget_show_all(GTK_WIDGET(wtapplet->eb_icon));
 	if (!gtk_widget_get_visible(GTK_WIDGET(wtapplet->eb_title)))
 		gtk_widget_show_all(GTK_WIDGET(wtapplet->eb_title));
-	if (!gtk_widget_get_visible(GTK_WIDGET(wtapplet->box)))
-		gtk_widget_show_all(GTK_WIDGET(wtapplet->box));
+	if (!gtk_widget_get_visible(GTK_WIDGET(wtapplet->grid)))
+		gtk_widget_show_all(GTK_WIDGET(wtapplet->grid));
 	if (!gtk_widget_get_visible(GTK_WIDGET(wtapplet->applet)))
 		gtk_widget_show_all(GTK_WIDGET(wtapplet->applet));
+}
+
+static gchar *gdk_rgba_to_hex_string(const GdkRGBA *color)
+{
+    return g_strdup_printf("#%02x%02x%02x%02x", 
+            (unsigned int) lroundf(color->red*255),
+            (unsigned int) lroundf(color->green*255),
+            (unsigned int) lroundf(color->blue*255),
+            (unsigned int) lroundf(color->alpha*255)
+        );
 }
 
 /* Called when panel background is changed */
@@ -298,21 +318,12 @@ static void applet_change_background (PanelApplet		*applet,
 
 	// Look up the default text color in the theme, use a default if it's not defined
 	// This way is deprecated
-	GdkColor color;
-	GtkStyle *style = gtk_widget_get_style(GTK_WIDGET(applet));
-	if (!gtk_style_lookup_color(style, "dark_fg_color", &color))	// check if dark_fg_color is set otherwise...
-		if (!gtk_style_lookup_color(style, "fg_color", &color))		// ... check if fg_color is set otherwise...
-			gdk_color_parse("#808080", &color);						// ... set universally acceptable color #808080
-	wtapplet->panel_color_fg = gdk_color_to_string(&color);
-
-	/*
-	GdkRGBA rgba;
-	GtkStyleContext *stylecontext = gtk_widget_get_style_context(GTK_WIDGET(applet));
-	if (!gtk_style_context_lookup_color(stylecontext, "dark_fg_color", &rgba))
-		if (!gtk_style_context_lookup_color(stylecontext, "fg_color", &rgba))
-			gdk_rgba_parse(&rgba, "#808080");
-	wtapplet->panel_color_fg = gdk_rgba_to_string(&rgba); // This does not produce the right syntax (gtk_label_set_markup fails)
-	*/
+	GdkRGBA color;
+	GtkStyleContext *style = gtk_widget_get_style_context(GTK_WIDGET(applet));
+	if (!gtk_style_context_lookup_color(style, "dark_fg_color", &color))	// check if dark_fg_color is set otherwise...
+		if (!gtk_style_context_lookup_color(style, "fg_color", &color))		// ... check if fg_color is set otherwise...
+			gdk_rgba_parse(&color, "#808080");						// ... set universally acceptable color #808080
+	wtapplet->panel_color_fg = gdk_rgba_to_hex_string(&color);
 
 	updateTitle(wtapplet); // We need to redraw the title using the new colors
 }
@@ -380,6 +391,17 @@ static void applet_size_allocate (GtkWidget     *widget,
                                   GtkAllocation *allocation,
                                   WTApplet		*wtapplet)
 {
+    GtkOrientation orientation = gtk_orientable_get_orientation(GTK_ORIENTABLE(wtapplet->grid));
+ 
+	if (orientation == GTK_ORIENTATION_HORIZONTAL)
+    {
+        gtk_widget_set_valign(GTK_WIDGET(wtapplet->grid), GTK_ALIGN_CENTER);
+    }
+    else
+    {
+        gtk_widget_set_halign(GTK_WIDGET(wtapplet->grid), GTK_ALIGN_CENTER);
+    }
+
 	if (wtapplet->prefs->expand_applet) return;
 	
 	if (wtapplet->asize != allocation->width) {
@@ -603,18 +625,22 @@ void placeWidgets (WTApplet *wtapplet) {
 	
 	// set box orientation
 	if (wtapplet->angle == GDK_PIXBUF_ROTATE_COUNTERCLOCKWISE || wtapplet->angle == GDK_PIXBUF_ROTATE_CLOCKWISE) {
-		gtk_orientable_set_orientation(GTK_ORIENTABLE(wtapplet->box), GTK_ORIENTATION_VERTICAL);
+		gtk_orientable_set_orientation(GTK_ORIENTABLE(wtapplet->grid), GTK_ORIENTATION_VERTICAL);
 	} else {
-		gtk_orientable_set_orientation(GTK_ORIENTABLE(wtapplet->box), GTK_ORIENTATION_HORIZONTAL);
+		gtk_orientable_set_orientation(GTK_ORIENTABLE(wtapplet->grid), GTK_ORIENTATION_HORIZONTAL);
 	}
 
 	// set packing order
 	if (wtapplet->prefs->swap_order == wtapplet->packtype) {
-		gtk_box_pack_start(wtapplet->box, GTK_WIDGET(wtapplet->eb_icon), FALSE, TRUE, 0);
-		gtk_box_pack_start(wtapplet->box, GTK_WIDGET(wtapplet->eb_title), TRUE, TRUE, 0);
+//		gtk_box_pack_start(wtapplet->box, GTK_WIDGET(wtapplet->eb_icon), FALSE, TRUE, 0);
+//		gtk_box_pack_start(wtapplet->box, GTK_WIDGET(wtapplet->eb_title), TRUE, TRUE, 0);
+		gtk_grid_attach_next_to (wtapplet->grid, GTK_WIDGET(wtapplet->eb_icon), NULL, GTK_POS_RIGHT, 1, 1);
+		gtk_grid_attach_next_to (wtapplet->grid, GTK_WIDGET(wtapplet->eb_title), NULL, GTK_POS_RIGHT, 1, 1);
 	} else {
-		gtk_box_pack_start(wtapplet->box, GTK_WIDGET(wtapplet->eb_title), TRUE, TRUE, 0);
-		gtk_box_pack_start(wtapplet->box, GTK_WIDGET(wtapplet->eb_icon), FALSE, TRUE, 0);
+//		gtk_box_pack_start(wtapplet->box, GTK_WIDGET(wtapplet->eb_title), TRUE, TRUE, 0);
+//		gtk_box_pack_start(wtapplet->box, GTK_WIDGET(wtapplet->eb_icon), FALSE, TRUE, 0);
+		gtk_grid_attach_next_to (wtapplet->grid, GTK_WIDGET(wtapplet->eb_title), NULL, GTK_POS_RIGHT, 1, 1);
+		gtk_grid_attach_next_to (wtapplet->grid, GTK_WIDGET(wtapplet->eb_icon), NULL, GTK_POS_RIGHT, 1, 1);
 	}
 
 	// Set alignment/orientation
@@ -626,8 +652,8 @@ void placeWidgets (WTApplet *wtapplet) {
 void reloadWidgets (WTApplet *wtapplet) {
 	g_object_ref(wtapplet->eb_icon);
 	g_object_ref(wtapplet->eb_title);
-	gtk_container_remove(GTK_CONTAINER(wtapplet->box), GTK_WIDGET(wtapplet->eb_icon));
-	gtk_container_remove(GTK_CONTAINER(wtapplet->box), GTK_WIDGET(wtapplet->eb_title));
+	gtk_container_remove(GTK_CONTAINER(wtapplet->grid), GTK_WIDGET(wtapplet->eb_icon));
+	gtk_container_remove(GTK_CONTAINER(wtapplet->grid), GTK_WIDGET(wtapplet->eb_title));
 	placeWidgets(wtapplet);
 	g_object_unref(wtapplet->eb_icon);
 	g_object_unref(wtapplet->eb_title);
@@ -641,17 +667,51 @@ void setAlignment (WTApplet *wtapplet, gfloat alignment) {
 	if (wtapplet->angle == GDK_PIXBUF_ROTATE_COUNTERCLOCKWISE || wtapplet->angle == GDK_PIXBUF_ROTATE_CLOCKWISE) {
 		// Alignment is vertical
 		if (wtapplet->angle == GDK_PIXBUF_ROTATE_COUNTERCLOCKWISE) {
-			gtk_misc_set_alignment(GTK_MISC(wtapplet->title), 0.5, 1-alignment);
+			//gtk_misc_set_alignment(GTK_MISC(wtapplet->title), 0.5, 1-alignment);
+			gtk_label_set_xalign (wtapplet->title, GTK_ALIGN_START);
+			GtkAlign set_alignment;
+			float a = 1-alignment;
+			if (a == 0)
+					set_alignment = GTK_ALIGN_START;
+			else if (a == 0.5)
+				set_alignment = GTK_ALIGN_CENTER;
+			else
+				set_alignment = GTK_ALIGN_END;
+			gtk_label_set_yalign (wtapplet->title, set_alignment);			
 		} else {
-			gtk_misc_set_alignment(GTK_MISC(wtapplet->title), 0.5, alignment);
+//			gtk_misc_set_alignment(GTK_MISC(wtapplet->title), 0.5, alignment);
+			gtk_label_set_xalign (wtapplet->title, GTK_ALIGN_CENTER);
+			GtkAlign set_alignment;
+			float a = alignment;
+			if (a == 0)
+					set_alignment = GTK_ALIGN_START;
+			else if (a == 0.5)
+				set_alignment = GTK_ALIGN_CENTER;
+			else
+				set_alignment = GTK_ALIGN_END;
+			gtk_label_set_yalign (wtapplet->title, set_alignment);			
 		}
 		gtk_widget_set_size_request(GTK_WIDGET(wtapplet->title), -1, wtapplet->prefs->title_size);
-		gtk_misc_set_padding(GTK_MISC(wtapplet->icon), 0, ICON_PADDING);
+		//gtk_misc_set_padding(GTK_MISC(wtapplet->icon), 0, ICON_PADDING);
+		g_object_set(wtapplet->icon, "padding", 0, "padding-top", ICON_PADDING, "padding-bottom", ICON_PADDING, NULL);
 	} else {
 		// Alignment is horizontal
-		gtk_misc_set_alignment(GTK_MISC(wtapplet->title), alignment, 0.5);
+		//gtk_misc_set_alignment(GTK_MISC(wtapplet->title), alignment, 0.5);
+		GtkAlign set_alignment;
+		float a = alignment;
+		if (a == 0)
+				set_alignment = GTK_ALIGN_START;
+		else if (a == 0.5)
+			set_alignment = GTK_ALIGN_CENTER;
+		else
+			set_alignment = GTK_ALIGN_END;		
+		gtk_label_set_xalign (wtapplet->title, set_alignment);
+		gtk_label_set_yalign (wtapplet->title, GTK_ALIGN_CENTER);			
+		
 		gtk_widget_set_size_request(GTK_WIDGET(wtapplet->title), wtapplet->prefs->title_size, -1);
-		gtk_misc_set_padding(GTK_MISC(wtapplet->icon), ICON_PADDING, 0);
+
+		//gtk_misc_set_padding(GTK_MISC(wtapplet->icon), ICON_PADDING, 0);
+		g_object_set(wtapplet->icon, "padding", 0, "padding-left", ICON_PADDING, "padding-right", ICON_PADDING, NULL);
 	}
 }
 
@@ -659,6 +719,7 @@ void setAlignment (WTApplet *wtapplet, gfloat alignment) {
 static void init_wtapplet (PanelApplet *applet) {
 	WTApplet *wtapplet = g_new0 (WTApplet, 1);
 
+	wtapplet->settings = g_settings_new_with_path(G_SETTINGS_WINDOW_TITLE_SCHEMA, G_SETTINGS_WINDOW_TITLE_PATH);
 	wtapplet->applet = applet;
 	wtapplet->prefs = loadPreferences(wtapplet);
 	wtapplet->activescreen = wnck_screen_get_default();
@@ -668,7 +729,7 @@ static void init_wtapplet (PanelApplet *applet) {
 	wtapplet->umaxedwindow = getUpperMaximized(wtapplet);
 	wtapplet->rootwindow = getRootWindow(wtapplet->activescreen);
 	wtapplet->prefbuilder = gtk_builder_new();
-	wtapplet->box = GTK_BOX(gtk_hbox_new(FALSE, 0));
+	wtapplet->grid = GTK_GRID(gtk_grid_new());
 	wtapplet->icon = GTK_IMAGE(gtk_image_new());
 	wtapplet->title = GTK_LABEL(gtk_label_new(NULL));
 	wtapplet->eb_icon = GTK_EVENT_BOX(gtk_event_box_new());
@@ -688,8 +749,8 @@ static void init_wtapplet (PanelApplet *applet) {
 	setAlignment(wtapplet, (gfloat)wtapplet->prefs->alignment);
 	placeWidgets(wtapplet);
 
-	// Add box to applet
-	gtk_container_add (GTK_CONTAINER(wtapplet->applet), GTK_WIDGET(wtapplet->box));
+	// Add grid to applet
+	gtk_container_add (GTK_CONTAINER(wtapplet->applet), GTK_WIDGET(wtapplet->grid));
 
 	// Set event handling (icon & title clicks)
 	g_signal_connect(G_OBJECT (wtapplet->eb_icon), "button-press-event", G_CALLBACK (icon_clicked), wtapplet);
@@ -717,12 +778,24 @@ static void init_wtapplet (PanelApplet *applet) {
 	wtapplet->active_handler_icon = 
 		g_signal_connect(G_OBJECT (wtapplet->activewindow), "icon-changed", G_CALLBACK (active_window_nameicon_changed), wtapplet);
 
+	// Setup applet right-click menu
+	const GActionEntry entries[] = {
+		{ "preferences", properties_cb, NULL, NULL, NULL },
+		{ "about",       about_cb,      NULL, NULL, NULL }
+	};
 	
 	// Setup applet right-click menu
-	GtkActionGroup *action_group = gtk_action_group_new ("WindowButtons Applet Actions");
-	gtk_action_group_set_translation_domain (action_group, GETTEXT_PACKAGE);
-	gtk_action_group_add_actions (action_group, windowtitle_menu_actions, G_N_ELEMENTS (windowtitle_menu_actions), wtapplet);
-	panel_applet_setup_menu (applet, windowtitle_menu_items, action_group);
+//	GtkActionGroup *action_group = gtk_action_group_new ("WindowButtons Applet Actions");
+//	gtk_action_group_set_translation_domain (action_group, GETTEXT_PACKAGE);
+//	gtk_action_group_add_actions (action_group, windowtitle_menu_actions, G_N_ELEMENTS (windowtitle_menu_actions), wtapplet);
+//	panel_applet_setup_menu (applet, windowtitle_menu_items, action_group, translation_domain);
+	GSimpleActionGroup *action_group = g_simple_action_group_new ();
+	g_action_map_add_action_entries (G_ACTION_MAP (action_group), entries, G_N_ELEMENTS (entries), wtapplet);
+	panel_applet_setup_menu (applet, windowtitle_menu_items, action_group, translation_domain);
+	gtk_widget_insert_action_group (GTK_WIDGET (wtapplet->applet), "windowtitle",
+	                                G_ACTION_GROUP (action_group));	
+    g_object_unref (action_group);
+
 	panel_applet_set_background_widget (wtapplet->applet, GTK_WIDGET (wtapplet->applet)); // Automatic background update
 	
 	toggleExpand  (wtapplet);
@@ -735,7 +808,7 @@ static gboolean windowtitle_applet_factory (PanelApplet *applet, const gchar *ii
 	if (strcmp (iid, APPLET_OAFIID) != 0) return FALSE;
 	
 	g_set_application_name (APPLET_NAME); //GLib-WARNING **: g_set_application_name() called multiple times
-	panel_applet_add_preferences (applet, GCONF_PREFS, NULL);
+	panel_applet_settings_new (applet, G_SETTINGS_WINDOW_TITLE_SCHEMA);
 	wnck_set_client_type (WNCK_CLIENT_TYPE_PAGER);
 
 	init_wtapplet (applet);

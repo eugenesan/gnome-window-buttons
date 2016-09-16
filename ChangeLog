@@ -173,3 +173,7 @@ Initial release.
 - Added tooltips (off by default)
 - WTA: Improved automatic color detection
 - WBA: Moved themes into proper folder
+
+0.3.1
+- Ported applets to Gnome 3.18 (GnomePanel-4.0 -> GnomePanel-5.0, GConf -> Gsettings)
+- Switch to using autoconf

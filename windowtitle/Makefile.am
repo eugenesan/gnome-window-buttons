@@ -1,5 +1,6 @@
 AM_CPPFLAGS = \
 	-DPACKAGE_LOCALE_DIR=\""$(prefix)/$(DATADIRNAME)/locale"\" \
+	-DGNOMELOCALEDIR=\"$(LOCALEDIR)\" \
 	-DPACKAGE_SRC_DIR=\""$(srcdir)"\" \
 	-DPACKAGE_DATA_DIR=\""$(datadir)"\" \
 	$(WINDOWTITLE_CFLAGS)
@@ -19,21 +20,35 @@ windowtitle_SOURCES = \
 windowtitle_LDFLAGS = \
 	-Wl,--export-dynamic
 
-windowtitle_LDADD = $(WINDOWTITLE_LIBS)
+windowtitle_LDADD = $(WINDOWTITLE_LIBS) -lm
+#windowtitle_libdir=$(libexecdir)/gnome-applets/5.0
+
+builderdir = $(datadir)/windowtitle
+builder_DATA = windowtitle.ui
+
+gsettings_file = org.gnome.window-applets.windowtitle.gschema.xml
+gsettings_SCHEMAS = $(gsettings_file)
+
+@INTLTOOL_XML_NOMERGE_RULE@
 
 # The new applet files (D-Bus???)
-appletdir       = $(datadir)/gnome-panel/4.0/applets
+appletdir       = $(datadir)/gnome-panel/5.0/applets
 applet_in_files = org.gnome.panel.WindowTitleApplet.panel-applet.in
 applet_DATA     = $(applet_in_files:.panel-applet.in=.panel-applet)
 
 $(applet_in_files): $(applet_in_files).in Makefile
 	$(AM_V_GEN)sed \
-	-e "s|\@LIBEXECDIR\@|$(libexecdir)|" \
-	-e "s|\@DATADIR\@|$(datadir)|" \
-	-e "s|\@VERSION\@|$(PACKAGE_VERSION)|" \
-	$< > $@
+		-e "s|\@LIBEXECDIR\@|$(libexecdir)|" \
+		-e "s|\@DATADIR\@|$(datadir)|" \
+		-e "s|\@VERSION\@|$(PACKAGE_VERSION)|" \
+		$< > $@
 
-%.panel-applet: %.panel-applet.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*po) ; $(INTLTOOL_MERGE) $(top_srcdir)/po $< $@ -d -u -c $(top_builddir)/po/.intltool-merge-cache
+$(gsettings_file).in: $(gsettings_file).in.in
+	sed \
+		-e "s|\@GETTEXT_PACKAGE\@|$(GETTEXT_PACKAGE)|" \
+		$< > $@
+
+@GSETTINGS_RULES@
 
 # The new Service file (D-Bus)
 servicedir       = $(datadir)/dbus-1/services
@@ -45,29 +60,21 @@ org.gnome.panel.applet.WindowTitleAppletFactory.service: $(service_in_files)
 	    -e "s|\@LIBEXECDIR\@|$(libexecdir)|" \
 	    $< > $@
 
-# Schemas for GConf
-schemasdir       = @GCONF_SCHEMA_FILE_DIR@
-schemas_in_files = windowtitle.schemas.in
-schemas_DATA     = $(schemas_in_files:.schemas.in=.schemas)
-
-@INTLTOOL_SCHEMAS_RULE@
-
-if GCONF_SCHEMAS_INSTALL
-install-data-local:
-	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(schemas_DATA) ;
-endif
-
-# UI Builder file (Glade)
-builderdir = $(datadir)/windowtitle
-builder_DATA = windowtitle.ui
-
-CLEANFILES = $(applet_DATA) $(applet_DATA).in $(service_DATA) $(schemas_DATA)
+%.panel-applet: %.panel-applet.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*po) ; $(INTLTOOL_MERGE) $(top_srcdir)/po $< $@ -d -u -c $(top_builddir)/po/.intltool-merge-cache
 
 EXTRA_DIST = \
 	org.gnome.panel.WindowTitleApplet.panel-applet.in.in \
 	$(service_in_files) \
-	$(schemas_in_files) \
+	$(gsettings_file).in.in \
 	$(builder_DATA)
+
+CLEANFILES = \
+	$(applet_DATA) \
+	$(applet_DATA).in \
+	$(service_DATA) \
+	$(gsettings_file).in \
+	$(gsettings_file) \
+	*.gschema.valid
 
 SUBDIRS = \
 	pixmaps

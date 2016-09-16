@@ -26,9 +26,18 @@ windowbuttons_LDFLAGS = \
 	-Wl,--export-dynamic
 
 windowbuttons_LDADD = $(WINDOWBUTTONS_LIBS)
+#windowbuttons_libdir=$(libexecdir)/gnome-applets/5.0
+
+builderdir = $(datadir)/windowbuttons
+builder_DATA = windowbuttons.ui
+
+gsettings_file = org.gnome.window-applets.windowbuttons.gschema.xml
+gsettings_SCHEMAS = $(gsettings_file)
+
+@INTLTOOL_XML_NOMERGE_RULE@
 
 # The new applet files (D-Bus???)
-appletdir       = $(datadir)/gnome-panel/4.0/applets
+appletdir       = $(datadir)/gnome-panel/5.0/applets
 applet_in_files = org.gnome.panel.WindowButtonsApplet.panel-applet.in
 applet_DATA     = $(applet_in_files:.panel-applet.in=.panel-applet)
 
@@ -39,7 +48,12 @@ $(applet_in_files): $(applet_in_files).in Makefile
 		-e "s|\@VERSION\@|$(PACKAGE_VERSION)|" \
 		$< > $@
 
-%.panel-applet: %.panel-applet.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*po) ; $(INTLTOOL_MERGE) $(top_srcdir)/po $< $@ -d -u -c $(top_builddir)/po/.intltool-merge-cache
+$(gsettings_file).in: $(gsettings_file).in.in
+	sed \
+	  -e "s|\@GETTEXT_PACKAGE\@|$(GETTEXT_PACKAGE)|" \
+	  $< > $@
+
+@GSETTINGS_RULES@
 
 # The new Service file (D-Bus)
 servicedir       = $(datadir)/dbus-1/services
@@ -51,35 +65,21 @@ org.gnome.panel.applet.WindowButtonsAppletFactory.service: $(service_in_files)
 		-e "s|\@LIBEXECDIR\@|$(libexecdir)|" \
 		$< > $@
 
-# Schemas for GConf
-schemasdir       = @GCONF_SCHEMA_FILE_DIR@
-schemas_in_files = windowbuttons.schemas.in
-schemas_DATA     = $(schemas_in_files:.schemas.in=.schemas)
-
-windowbuttons.schemas: $(schemas_in_files)
-	$(AM_V_GEN)sed \
-	    -e "s|\@DATADIR\@|$(datadir)|" \
-	    $< > $@
-
-@INTLTOOL_SCHEMAS_RULE@
-
-if GCONF_SCHEMAS_INSTALL
-install-data-local:
-	GCONF_CONFIG_SOURCE=$(GCONF_SCHEMA_CONFIG_SOURCE) $(GCONFTOOL) --makefile-install-rule $(schemas_DATA) ;
-endif
-
-# UI Builder file (Glade)
-builderdir = $(datadir)/windowbuttons
-builder_DATA = windowbuttons.ui
-
-#CLEANFILES = $(service_in_files) $(server_DATA)
-CLEANFILES = $(applet_DATA) $(applet_DATA).in $(service_DATA) $(schemas_DATA)
+%.panel-applet: %.panel-applet.in $(INTLTOOL_MERGE) $(wildcard $(top_srcdir)/po/*po) ; $(INTLTOOL_MERGE) $(top_srcdir)/po $< $@ -d -u -c $(top_builddir)/po/.intltool-merge-cache
 
 EXTRA_DIST = \
 	org.gnome.panel.WindowButtonsApplet.panel-applet.in.in \
 	$(service_in_files) \
-	$(schemas_in_files) \
+	$(gsettings_file).in.in \
 	$(builder_DATA)
+
+CLEANFILES = \
+	$(applet_DATA) \
+	$(applet_DATA).in \
+	$(gsettings_file).in \
+	$(gsettings_file) \
+	$(service_DATA) \
+	*.gschema.valid
 
 SUBDIRS = \
 	pixmaps\

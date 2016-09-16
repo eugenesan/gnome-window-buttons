@@ -41,21 +41,21 @@ gchar* getCfgValue(FILE *, gchar *);
 
 void savePreferences(WTPreferences *wtp, WTApplet *wtapplet) {
 #if PLAINTEXT_CONFIG == 0
-	panel_applet_gconf_set_bool (wtapplet->applet, CFG_ONLY_MAXIMIZED, wtp->only_maximized, NULL);
-	panel_applet_gconf_set_bool (wtapplet->applet, CFG_HIDE_ON_UNMAXIMIZED, wtp->hide_on_unmaximized, NULL);
-	panel_applet_gconf_set_bool (wtapplet->applet, CFG_HIDE_ICON, wtp->hide_icon, NULL);
-	panel_applet_gconf_set_bool (wtapplet->applet, CFG_HIDE_TITLE, wtp->hide_title, NULL);
-	panel_applet_gconf_set_bool (wtapplet->applet, CFG_SWAP_ORDER, wtp->swap_order, NULL);
-	panel_applet_gconf_set_bool (wtapplet->applet, CFG_EXPAND_APPLET, wtp->expand_applet, NULL);
-	panel_applet_gconf_set_bool (wtapplet->applet, CFG_CUSTOM_STYLE, wtp->custom_style, NULL);
-	panel_applet_gconf_set_bool (wtapplet->applet, CFG_SHOW_WINDOW_MENU, wtp->show_window_menu, NULL);
-	panel_applet_gconf_set_bool (wtapplet->applet, CFG_SHOW_TOOLTIPS, wtp->show_tooltips, NULL);
-	panel_applet_gconf_set_float (wtapplet->applet, CFG_ALIGNMENT, wtp->alignment, NULL);
-	panel_applet_gconf_set_int (wtapplet->applet, CFG_TITLE_SIZE, wtp->title_size, NULL);
-	panel_applet_gconf_set_string (wtapplet->applet, CFG_TITLE_ACTIVE_FONT, wtp->title_active_font, NULL);
-	panel_applet_gconf_set_string (wtapplet->applet, CFG_TITLE_ACTIVE_COLOR_FG, wtp->title_active_color, NULL);
-	panel_applet_gconf_set_string (wtapplet->applet, CFG_TITLE_INACTIVE_FONT, wtp->title_inactive_font, NULL);
-	panel_applet_gconf_set_string (wtapplet->applet, CFG_TITLE_INACTIVE_COLOR_FG, wtp->title_inactive_color, NULL);
+	g_settings_set_boolean (wtapplet->settings, CFG_ONLY_MAXIMIZED, wtp->only_maximized);
+	g_settings_set_boolean (wtapplet->settings, CFG_HIDE_ON_UNMAXIMIZED, wtp->hide_on_unmaximized);
+	g_settings_set_boolean (wtapplet->settings, CFG_HIDE_ICON, wtp->hide_icon);
+	g_settings_set_boolean (wtapplet->settings, CFG_HIDE_TITLE, wtp->hide_title);
+	g_settings_set_boolean (wtapplet->settings, CFG_SWAP_ORDER, wtp->swap_order);
+	g_settings_set_boolean (wtapplet->settings, CFG_EXPAND_APPLET, wtp->expand_applet);
+	g_settings_set_boolean (wtapplet->settings, CFG_CUSTOM_STYLE, wtp->custom_style);
+	g_settings_set_boolean (wtapplet->settings, CFG_SHOW_WINDOW_MENU, wtp->show_window_menu);
+	g_settings_set_boolean (wtapplet->settings, CFG_SHOW_TOOLTIPS, wtp->show_tooltips);
+	g_settings_set_double (wtapplet->settings, CFG_ALIGNMENT, wtp->alignment);
+	g_settings_set_int (wtapplet->settings, CFG_TITLE_SIZE, wtp->title_size);
+	g_settings_set_string (wtapplet->settings, CFG_TITLE_ACTIVE_FONT, wtp->title_active_font);
+	g_settings_set_string (wtapplet->settings, CFG_TITLE_ACTIVE_COLOR_FG, wtp->title_active_color);
+	g_settings_set_string (wtapplet->settings, CFG_TITLE_INACTIVE_FONT, wtp->title_inactive_font);
+	g_settings_set_string (wtapplet->settings, CFG_TITLE_INACTIVE_COLOR_FG, wtp->title_inactive_color);
 #else
 	FILE *cfg = g_fopen (g_strconcat(g_get_home_dir(),"/",FILE_CONFIGFILE, NULL), "w");
 
@@ -84,21 +84,21 @@ WTPreferences *loadPreferences(WTApplet *wtapplet) {
 	WTPreferences *wtp = g_new0(WTPreferences, 1);
 
 #if PLAINTEXT_CONFIG == 0
-	wtp->only_maximized = panel_applet_gconf_get_bool(wtapplet->applet, CFG_ONLY_MAXIMIZED, NULL);
-	wtp->hide_on_unmaximized = panel_applet_gconf_get_bool(wtapplet->applet, CFG_HIDE_ON_UNMAXIMIZED, NULL);
-	wtp->hide_icon = panel_applet_gconf_get_bool(wtapplet->applet, CFG_HIDE_ICON, NULL);
-	wtp->hide_title = panel_applet_gconf_get_bool(wtapplet->applet, CFG_HIDE_TITLE, NULL);
-	wtp->alignment = panel_applet_gconf_get_float(wtapplet->applet, CFG_ALIGNMENT, NULL);
-	wtp->swap_order = panel_applet_gconf_get_bool(wtapplet->applet, CFG_SWAP_ORDER, NULL);
-	wtp->expand_applet = panel_applet_gconf_get_bool(wtapplet->applet, CFG_EXPAND_APPLET, NULL);
-	wtp->custom_style = panel_applet_gconf_get_bool(wtapplet->applet, CFG_CUSTOM_STYLE, NULL);
-	wtp->show_window_menu = panel_applet_gconf_get_bool(wtapplet->applet, CFG_SHOW_WINDOW_MENU, NULL);
-	wtp->show_tooltips = panel_applet_gconf_get_bool(wtapplet->applet, CFG_SHOW_TOOLTIPS, NULL);
-	wtp->title_size = panel_applet_gconf_get_int(wtapplet->applet, CFG_TITLE_SIZE, NULL);
-	wtp->title_active_font = panel_applet_gconf_get_string(wtapplet->applet, CFG_TITLE_ACTIVE_FONT, NULL);
-	wtp->title_active_color = panel_applet_gconf_get_string(wtapplet->applet, CFG_TITLE_ACTIVE_COLOR_FG, NULL);
-	wtp->title_inactive_font = panel_applet_gconf_get_string(wtapplet->applet, CFG_TITLE_INACTIVE_FONT, NULL);;
-	wtp->title_inactive_color = panel_applet_gconf_get_string(wtapplet->applet, CFG_TITLE_INACTIVE_COLOR_FG, NULL);
+	wtp->only_maximized = g_settings_get_boolean(wtapplet->settings, CFG_ONLY_MAXIMIZED);
+	wtp->hide_on_unmaximized = g_settings_get_boolean(wtapplet->settings, CFG_HIDE_ON_UNMAXIMIZED);
+	wtp->hide_icon = g_settings_get_boolean(wtapplet->settings, CFG_HIDE_ICON);
+	wtp->hide_title = g_settings_get_boolean(wtapplet->settings, CFG_HIDE_TITLE);
+	wtp->alignment = g_settings_get_double(wtapplet->settings, CFG_ALIGNMENT);
+	wtp->swap_order = g_settings_get_boolean(wtapplet->settings, CFG_SWAP_ORDER);
+	wtp->expand_applet = g_settings_get_boolean(wtapplet->settings, CFG_EXPAND_APPLET);
+	wtp->custom_style = g_settings_get_boolean(wtapplet->settings, CFG_CUSTOM_STYLE);
+	wtp->show_window_menu = g_settings_get_boolean(wtapplet->settings, CFG_SHOW_WINDOW_MENU);
+	wtp->show_tooltips = g_settings_get_boolean(wtapplet->settings, CFG_SHOW_TOOLTIPS);
+	wtp->title_size = g_settings_get_int(wtapplet->settings, CFG_TITLE_SIZE);
+	wtp->title_active_font = g_settings_get_string(wtapplet->settings, CFG_TITLE_ACTIVE_FONT);
+	wtp->title_active_color = g_settings_get_string(wtapplet->settings, CFG_TITLE_ACTIVE_COLOR_FG);
+	wtp->title_inactive_font = g_settings_get_string(wtapplet->settings, CFG_TITLE_INACTIVE_FONT);;
+	wtp->title_inactive_color = g_settings_get_string(wtapplet->settings, CFG_TITLE_INACTIVE_COLOR_FG);
 #else
 	FILE *cfg = g_fopen (g_strconcat(g_get_home_dir(),"/",FILE_CONFIGFILE,NULL),"r");
 
@@ -214,7 +214,7 @@ void cb_show_tooltips(GtkButton *button, WTApplet *wtapplet) {
 }
 
 void cb_custom_style(GtkButton *button, WTApplet *wtapplet) {
-	GtkTable *parent = GTK_TABLE(gtk_builder_get_object(wtapplet->prefbuilder, "table_custom_style"));
+	GtkGrid *parent = GTK_GRID(gtk_builder_get_object(wtapplet->prefbuilder, "grid-custom-style"));
 	gtk_widget_set_sensitive(GTK_WIDGET(parent), gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(button)));
 	wtapplet->prefs->custom_style = gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(button));
 	savePreferences(wtapplet->prefs, wtapplet);
@@ -244,31 +244,33 @@ static void cb_font_inactive_set(GtkFontButton *widget, WTApplet *wtapplet)
 	updateTitle(wtapplet);
 }
 
-static void cb_color_active_fg_set(GtkColorButton *widget, WTApplet *wtapplet)
+static void cb_color_active_fg_set(GtkColorChooser *widget, WTApplet *wtapplet)
 {
-	GdkColor color;
+	GdkRGBA color;
 
-	gtk_color_button_get_color(widget, &color);
-	wtapplet->prefs->title_active_color = gdk_color_to_string(&color);	
+	gtk_color_chooser_get_rgba(widget, &color);
+	wtapplet->prefs->title_active_color = gdk_rgba_to_string(&color);	
 	savePreferences(wtapplet->prefs, wtapplet);
 	updateTitle(wtapplet);
 }
 
-static void cb_color_inactive_fg_set(GtkColorButton *widget, gpointer user_data)
+static void cb_color_inactive_fg_set(GtkColorChooser *widget, gpointer user_data)
 {
 	WTApplet *wtapplet = WT_APPLET(user_data);
-	GdkColor color;
+	GdkRGBA color;
 
-	gtk_color_button_get_color(widget, &color);
-	wtapplet->prefs->title_inactive_color = gdk_color_to_string(&color);	
+	gtk_color_chooser_get_rgba(widget, &color);
+	wtapplet->prefs->title_inactive_color = gdk_rgba_to_string(&color);	
 	savePreferences(wtapplet->prefs, wtapplet);
 	updateTitle(wtapplet);
 }
 
 
 /* The Preferences Dialog */
-void properties_cb (GtkAction *action, WTApplet *wtapplet) {
-	GdkColor btn_color_color;
+void properties_cb (GSimpleAction *action, GVariant *parameter, gpointer user_data) {
+	GdkRGBA btn_color_color;
+
+	WTApplet *wtapplet = (WTApplet *) user_data;
 	
 	// Create the Properties dialog from the GtkBuilder file
 	if(wtapplet->window_prefs) {
@@ -289,13 +291,13 @@ void properties_cb (GtkAction *action, WTApplet *wtapplet) {
 		*chkb_custom_style = GTK_TOGGLE_BUTTON (gtk_builder_get_object(wtapplet->prefbuilder, CFG_CUSTOM_STYLE)),
 		*chkb_show_window_menu = GTK_TOGGLE_BUTTON (gtk_builder_get_object(wtapplet->prefbuilder, CFG_SHOW_WINDOW_MENU)),
 		*chkb_show_tooltips = GTK_TOGGLE_BUTTON (gtk_builder_get_object(wtapplet->prefbuilder, CFG_SHOW_TOOLTIPS));
-	GtkHScale *scale_alignment = GTK_HSCALE (gtk_builder_get_object(wtapplet->prefbuilder, "scale_alignment"));
-	GtkColorButton *btn_color_active = GTK_COLOR_BUTTON (gtk_builder_get_object(wtapplet->prefbuilder, "btn_color_active"));
-	GtkFontButton *btn_font_active = GTK_FONT_BUTTON (gtk_builder_get_object(wtapplet->prefbuilder, "btn_font_active"));
-	GtkColorButton *btn_color_inactive = GTK_COLOR_BUTTON (gtk_builder_get_object(wtapplet->prefbuilder, "btn_color_inactive"));
-	GtkFontButton *btn_font_inactive = GTK_FONT_BUTTON (gtk_builder_get_object(wtapplet->prefbuilder, "btn_font_inactive"));
-	GtkButton *btn_close = GTK_BUTTON (gtk_builder_get_object(wtapplet->prefbuilder, "btn_close"));
-	GtkTable *table_custom_style = GTK_TABLE(gtk_builder_get_object(wtapplet->prefbuilder, "table_custom_style"));
+	GtkScale *scale_alignment = GTK_SCALE (gtk_builder_get_object(wtapplet->prefbuilder, "scale-alignment"));
+	GtkColorChooser *btn_color_active = GTK_COLOR_CHOOSER (gtk_builder_get_object(wtapplet->prefbuilder, "btn-color-active"));
+	GtkFontButton *btn_font_active = GTK_FONT_BUTTON (gtk_builder_get_object(wtapplet->prefbuilder, "btn-font-active"));
+	GtkColorChooser *btn_color_inactive = GTK_COLOR_CHOOSER (gtk_builder_get_object(wtapplet->prefbuilder, "btn-color-inactive"));
+	GtkFontButton *btn_font_inactive = GTK_FONT_BUTTON (gtk_builder_get_object(wtapplet->prefbuilder, "btn-font-inactive"));
+	GtkButton *btn_close = GTK_BUTTON (gtk_builder_get_object(wtapplet->prefbuilder, "btn-close"));
+	GtkGrid *grid_custom_style = GTK_GRID(gtk_builder_get_object(wtapplet->prefbuilder, "grid-custom-style"));
 	
 	// set widgets according to preferences
 	gtk_toggle_button_set_active (chkb_only_maximized, wtapplet->prefs->only_maximized);
@@ -308,13 +310,13 @@ void properties_cb (GtkAction *action, WTApplet *wtapplet) {
 	gtk_toggle_button_set_active (chkb_show_window_menu, wtapplet->prefs->show_window_menu);
 	gtk_toggle_button_set_active (chkb_show_tooltips, wtapplet->prefs->show_tooltips);
 	gtk_range_set_adjustment (GTK_RANGE(scale_alignment), GTK_ADJUSTMENT(gtk_adjustment_new(wtapplet->prefs->alignment, 0, 1.0, 0.1, 0, 0)));
-	gdk_color_parse(wtapplet->prefs->title_active_color, &btn_color_color);
-	gtk_color_button_set_color(btn_color_active, &btn_color_color);
-	gdk_color_parse(wtapplet->prefs->title_inactive_color, &btn_color_color);
-	gtk_color_button_set_color(btn_color_inactive, &btn_color_color);
+	gdk_rgba_parse(&btn_color_color, wtapplet->prefs->title_active_color);
+	gtk_color_chooser_set_rgba(btn_color_active, &btn_color_color);
+	gdk_rgba_parse(&btn_color_color, wtapplet->prefs->title_inactive_color);
+	gtk_color_chooser_set_rgba(btn_color_inactive, &btn_color_color);
 	gtk_font_button_set_font_name(btn_font_active, wtapplet->prefs->title_active_font);
 	gtk_font_button_set_font_name(btn_font_inactive, wtapplet->prefs->title_inactive_font);
-	gtk_widget_set_sensitive(GTK_WIDGET(table_custom_style), gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(chkb_custom_style)));
+	gtk_widget_set_sensitive(GTK_WIDGET(grid_custom_style), gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON(chkb_custom_style)));
 	
 	g_signal_connect(G_OBJECT(chkb_only_maximized), "clicked", G_CALLBACK (cb_only_maximized), wtapplet);
 	g_signal_connect(G_OBJECT(chkb_hide_on_unmaximized), "clicked", G_CALLBACK (cb_hide_on_unmaximized), wtapplet);

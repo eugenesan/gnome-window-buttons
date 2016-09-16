@@ -34,10 +34,9 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <glib/gi18n.h>
-#include <gconf/gconf-client.h>
 #include <panel-applet.h>
-#include <panel-applet-gconf.h>
 #include <gtk/gtk.h>
+#include <gio/gio.h>
 
 #if PLAINTEXT_CONFIG == 1
 #include <glib/gstdio.h>
@@ -55,11 +54,12 @@
 #define PATH_BUILDER 					"/usr/share/gnome-applets/builder"
 #define PATH_MAIN 						"/usr/share"
 #define PATH_THEMES 					PATH_MAIN"/pixmaps/windowbuttons/themes"
-#define PATH_UI_PREFS					PATH_MAIN"/windowbuttons/windowbuttons.ui"
-#define PATH_LOGO						PATH_MAIN"/pixmaps/windowbuttons-applet.png"
+#define PATH_UI_PREFS					PATH_MAIN"/windowbuttons.ui"
+#define PATH_LOGO					PATH_MAIN"/pixmaps/windowbuttons-applet.png"
 #define METACITY_XML 					"metacity-theme-1.xml"
 #define THEME_EXTENSION					"png"
-#define GCONF_PREFS 					"/schemas/apps/windowbuttons-applet/prefs"
+#define G_SETTINGS_WINDOW_BUTTONS_SCHEMA "org.gnome.window-applets.windowbuttons"
+#define G_SETTINGS_WINDOW_BUTTONS_PATH "/org/gnome/window-applets/"
 #define FILE_CONFIGFILE					".windowbuttons"
 
 /* strings that identify button states and names */
@@ -75,20 +75,20 @@
 #define BTN_NAME_UNMAXIMIZE				"unmaximize"
 
 /* Key strings (used by GConf, Plaintext and GtkBuilder .ui file) */
-#define CFG_ONLY_MAXIMIZED			"only_maximized"
-#define CFG_HIDE_ON_UNMAXIMIZED 	"hide_on_unmaximized"
-#define CFG_HIDE_DECORATION			"hide_decoration"
-#define CFG_CLICK_EFFECT			"click_effect"
-#define CFG_HOVER_EFFECT			"hover_effect"
-#define CFG_USE_METACITY_LAYOUT		"use_metacity_layout"
-#define CFG_MINIMIZE_HIDDEN			"button_minimize_hidden"
-#define CFG_UNMAXIMIZE_HIDDEN		"button_maximize_hidden"
-#define CFG_CLOSE_HIDDEN			"button_close_hidden"
-#define CFG_BUTTON_LAYOUT			"button_layout"
-#define CFG_REVERSE_ORDER			"reverse_order"
+#define CFG_ONLY_MAXIMIZED			"only-maximized"
+#define CFG_HIDE_ON_UNMAXIMIZED 	"hide-on-unmaximized"
+#define CFG_HIDE_DECORATION			"hide-decoration"
+#define CFG_CLICK_EFFECT			"click-effect"
+#define CFG_HOVER_EFFECT			"hover-effect"
+#define CFG_USE_METACITY_LAYOUT		"use-metacity-layout"
+#define CFG_MINIMIZE_HIDDEN			"button-minimize-hidden"
+#define CFG_UNMAXIMIZE_HIDDEN		"button-maximize-hidden"
+#define CFG_CLOSE_HIDDEN			"button-close-hidden"
+#define CFG_BUTTON_LAYOUT			"button-layout"
+#define CFG_REVERSE_ORDER			"reverse-order"
 #define CFG_ORIENTATION				"orientation"
 #define CFG_THEME					"theme"
-#define CFG_SHOW_TOOLTIPS			"show_tooltips"
+#define CFG_SHOW_TOOLTIPS			"show-tooltips"
 
 G_BEGIN_DECLS
 
@@ -169,7 +169,7 @@ typedef struct {
     PanelApplet		*applet;			// The actual PanelApplet
 	
 	/* Widgets */
-	GtkBox      	*box;				// Main container
+	GtkGrid      	*grid;				// Main container
 	GtkWidget		*window_prefs;		// Preferences window
 	
 	/* Variables */
@@ -191,6 +191,8 @@ typedef struct {
 	
 	/* GtkBuilder */
 	GtkBuilder 		*prefbuilder;
+
+	GSettings       *settings;
 } WBApplet;
 
 typedef struct {
@@ -212,7 +214,7 @@ Applet structure:
               Applet
                 |
                 |
-     _________ Box _________
+     _________ Grid _________
     |           |           |
     |           |           | 
 EventBox[0] EventBox[1] EventBox[2]

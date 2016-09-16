@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.18.3 -->
 <interface>
-  <requires lib="gtk+" version="2.16"/>
+  <requires lib="gtk+" version="3.4"/>
   <object class="GtkDialog" id="properties">
     <property name="can_focus">False</property>
     <property name="events">GDK_EXPOSURE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_MOTION_MASK | GDK_BUTTON1_MOTION_MASK | GDK_BUTTON2_MOTION_MASK | GDK_BUTTON3_MOTION_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_FOCUS_CHANGE_MASK | GDK_STRUCTURE_MASK | GDK_PROPERTY_CHANGE_MASK | GDK_VISIBILITY_NOTIFY_MASK | GDK_PROXIMITY_IN_MASK | GDK_PROXIMITY_OUT_MASK | GDK_SUBSTRUCTURE_MASK | GDK_SCROLL_MASK</property>
@@ -20,14 +21,14 @@
             <property name="can_focus">False</property>
             <property name="layout_style">end</property>
             <child>
-              <object class="GtkButton" id="btn_close">
+              <object class="GtkButton" id="btn-close">
                 <property name="label">gtk-close</property>
+                <property name="use_action_appearance">False</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="can_default">True</property>
                 <property name="receives_default">True</property>
                 <property name="events">GDK_EXPOSURE_MASK | GDK_POINTER_MOTION_MASK | GDK_POINTER_MOTION_HINT_MASK | GDK_BUTTON_MOTION_MASK | GDK_BUTTON1_MOTION_MASK | GDK_BUTTON2_MOTION_MASK | GDK_BUTTON3_MOTION_MASK | GDK_BUTTON_PRESS_MASK | GDK_BUTTON_RELEASE_MASK | GDK_KEY_PRESS_MASK | GDK_KEY_RELEASE_MASK | GDK_ENTER_NOTIFY_MASK | GDK_LEAVE_NOTIFY_MASK | GDK_FOCUS_CHANGE_MASK | GDK_STRUCTURE_MASK | GDK_PROPERTY_CHANGE_MASK | GDK_VISIBILITY_NOTIFY_MASK | GDK_PROXIMITY_IN_MASK | GDK_PROXIMITY_OUT_MASK | GDK_SUBSTRUCTURE_MASK | GDK_SCROLL_MASK</property>
-                <property name="use_action_appearance">False</property>
                 <property name="use_stock">True</property>
               </object>
               <packing>
@@ -57,10 +58,9 @@
                 <property name="left_padding">10</property>
                 <property name="right_padding">10</property>
                 <child>
-                  <object class="GtkVBox" id="vbox1">
+                  <object class="GtkGrid" id="grid1">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="spacing">10</property>
                     <child>
                       <object class="GtkFrame" id="frame3">
                         <property name="visible">True</property>
@@ -75,41 +75,41 @@
                             <property name="left_padding">10</property>
                             <property name="right_padding">10</property>
                             <child>
-                              <object class="GtkVBox" id="vbox5">
+                              <object class="GtkGrid" id="grid3">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <child>
-                                  <object class="GtkCheckButton" id="swap_order">
+                                  <object class="GtkCheckButton" id="swap-order">
                                     <property name="label" translatable="yes">Swap icon/title _order</property>
+                                    <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_underline">True</property>
+                                    <property name="xalign">0</property>
                                     <property name="draw_indicator">True</property>
                                   </object>
                                   <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">False</property>
-                                    <property name="position">0</property>
+                                    <property name="left_attach">0</property>
+                                    <property name="top_attach">0</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkCheckButton" id="expand_applet">
+                                  <object class="GtkCheckButton" id="expand-applet">
                                     <property name="label" translatable="yes">Expand applet</property>
+                                    <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="sensitive">False</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
                                     <property name="tooltip_text" translatable="yes">DIsabled until GTK+ developers fix the various bugs.
 You may change it using gconf-editor, but then you also need to set a fixed size.</property>
-                                    <property name="use_action_appearance">False</property>
+                                    <property name="xalign">0</property>
                                     <property name="draw_indicator">True</property>
                                   </object>
                                   <packing>
-                                    <property name="expand">True</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">1</property>
+                                    <property name="left_attach">0</property>
+                                    <property name="top_attach">1</property>
                                   </packing>
                                 </child>
                               </object>
@@ -126,9 +126,8 @@ You may change it using gconf-editor, but then you also need to set a fixed size
                         </child>
                       </object>
                       <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">0</property>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">0</property>
                       </packing>
                     </child>
                     <child>
@@ -145,23 +144,23 @@ You may change it using gconf-editor, but then you also need to set a fixed size
                             <property name="left_padding">10</property>
                             <property name="right_padding">10</property>
                             <child>
-                              <object class="GtkVBox" id="vbox4">
+                              <object class="GtkGrid" id="grid4">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <child>
-                                  <object class="GtkCheckButton" id="hide_icon">
+                                  <object class="GtkCheckButton" id="hide-icon">
                                     <property name="label" translatable="yes">Hide _icon</property>
+                                    <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_underline">True</property>
+                                    <property name="xalign">0</property>
                                     <property name="draw_indicator">True</property>
                                   </object>
                                   <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">False</property>
-                                    <property name="position">0</property>
+                                    <property name="left_attach">0</property>
+                                    <property name="top_attach">0</property>
                                   </packing>
                                 </child>
                               </object>
@@ -178,9 +177,8 @@ You may change it using gconf-editor, but then you also need to set a fixed size
                         </child>
                       </object>
                       <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">1</property>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">1</property>
                       </packing>
                     </child>
                     <child>
@@ -197,91 +195,84 @@ You may change it using gconf-editor, but then you also need to set a fixed size
                             <property name="left_padding">10</property>
                             <property name="right_padding">10</property>
                             <child>
-                              <object class="GtkVBox" id="vbox3">
+                              <object class="GtkGrid" id="grid6">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="spacing">5</property>
                                 <child>
-                                  <object class="GtkCheckButton" id="hide_title">
+                                  <object class="GtkCheckButton" id="hide-title">
                                     <property name="label" translatable="yes">Hide title</property>
+                                    <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
-                                    <property name="use_action_appearance">False</property>
+                                    <property name="xalign">0</property>
                                     <property name="draw_indicator">True</property>
                                   </object>
                                   <packing>
-                                    <property name="expand">True</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">0</property>
+                                    <property name="left_attach">0</property>
+                                    <property name="top_attach">0</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkHBox" id="hbox2">
+                                  <object class="GtkGrid" id="grid5">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="spacing">10</property>
                                     <child>
                                       <object class="GtkLabel" id="label4">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
+                                        <property name="label" translatable="yes">Alignment: </property>
+                                        <property name="ellipsize">end</property>
                                         <property name="xalign">0</property>
-                                        <property name="label" translatable="yes">Alignment:</property>
                                       </object>
                                       <packing>
-                                        <property name="expand">False</property>
-                                        <property name="fill">True</property>
-                                        <property name="position">0</property>
+                                        <property name="left_attach">0</property>
+                                        <property name="top_attach">0</property>
                                       </packing>
                                     </child>
                                     <child>
-                                      <object class="GtkHScale" id="scale_alignment">
+                                      <object class="GtkScale" id="scale-alignment">
                                         <property name="visible">True</property>
                                         <property name="can_focus">True</property>
-                                        <property name="tooltip_text" translatable="yes">Set the title alignment.
-Note: only has effect when "Expand applet" is active.</property>
-                                        <property name="digits">2</property>
+                                        <property name="hexpand">True</property>
+                                        <property name="round_digits">1</property>
                                         <property name="value_pos">left</property>
                                       </object>
                                       <packing>
-                                        <property name="expand">True</property>
-                                        <property name="fill">True</property>
-                                        <property name="position">1</property>
+                                        <property name="left_attach">1</property>
+                                        <property name="top_attach">0</property>
                                       </packing>
                                     </child>
                                   </object>
                                   <packing>
-                                    <property name="expand">True</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">1</property>
+                                    <property name="left_attach">0</property>
+                                    <property name="top_attach">1</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkHSeparator" id="hseparator1">
+                                  <object class="GtkSeparator" id="separator1">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
                                   </object>
                                   <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="padding">4</property>
-                                    <property name="position">2</property>
+                                    <property name="left_attach">0</property>
+                                    <property name="top_attach">2</property>
                                   </packing>
                                 </child>
                                 <child>
-                                  <object class="GtkCheckButton" id="custom_style">
+                                  <object class="GtkCheckButton" id="custom-style">
                                     <property name="label" translatable="yes">Custom _style</property>
+                                    <property name="use_action_appearance">False</property>
                                     <property name="visible">True</property>
                                     <property name="can_focus">True</property>
                                     <property name="receives_default">False</property>
-                                    <property name="use_action_appearance">False</property>
                                     <property name="use_underline">True</property>
+                                    <property name="xalign">0</property>
                                     <property name="draw_indicator">True</property>
                                   </object>
                                   <packing>
-                                    <property name="expand">False</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">3</property>
+                                    <property name="left_attach">0</property>
+                                    <property name="top_attach">3</property>
                                   </packing>
                                 </child>
                                 <child>
@@ -290,62 +281,31 @@ Note: only has effect when "Expand applet" is active.</property>
                                     <property name="can_focus">False</property>
                                     <property name="left_padding">12</property>
                                     <child>
-                                      <object class="GtkTable" id="table_custom_style">
+                                      <object class="GtkGrid" id="table_custom_style">
                                         <property name="visible">True</property>
                                         <property name="can_focus">False</property>
-                                        <property name="n_rows">3</property>
-                                        <property name="n_columns">3</property>
-                                        <child>
-                                          <object class="GtkLabel" id="label7">
-                                            <property name="visible">True</property>
-                                            <property name="can_focus">False</property>
-                                            <property name="xalign">0</property>
-                                            <property name="label" translatable="yes">Font color:</property>
-                                          </object>
-                                          <packing>
-                                            <property name="top_attach">2</property>
-                                            <property name="bottom_attach">3</property>
-                                          </packing>
-                                        </child>
                                         <child>
                                           <object class="GtkLabel" id="label5">
                                             <property name="visible">True</property>
                                             <property name="can_focus">False</property>
-                                            <property name="xalign">0</property>
                                             <property name="label" translatable="yes">Font style:</property>
+                                            <property name="xalign">0</property>
                                           </object>
                                           <packing>
+                                            <property name="left_attach">0</property>
                                             <property name="top_attach">1</property>
-                                            <property name="bottom_attach">2</property>
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkColorButton" id="btn_color_active">
+                                          <object class="GtkLabel" id="label7">
                                             <property name="visible">True</property>
-                                            <property name="can_focus">True</property>
-                                            <property name="receives_default">True</property>
-                                            <property name="use_action_appearance">False</property>
-                                            <property name="color">#000000000000</property>
+                                            <property name="can_focus">False</property>
+                                            <property name="label" translatable="yes">Font color:</property>
+                                            <property name="xalign">0</property>
                                           </object>
                                           <packing>
-                                            <property name="left_attach">1</property>
-                                            <property name="right_attach">2</property>
+                                            <property name="left_attach">0</property>
                                             <property name="top_attach">2</property>
-                                            <property name="bottom_attach">3</property>
-                                          </packing>
-                                        </child>
-                                        <child>
-                                          <object class="GtkFontButton" id="btn_font_active">
-                                            <property name="visible">True</property>
-                                            <property name="can_focus">True</property>
-                                            <property name="receives_default">True</property>
-                                            <property name="use_action_appearance">False</property>
-                                          </object>
-                                          <packing>
-                                            <property name="left_attach">1</property>
-                                            <property name="right_attach">2</property>
-                                            <property name="top_attach">1</property>
-                                            <property name="bottom_attach">2</property>
                                           </packing>
                                         </child>
                                         <child>
@@ -356,7 +316,7 @@ Note: only has effect when "Expand applet" is active.</property>
                                           </object>
                                           <packing>
                                             <property name="left_attach">1</property>
-                                            <property name="right_attach">2</property>
+                                            <property name="top_attach">0</property>
                                           </packing>
                                         </child>
                                         <child>
@@ -367,36 +327,61 @@ Note: only has effect when "Expand applet" is active.</property>
                                           </object>
                                           <packing>
                                             <property name="left_attach">2</property>
-                                            <property name="right_attach">3</property>
+                                            <property name="top_attach">0</property>
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkFontButton" id="btn_font_inactive">
+                                          <object class="GtkFontButton" id="btn-font-active">
+                                            <property name="use_action_appearance">False</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">True</property>
-                                            <property name="use_action_appearance">False</property>
+                                            <property name="font">Sans 12</property>
                                           </object>
                                           <packing>
-                                            <property name="left_attach">2</property>
-                                            <property name="right_attach">3</property>
+                                            <property name="left_attach">1</property>
                                             <property name="top_attach">1</property>
-                                            <property name="bottom_attach">2</property>
                                           </packing>
                                         </child>
                                         <child>
-                                          <object class="GtkColorButton" id="btn_color_inactive">
+                                          <object class="GtkFontButton" id="btn-font-inactive">
+                                            <property name="use_action_appearance">False</property>
                                             <property name="visible">True</property>
                                             <property name="can_focus">True</property>
                                             <property name="receives_default">True</property>
-                                            <property name="use_action_appearance">False</property>
-                                            <property name="color">#000000000000</property>
+                                            <property name="font">Sans 12</property>
                                           </object>
                                           <packing>
                                             <property name="left_attach">2</property>
-                                            <property name="right_attach">3</property>
+                                            <property name="top_attach">1</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkColorButton" id="btn-color-inactive">
+                                            <property name="use_action_appearance">False</property>
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="receives_default">True</property>
+                                            <property name="use_alpha">True</property>
+                                            <property name="rgba">rgb(0,0,0)</property>
+                                          </object>
+                                          <packing>
+                                            <property name="left_attach">2</property>
                                             <property name="top_attach">2</property>
-                                            <property name="bottom_attach">3</property>
+                                          </packing>
+                                        </child>
+                                        <child>
+                                          <object class="GtkColorButton" id="btn-color-active">
+                                            <property name="use_action_appearance">False</property>
+                                            <property name="visible">True</property>
+                                            <property name="can_focus">True</property>
+                                            <property name="receives_default">True</property>
+                                            <property name="use_alpha">True</property>
+                                            <property name="rgba">rgb(0,0,0)</property>
+                                          </object>
+                                          <packing>
+                                            <property name="left_attach">1</property>
+                                            <property name="top_attach">2</property>
                                           </packing>
                                         </child>
                                         <child>
@@ -406,9 +391,8 @@ Note: only has effect when "Expand applet" is active.</property>
                                     </child>
                                   </object>
                                   <packing>
-                                    <property name="expand">True</property>
-                                    <property name="fill">True</property>
-                                    <property name="position">4</property>
+                                    <property name="left_attach">0</property>
+                                    <property name="top_attach">4</property>
                                   </packing>
                                 </child>
                               </object>
@@ -425,9 +409,8 @@ Note: only has effect when "Expand applet" is active.</property>
                         </child>
                       </object>
                       <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">2</property>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">2</property>
                       </packing>
                     </child>
                   </object>
@@ -453,74 +436,73 @@ Note: only has effect when "Expand applet" is active.</property>
                 <property name="left_padding">10</property>
                 <property name="right_padding">10</property>
                 <child>
-                  <object class="GtkVBox" id="vbox2">
+                  <object class="GtkGrid" id="grid2">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="spacing">5</property>
                     <child>
-                      <object class="GtkCheckButton" id="only_maximized">
+                      <object class="GtkCheckButton" id="only-maximized">
                         <property name="label" translatable="yes">Control _maximized windows only</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
+                        <property name="xalign">0</property>
                         <property name="draw_indicator">True</property>
                       </object>
                       <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">0</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkCheckButton" id="hide_on_unmaximized">
+                      <object class="GtkCheckButton" id="hide-on-unmaximized">
                         <property name="label" translatable="yes">_Hide when no active maximized windows</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
+                        <property name="xalign">0</property>
                         <property name="draw_indicator">True</property>
                       </object>
                       <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">1</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkCheckButton" id="show_window_menu">
+                      <object class="GtkCheckButton" id="show-window-menu">
                         <property name="label" translatable="yes">Show window _action menu on right-click</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
                         <property name="tooltip_text" translatable="yes">Will cause the window action menu to appear when the title is right-clicked.
 This experimental feature is still under development!
 Warning! In current feature state you will be unable to access the applet action menu via title-right click when this option is enabled! You may still do so by right-clicking the icon if it is not hidden. You may always change this setting from gconf-editor.</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
+                        <property name="xalign">0</property>
                         <property name="draw_indicator">True</property>
                       </object>
                       <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">2</property>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">2</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkCheckButton" id="show_tooltips">
+                      <object class="GtkCheckButton" id="show-tooltips">
                         <property name="label" translatable="yes">Show _tooltips</property>
+                        <property name="use_action_appearance">False</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">False</property>
-                        <property name="use_action_appearance">False</property>
                         <property name="use_underline">True</property>
+                        <property name="xalign">0</property>
                         <property name="draw_indicator">True</property>
                       </object>
                       <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">3</property>
+                        <property name="left_attach">0</property>
+                        <property name="top_attach">3</property>
                       </packing>
                     </child>
                   </object>
@@ -551,7 +533,7 @@ Warning! In current feature state you will be unable to access the applet action
       </object>
     </child>
     <action-widgets>
-      <action-widget response="-7">btn_close</action-widget>
+      <action-widget response="-7">btn-close</action-widget>
     </action-widgets>
   </object>
 </interface>

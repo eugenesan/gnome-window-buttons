@@ -29,6 +29,13 @@
 
 #include "external.h"
 
+#include <glib.h>
+#include <glib-object.h>
+#include <glib/gi18n.h>
+#include <panel-applet.h>
+#include <gtk/gtk.h>
+#include <gio/gio.h>
+
 gchar *getMetacityLayout(void);
 gchar *getMetacityTheme(void);
 gboolean issetCompizDecoration(void);
@@ -37,57 +44,54 @@ void toggleCompizDecoration(gboolean);
 //void toggleMetacityDecoration(gboolean); //TODO
 
 gchar *getMetacityLayout() {
-	GConfClient *gcc = gconf_client_get_default();
-	gchar *retval = gconf_client_get_string(gcc, GCONF_METACITY_BUTTON_LAYOUT, NULL);
-	g_object_unref(gcc);
+	GSettings *settings = g_settings_new(GNOME_WM_PREFERENCES);
+	
+	gchar *retval = g_settings_get_string(settings, GSETTINGS_WM_BUTTON_LAYOUT);
+	
+	g_object_unref(settings);
+	
 	return retval;
 }
 
 gchar *getMetacityTheme() {
-	GConfClient *gcc = gconf_client_get_default();
-	gchar *retval = gconf_client_get_string(gcc, GCONF_METACITY_THEME, NULL);
-	g_object_unref(gcc);
+	GSettings *settings = g_settings_new(GNOME_WM_PREFERENCES);
+	
+	gchar *retval = g_settings_get_string(settings, GSETTINGS_WM_THEME);
+	
+	g_object_unref(settings);
+	
 	return retval;
 }
 
 gboolean issetCompizDecoration() {
 	gboolean retval = FALSE;
-	GConfClient *gcc = gconf_client_get_default();
-	gchar *gconf_cdm = gconf_client_get_string(gcc, GCONF_COMPIZ_DECORATION_MATCH, NULL);
+	GSettings *settings = NULL;
+	settings = g_settings_new_with_path(COMPIZ_DECOR_SCHEMA, GSETTINGS_COMPIZ_DECOR_PATH);
+	gchar *cdm = g_settings_get_string(settings, GSETTINGS_COMPIZ_DECORATION_MATCH);
 	
-	if (gconf_cdm == NULL) {
+	if (cdm == NULL) {
 		retval = FALSE;
-	} else if (!g_strcmp0(gconf_cdm, COMPIZ_DECORATION_MATCH)) {
+	} else if (!g_strcmp0(cdm, COMPIZ_DECORATION_MATCH_VALUE)) {
 		retval = TRUE;
 	}
-	g_free(gconf_cdm);
-	g_object_unref(gcc);
+	g_free(cdm);
+	g_object_unref(settings);
 	return retval;
 }
 
 void toggleCompizDecoration(gboolean new_value) {
-	GError *err = NULL;
-	GConfClient *gconfclient = gconf_client_get_default();
+	GSettings *settings = NULL;
 
+	settings = g_settings_new_with_path(COMPIZ_DECOR_SCHEMA, GSETTINGS_COMPIZ_DECOR_PATH);
 	if (new_value) {
-		if (gconf_client_unset(gconfclient, GCONF_COMPIZ_DECORATION_MATCH, &err))
-			gconf_client_unset(gconfclient, GCONF_COMPIZ_DECORATION_MATCH_OLD, &err);
-	} else if (gconf_client_get_string(gconfclient, GCONF_COMPIZ_DECORATION_MATCH, &err)) {
-					 gconf_client_set_string(gconfclient,
-					 GCONF_COMPIZ_DECORATION_MATCH,
-					 COMPIZ_DECORATION_MATCH,
-					 NULL);
-	} else if (gconf_client_get_string(gconfclient, GCONF_COMPIZ_DECORATION_MATCH_OLD, &err)) {
-					 gconf_client_set_string(gconfclient,
-					 GCONF_COMPIZ_DECORATION_MATCH_OLD,
-					 COMPIZ_DECORATION_MATCH,
-					 NULL);
+		g_settings_reset(settings, GSETTINGS_COMPIZ_DECORATION_MATCH);
+	} else if (g_settings_get_string(settings, GSETTINGS_COMPIZ_DECORATION_MATCH)) {
+					 g_settings_set_string(settings,
+						GSETTINGS_COMPIZ_DECORATION_MATCH,
+						COMPIZ_DECORATION_MATCH_VALUE);
 	} else {
-		// Compiz probably not installed. Unset newly created value.
-		// TODO: This doesn't really remove it. I hate GConf.
-		toggleCompizDecoration(0);
+		g_settings_reset(settings, GSETTINGS_COMPIZ_DECORATION_MATCH);
 	}
 
-	g_free(err);
-	g_object_unref(gconfclient);
+	g_object_unref(settings);
 }

@@ -47,10 +47,10 @@ const gchar* getButtonImageState4(int state_id) { // old 4-state mode for backwa
 
 /* returns the image key string */
 const gchar *getImageCfgKey(gushort image_state, gushort image_index) {
-	return g_strconcat("btn_", getButtonImageState(image_state,"_"), "_", getButtonImageName(image_index), NULL);
+	return g_strconcat("btn-", getButtonImageState(image_state,"-"), "-", getButtonImageName(image_index), NULL);
 }
 const gchar *getImageCfgKey4(gushort image_state, gushort image_index) { // old 4-state mode for backwards compatibility
-	return g_strconcat("btn_", getButtonImageState4(image_state), "_", getButtonImageName(image_index), NULL);
+	return g_strconcat("btn-", getButtonImageState4(image_state), "-", getButtonImageName(image_index), NULL);
 }
 
 

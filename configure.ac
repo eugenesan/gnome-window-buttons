@@ -1,7 +1,7 @@
 dnl Process this file with autoconf to produce a configure script.
 dnl Created by Anjuta application wizard.
 
-AC_INIT(gnome-window-applets, 0.3)
+AC_INIT(gnome-window-applets, 0.3.1)
 
 AC_CONFIG_MACRO_DIR([m4])
 
@@ -24,21 +24,19 @@ AC_ARG_WITH([localedir], AS_HELP_STRING([--with-localedir=<path>],
          [Path to install message files in (default: datadir/locale)]),
          [LOCALEDIR=${withval}], [LOCALEDIR=${datadir}/locale])
 AC_SUBST([LOCALEDIR])
-AX_DEFINE_DIR(GNOMELOCALEDIR, "${datadir}/locale", [locale directory])
 AM_GLIB_GNU_GETTEXT
 IT_PROG_INTLTOOL([0.35.0])
 
 dnl *************
-dnl GConf
+dnl GSettings
 dnl *************
-AM_GCONF_SOURCE_2
-AC_PATH_PROG(GCONFTOOL, gconftool-2)
+GLIB_GSETTINGS
 
-PKG_CHECK_MODULES(WINDOWBUTTONS, libpanelapplet-4.0
-[libwnck-3.0 gtk+-3.0 gconf-2.0])
+PKG_CHECK_MODULES(WINDOWBUTTONS, libpanel-applet
+[libwnck-3.0 gtk+-3.0])
 
-PKG_CHECK_MODULES(WINDOWTITLE, libpanelapplet-4.0
-[libwnck-3.0 gtk+-3.0 gconf-2.0])
+PKG_CHECK_MODULES(WINDOWTITLE, libpanel-applet
+[libwnck-3.0 gtk+-3.0])
 
 
 AS_AC_EXPAND(LIBEXECDIR, $libexecdir)
